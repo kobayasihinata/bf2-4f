@@ -5,6 +5,7 @@
 #include"Title.h"
 
 
+
 #define FRAMERATE 60.0 //フレームレート
 
 #define SCREEN_WIDTH 640	//画面サイズ
