@@ -1,7 +1,7 @@
 #include "PadInput.h"
 
-char PAD_INPUT::now_key[BUTTONS];
-char PAD_INPUT::old_key[BUTTONS];
-XINPUT_STATE PAD_INPUT::input;
-Stick PAD_INPUT::r_stick;
-Stick PAD_INPUT::l_stick;
+char PAD_INPUT::NowKey[BUTTONS];
+char PAD_INPUT::OldKey[BUTTONS];
+XINPUT_STATE PAD_INPUT::Input;
+Stick PAD_INPUT::Rstick;
+Stick PAD_INPUT::Lstick;

@@ -3,12 +3,11 @@
 #include"PadInput.h"
 
 #include"Title.h"
+#include"GameMain.h"
+#include"Define.h"
 
 
 #define FRAMERATE 60.0 //フレームレート
-
-#define SCREEN_WIDTH 640	//画面サイズ
-#define SCREEN_HEIGHT 480
 
 /***********************************************
  * プログラムの開始
@@ -30,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	try
 	{
-		sceneMng = new SceneManager((AbstractScene*)new Title());
+		sceneMng = new SceneManager((AbstractScene*)new GameMain());
 
 	}
 	catch (const char* err)
@@ -52,7 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	while ((ProcessMessage() == 0) && (sceneMng->Update() != nullptr)) {
 
 		ClearDrawScreen();		// 画面の初期化
-
+		PAD_INPUT::UpdateKey();
 		sceneMng->Draw();
 
 		//強制終了
