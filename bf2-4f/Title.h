@@ -1,11 +1,12 @@
 #pragma once
 #include "AbstractScene.h"
+#include"StageBox.h"
 
 class Title :
     public AbstractScene
 {
 private:
-
+    StageBox* stagebox;
 
 public:
 
