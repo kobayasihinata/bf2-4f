@@ -3,7 +3,7 @@
 
 Title::Title()
 {
-	stagebox = new StageBox();
+
 }
 
 Title::~Title()
@@ -20,5 +20,5 @@ AbstractScene* Title::Update()
 void Title::Draw()const
 {
 	DrawString(0, 0, "ƒ^ƒCƒgƒ‹", 0xff0000);
-	stagebox->Draw();
+	
 }

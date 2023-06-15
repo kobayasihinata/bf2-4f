@@ -1,5 +1,6 @@
 #pragma once
 #include"Define.h"
+#include"Collider/BoxCollider.h"
 
 enum PLAYER_STATE
 {
@@ -10,11 +11,11 @@ enum PLAYER_STATE
      FLY_RIGHT,
      DEATH
 };
-class Player 
+class Player :public BoxCollider
 {
 private:
     PLAYER_STATE player_state;
-    float x, y;   //BoxColliderが出来たら対応する変数に差し替え
+    //float x, y;   //BoxColliderが出来たら対応する変数に差し替え
     int acs_left;   //左加速度
     int acs_right;  //右加速度
     int acs_up;     //上加速度

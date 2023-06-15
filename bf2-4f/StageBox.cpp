@@ -1,7 +1,7 @@
 #include "StageBox.h"
 #include"DxLib.h"
 
-StageBox::StageBox()
+StageFloor::StageFloor()
 {
 	location.x = 325;
 	location.y = 300;
@@ -9,18 +9,18 @@ StageBox::StageBox()
 	area.width = 200;
 }
 
-StageBox::~StageBox()
+StageFloor::~StageFloor()
 {
 
 }
 
-void StageBox::Update()
+void StageFloor::Update()
 {
 	
 
 }
 
-void StageBox::Draw()const
+void StageFloor::Draw()const
 {
 	BoxCollider::Draw();
 }

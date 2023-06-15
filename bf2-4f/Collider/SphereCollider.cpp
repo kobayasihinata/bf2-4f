@@ -17,6 +17,9 @@ void SphereCollider::Draw()const
 		, GetRadius(), 10, GetColor(128, 128, 128), TRUE);
 }
 
+//-----------------------------------
+// SphereCollider‚Æ‚Ì“–‚½‚è”»’è
+//-----------------------------------
 bool SphereCollider::HitSphere(const SphereCollider* sphere_collider) const
 {
 
@@ -34,6 +37,9 @@ bool SphereCollider::HitSphere(const SphereCollider* sphere_collider) const
 	return ret;
 }
 
+//-----------------------------------
+// BoxCollider‚Æ‚Ì“–‚½‚è”»’è
+//-----------------------------------
 bool SphereCollider::HitBox(const BoxCollider* box_collider) const
 {
 

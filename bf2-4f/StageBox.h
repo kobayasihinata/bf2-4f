@@ -1,11 +1,11 @@
 #pragma once
 #include "collider/BoxCollider.h"
-class StageBox :
+class StageFloor :
     public BoxCollider
 {
 public:
-    StageBox();
-    ~StageBox();
+    StageFloor();
+    ~StageFloor();
     void Update();
     void Draw()const;
 };

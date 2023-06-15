@@ -8,8 +8,8 @@
 Player::Player()
 {
 	player_state = IDOL;
-	x = 0;
-	y = 0;
+	location.x = 0;
+	location.y = 0;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -24,15 +24,15 @@ Player::~Player()
 void Player::Update()
 {
 	//óéâ∫ Ç‡ÇµÇ≠ÇÕè„è∏
-	if (y < FLOOR)
+	if (location.y < FLOOR)
 	{
 		player_state = FLY_RIGHT;
 		if (acs_down < 100)
 		{
 			acs_down++;
 		}
-		y += acs_down/20;
-		y -= acs_up;
+		location.y += acs_down/20;
+		location.y -= acs_up;
 	}
 	else
 	{
@@ -85,13 +85,13 @@ void Player::Update()
 	}
 
 	//à⁄ìÆ
-	x = x - (acs_left/20) + (acs_right/20);
-	y = y - acs_up;
+	location.x = location.x - (acs_left/20) + (acs_right/20);
+	location.y = location.y - acs_up;
 
 }
 
 void Player::Draw()const
 {
-	DrawBox(x, y, x + PLAYER_SIZE, y + PLAYER_SIZE, 0xff0000, TRUE);
+	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
 	DrawFormatString(0, 50, 0x0000ff, "%d", PAD_INPUT::GetLStick().ThumbX);
 }
