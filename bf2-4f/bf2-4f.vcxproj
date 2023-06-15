@@ -155,8 +155,10 @@
     <ClCompile Include="Collider\BoxCollider.cpp" />
     <ClCompile Include="Collider\ColliderBase.cpp" />
     <ClCompile Include="Enemy_AI.cpp" />
+    <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PadInput.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Collider\SphereCollider.cpp" />
     <ClCompile Include="StageBox.cpp" />
@@ -170,7 +172,9 @@
     <ClInclude Include="Enemy_AI.h" />
     <ClInclude Include="E_Collider.h" />
     <ClInclude Include="Location.h" />
+    <ClInclude Include="GameMain.h" />
     <ClInclude Include="PadInput.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Collider\SphereCollider.h" />
     <ClInclude Include="StageBox.h" />
