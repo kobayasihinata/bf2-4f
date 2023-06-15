@@ -19,6 +19,7 @@ private:
     int acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
+    int jump_combo;  //連打でより上昇
 public:
 
     //コンストラクタ

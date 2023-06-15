@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="Enemy_AI.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="PadInput.h" />
