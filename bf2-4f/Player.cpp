@@ -4,6 +4,7 @@
 
 #define FLOOR 400 //è∞ÅiâºÅj
 #define MAX_SPEED 50 //ç≈çÇë¨ìx
+
 Player::Player()
 {
 	x = 0;
