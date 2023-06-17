@@ -1,4 +1,4 @@
-#include "StageBox.h"
+#include "StageFloor.h"
 #include"DxLib.h"
 
 StageFloor::StageFloor()

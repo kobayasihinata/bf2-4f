@@ -10,6 +10,8 @@ Player::Player()
 	player_state = IDOL;
 	location.x = 0;
 	location.y = 0;
+	area.height = PLAYER_SIZE;
+	area.width = PLAYER_SIZE;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -92,6 +94,7 @@ void Player::Update()
 
 void Player::Draw()const
 {
-	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
+	BoxCollider::Draw();
+	DrawBox(location.x - area.width / 2, location.y - area.height / 2, location.x + PLAYER_SIZE / 2, location.y + PLAYER_SIZE / 2, 0xff0000, TRUE);
 	DrawFormatString(0, 50, 0x0000ff, "%d", PAD_INPUT::GetLStick().ThumbX);
 }

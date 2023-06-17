@@ -29,10 +29,10 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	player->Draw();
 	stagefloor->Draw();
+	player->Draw();
 	if (collisionFlg == true) {
-		DrawString(player->GetLocation().x + 10, player->GetLocation().y - 20, "Hit", 0xffffff, 0x000000);
+		DrawString(player->GetLocation().x - 10, player->GetLocation().y - 50, "Hit", 0xffffff, 0x000000);
 	}
 	DrawString(0, 0, "ƒQ[ƒ€ƒƒCƒ“", 0xff0000);
 }

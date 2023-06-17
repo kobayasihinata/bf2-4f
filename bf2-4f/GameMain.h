@@ -1,7 +1,7 @@
 #pragma once
 #include "AbstractScene.h"
 #include "Player.h"
-#include"StageBox.h"
+#include"StageFloor.h"
 
 class GameMain :
     public AbstractScene
