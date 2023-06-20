@@ -5,11 +5,14 @@
 #define FLOOR 400 //床（仮）
 
 #define MAX_SPEED 500		//最高速度と最低速度の差を調整する用
+#define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）
 #define MAX_JUMP 10			//最大連打数
 #define JUMP_INTERVAL 40	//ジャンプボタン連打間隔
 #define FALL_SPPED 0.002	//最高落下速度
 #define MOVE_SPPED 0.005	//最高上昇速度
 #define RISE_SPPED 0.01		//最高上昇速度
+
+#define LAND_SPEED 0.02	//最高移動速度（地面）
 
 Player::Player()
 {
@@ -20,6 +23,8 @@ Player::Player()
 	acs_right = 0;
 	acs_up = 0;
 	acs_down = 0;
+	land_acs_left = 0;
+	land_acs_right = 0;
 	jump_int = 0;
 	jump_combo = 0;
 	frame = 0;
@@ -36,6 +41,8 @@ Player::Player()
 	b_y3 = 300;
 	b_x4 = 401;
 	b_y4 = 480;
+	ref_once1 = FALSE;
+	ref_once2 = FALSE;
 }
 
 Player::~Player()
@@ -64,8 +71,22 @@ void Player::Update()
 		jump_combo = 0;
 		acs_down = 0;
 		acs_up = 0;
-		acs_left = 0;
-		acs_right = 0;
+		if (acs_left > 0)
+		{
+			acs_left--;
+		}
+		else
+		{
+			acs_left = 0;
+		}
+		if (acs_right > 0)
+		{
+			acs_right--;
+		}
+		else
+		{
+			acs_right = 0;
+		}
 		ref_px = 0;
 		ref_mx = 0;
 		ref_y = 0;
@@ -88,10 +109,12 @@ void Player::Update()
 		}
 		//地面と接しているなら
 		else
-		{
-			acs_right = 0;
+		{			
 			player_state = WALK_RIGHT;
-			x += 1.5;
+			if (land_acs_right < MAX_SPEED_LAND)
+			{
+				land_acs_right++;
+			}
 		}
 	}
 	else
@@ -99,6 +122,10 @@ void Player::Update()
 		if (acs_right > 0)
 		{
 			acs_right--;
+		}
+		if (land_acs_right > 0)
+		{
+			land_acs_right--;
 		}
 	}
 
@@ -118,9 +145,11 @@ void Player::Update()
 		}
 		else
 		{
-			acs_left = 0;
 			player_state = WALK_LEFT;
-			x-=1.5;
+			if (land_acs_left < MAX_SPEED_LAND)
+			{
+				land_acs_left++;
+			}
 		}
 	}
 	else
@@ -128,6 +157,10 @@ void Player::Update()
 		if (acs_left > 0)
 		{
 			acs_left--;
+		}
+		if (land_acs_left > 0)
+		{
+			land_acs_left--;
 		}
 	}
 
@@ -185,7 +218,7 @@ void Player::Update()
 	}
 
 	//移動
-	x = x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + ref_mx - ref_px;
+	x = x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
 	y = y - (acs_up* RISE_SPPED);
 
 	//画面端に行くとテレポート
@@ -218,28 +251,33 @@ void Player::Update()
 	//左から右反射実験
 	if ((x < b_x2) && (x + PLAYER_SIZE > b_x1) && (y < b_y2) && (y + PLAYER_SIZE > b_y1))
 	{
-		ref_px = 0;
-		ref_mx = acs_left * 0.01;
-		acs_left -= 100;
-
+		land_acs_right = 0;
+		if (ref_once1 == FALSE)
+		{
+			acs_left = acs_right * 0.8;
+			acs_right = 0;
+			ref_once1 = TRUE;
+		}
 	}
-	if (ref_mx > 0)
+	else
 	{
-		ref_mx--;
+		ref_once1 = FALSE;
 	}
 	//右から左反射実験
 	if ((x < b_x4) && (x + PLAYER_SIZE > b_x3) && (y < b_y4) && (y + PLAYER_SIZE > b_y3))
 	{
-		ref_mx = 0;
-		ref_px = acs_right * 0.01;
-		acs_right -= 100;
-
+		land_acs_left = 0;
+		if (ref_once2 == FALSE)
+		{
+			acs_right = acs_left * 0.8;
+			acs_left = 0;
+			ref_once2 = TRUE;
+		}
 	}
-	if (ref_px > 0)
+	else
 	{
-		ref_px--;
+		ref_once2 = FALSE;
 	}
-
 }
 
 void Player::Draw()const
@@ -248,5 +286,7 @@ void Player::Draw()const
 	DrawBox(b_x1, b_y1, b_x2, b_y2, 0xffff00, TRUE);
 	DrawBox(b_x3, b_y3, b_x4, b_y4, 0xff00ff, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
+	DrawFormatString(0, 40, 0x00ff00, "left:%d", acs_left);
+	DrawFormatString(0, 60, 0x00ff00, "right:%d", acs_right);
 
 }
