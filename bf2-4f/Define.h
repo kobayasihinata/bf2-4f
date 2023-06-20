@@ -5,4 +5,4 @@
 #define SCREEN_WIDTH 640	//âÊñ â°ïù
 #define SCREEN_HEIGHT 480	//âÊñ çÇÇ≥
 
-#define PLAYER_SIZE 50
+#define PLAYER_SIZE 40
