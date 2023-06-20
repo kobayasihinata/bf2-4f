@@ -28,8 +28,6 @@ Player::Player()
 	jump_int = 0;
 	jump_combo = 0;
 	frame = 0;
-	ref_px = 0;
-	ref_mx = 0;
 	ref_y = 0;
 
 	b_x1 = 300;
@@ -87,8 +85,6 @@ void Player::Update()
 		{
 			acs_right = 0;
 		}
-		ref_px = 0;
-		ref_mx = 0;
 		ref_y = 0;
 		player_state = IDOL;
 	}

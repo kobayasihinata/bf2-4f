@@ -24,8 +24,6 @@ private:
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
     int frame;      //フレーム計測用
-    float ref_px;      //反発用変数（+ｘ）
-    float ref_mx;      //反発用変数（-ｘ）
     float ref_y;      //反発用変数（ｙ）
 
     //反射実験用
