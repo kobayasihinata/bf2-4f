@@ -4,8 +4,8 @@
 
 #define FLOOR 400 //床（仮）
 
-#define MAX_SPEED 500		//最高速度と最低速度の差を調整する用
-#define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）
+#define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
+#define MAX_SPEED_LAND 50	//最高速度と最低速度の差を調整する用（地面）
 #define MAX_JUMP 10			//最大連打数
 #define JUMP_INTERVAL 40	//ジャンプボタン連打間隔
 #define FALL_SPPED 0.002	//最高落下速度
@@ -61,8 +61,7 @@ void Player::Update()
 			acs_down++;
 		}
 
-		//下降処理
-		y += (acs_down + ref_y) * FALL_SPPED;
+
 	}
 	else
 	{
@@ -112,12 +111,16 @@ void Player::Update()
 				land_acs_right++;
 			}
 		}
+
 	}
 	else
 	{
 		if (acs_right > 0)
 		{
+			if (frame % 10 == 0)
+			{
 			acs_right--;
+			}
 		}
 		if (land_acs_right > 0)
 		{
@@ -147,12 +150,16 @@ void Player::Update()
 				land_acs_left++;
 			}
 		}
+	
 	}
 	else
 	{
 		if (acs_left > 0)
 		{
-			acs_left--;
+			if (frame % 10 == 0)
+			{
+				acs_left--;
+			}
 		}
 		if (land_acs_left > 0)
 		{
@@ -161,34 +168,46 @@ void Player::Update()
 	}
 
 	//ジャンプ
-	if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A) && jump_int == 0)
+	if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
 	{
-		jump_int = JUMP_INTERVAL;
-		//Aを押せば押すほど上加速度が上がる
-		if (jump_combo < MAX_JUMP)
+		if (acs_right > 0)
 		{
+			acs_right--;
+		}
+		if (acs_left > 0)
+		{
+			acs_left--;
+		}
+
+		if (jump_int == 0)
+		{
+			jump_int = JUMP_INTERVAL;
+			//Aを押せば押すほど上加速度が上がる
+			if (jump_combo < MAX_JUMP)
+			{
 			if (jump_combo == 0)
 			{
-				jump_combo += 3;
+				jump_combo += 5;
+				}
+				jump_combo++;
 			}
-			jump_combo++;
-		}
-		acs_up += jump_combo * 10;
-		if (PAD_INPUT::GetLStick().ThumbX < -10000)
-		{
-			if (acs_left < MAX_SPEED)
+			acs_up += jump_combo * 8;
+			if (PAD_INPUT::GetLStick().ThumbX < -10000)
 			{
-				acs_left += 20;
+				if (acs_left < MAX_SPEED)
+				{
+					acs_left += 10;
+				}
 			}
-		}
-		if (PAD_INPUT::GetLStick().ThumbX > 10000)
-		{
-			if (acs_right < MAX_SPEED)
+			if (PAD_INPUT::GetLStick().ThumbX > 10000)
 			{
-				acs_right += 20;
+				if (acs_right < MAX_SPEED)
+				{
+					acs_right += 10;
+				}
 			}
-
 		}
+		
 	}
 	else
 	{
@@ -215,7 +234,7 @@ void Player::Update()
 
 	//移動
 	x = x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-	y = y - (acs_up* RISE_SPPED);
+	y = y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
 	if (x < 0 - PLAYER_SIZE)
