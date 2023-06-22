@@ -1,7 +1,24 @@
 #include "Stage.h"
+#include <math.h>
+
 #include "DxLib.h"
 
-#define HEIGHT 10
-#define WIDTH 16
-#define STAGE 4
+Stage::Stage()
+{
+	stageimage = LoadGraph("images/stages/stage1.png");
+}
 
+Stage::~Stage()
+{
+	DeleteGraph(stageimage);
+}
+
+AbstractScene* Stage::Update()
+{
+	return 0;
+}
+
+void Stage::Draw() const
+{
+	DrawGraph(0,0,stageimage, TRUE);
+}
