@@ -14,9 +14,6 @@ public:
 
 	virtual void Draw()const;
 
-	//SphereCollider‚Æ‚Ì“–‚½‚è”»’è
-	bool HitSphere(const class SphereCollider* sphere_collider) const override;
-
 	//BoxCollider‚Æ‚Ì“–‚½‚è”»’è
 	bool HitBox(const class BoxCollider* box_collider) const override;
 
@@ -29,12 +26,12 @@ public:
 	//¶ã‚ÌÀ•W‚ğæ“¾
 	Location GetMin()const
 	{
-		return Location{ location.x - area.width / 2,location.y - area.height / 2 };
+		return Location{ location.x,location.y};
 	}
 	//‰E‰º‚ÌÀ•W‚ğæ“¾
 	Location GetMax()const
 	{
-		return Location{ location.x + area.width / 2,location.y + area.height / 2 };
+		return Location{ location.x + area.width,location.y + area.height};
 	}
 };
 

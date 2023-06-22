@@ -291,7 +291,5 @@ void Player::Draw()const
 	DrawFormatString(0, 40, 0x00ff00, "left:%d", acs_left);
 	DrawFormatString(0, 60, 0x00ff00, "right:%d", acs_right);
 
-	//BoxCollider::Draw();
-	//DrawBox(location.x - area.width / 2, location.y - area.height / 2, location.x + PLAYER_SIZE / 2, location.y + PLAYER_SIZE / 2, 0xff0000, TRUE);
-	//DrawFormatString(0, 50, 0x0000ff, "%d", PAD_INPUT::GetLStick().ThumbX);
+	BoxCollider::Draw();
 }

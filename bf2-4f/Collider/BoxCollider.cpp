@@ -1,5 +1,4 @@
 #include "BoxCollider.h"
-#include "SphereCollider.h"
 #include "DxLib.h"
 
 /*
@@ -39,46 +38,6 @@ void BoxCollider::Draw()const
 }
 
 //-----------------------------------
-// SphereCollider‚Æ‚Ì“–‚½‚è”»’è
-//-----------------------------------
-bool BoxCollider::HitSphere(const class SphereCollider* sphere_collider) const
-{
-
-	bool ret = false;//•Ô‚è’l
-	float rad; //2“_‚ÌŠp“x
-	float sphere_x; //‰~‚ÌÀ•W(x)
-	float sphere_y; //‰~‚ÌÀ•W(y)
-
-	//Ž©•ª‚Ì“–‚½‚è”»’è‚Ì”ÍˆÍ
-	float my_x[2];
-	float my_y[2];
-
-	//Šp“x‚ÌŒvŽZ
-	rad = atan2f(location.y - sphere_collider->GetLocation().y,
-		location.x - sphere_collider->GetLocation().x);
-
-	//À•W‚ÌŒvŽZ
-	sphere_x = sphere_collider->GetLocation().x
-		+ (sphere_collider->GetRadius() * cosf(rad));
-	sphere_y = sphere_collider->GetLocation().y
-		+ (sphere_collider->GetRadius() * sinf(rad));
-
-	//Ž©•ª‚Ì“–‚½‚è”»’è‚Ì”ÍˆÍ‚ÌŒvŽZ
-	my_x[0] = location.x - (area.width / 2);
-	my_y[0] = location.y - (area.height / 2);
-	my_x[1] = my_x[0] + area.width;
-	my_y[1] = my_y[0] + area.height;
-
-	if ((my_x[0] <= sphere_x) && (sphere_x <= my_x[1])
-		&& (my_y[0] <= sphere_y) && (sphere_y <= my_y[1])) //“–‚½‚è”»’è
-	{
-		ret = true;
-	}
-
-	return ret;
-}
-
-//-----------------------------------
 // BoxCollider‚Æ‚Ì“–‚½‚è”»’è
 //-----------------------------------
 bool BoxCollider::HitBox(const BoxCollider* box_collider) const
@@ -95,14 +54,14 @@ bool BoxCollider::HitBox(const BoxCollider* box_collider) const
 	float sub_y[2];
 
 	//Ž©•ª‚Ì“–‚½‚è”»’è‚Ì”ÍˆÍ‚ÌŒvŽZ
-	my_x[0] = location.x - (area.width / 2);
-	my_y[0] = location.y - (area.height / 2);
+	my_x[0] = location.x;
+	my_y[0] = location.y;
 	my_x[1] = my_x[0] + area.width;
 	my_y[1] = my_y[0] + area.height;
 
 	//‘ŠŽè‚Ì“–‚½‚è”»’è‚Ì”ÍˆÍ‚ÌŒvŽZ
-	sub_x[0] = box_collider->GetLocation().x - (box_collider->GetArea().width / 2);
-	sub_y[0] = box_collider->GetLocation().y - (box_collider->GetArea().height / 2);
+	sub_x[0] = box_collider->GetLocation().x;
+	sub_y[0] = box_collider->GetLocation().y;
 	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
 	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
 

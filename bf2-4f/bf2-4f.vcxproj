@@ -160,7 +160,6 @@
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Collider\SphereCollider.cpp" />
     <ClCompile Include="StageFloor.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
@@ -177,7 +176,6 @@
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Collider\SphereCollider.h" />
     <ClInclude Include="StageFloor.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
