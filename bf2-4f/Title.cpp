@@ -19,5 +19,5 @@ AbstractScene* Title::Update()
 
 void Title::Draw()const
 {
-	DrawString(0, 0, "タイトル", 0xff0000);
+	//DrawString(0, 0, "タイトル", 0xff0000);
 }
