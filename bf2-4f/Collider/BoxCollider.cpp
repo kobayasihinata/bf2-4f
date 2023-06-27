@@ -34,7 +34,7 @@ void BoxCollider::Draw()const
 	DrawBoxAA(
 		min.x, min.y
 		, max.x, max.y
-		, 0xFFFF00, FALSE, 3.f);
+		, 0xFFFF00, FALSE);
 }
 
 //-----------------------------------

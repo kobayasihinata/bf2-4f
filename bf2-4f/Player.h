@@ -29,6 +29,16 @@ private:
     float ref_mx;      //反発用変数（-ｘ）
     float ref_y;      //反発用変数（ｙ）
 
+    bool isOnFloor;     //デバッグ用
+
+    //自分の当たり判定の範囲
+    float my_x[2];  
+    float my_y[2];
+
+    //相手の当たり判定の範囲
+    float sub_x[2];
+    float sub_y[2];
+
     //反射実験用
     int b_x1, b_y1, b_x2, b_y2;
     int b_x3, b_y3, b_x4, b_y4;
@@ -48,4 +58,20 @@ public:
 
     //描画に関することを実装
     void Draw() const;
+
+    bool GetOnFloor()
+    {
+        return &isOnFloor;
+    }
+
+    bool SetOnFloor(bool flg)
+    {
+        isOnFloor = flg;
+        return isOnFloor;
+    }
+   
+    void SetCollisionLocation(const BoxCollider* box_collider);
+    void OnFloorCollision();
+    void FloorCollision();
+
 };

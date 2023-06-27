@@ -10,8 +10,6 @@ private:
     Player* player;
     StageFloor* stagefloor;
 
-    bool collisionFlg;      //デバッグ用
-
 public:
 
     //コンストラクタ
