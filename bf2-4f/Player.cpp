@@ -402,7 +402,7 @@ void Player::HitCollision(const BoxCollider* box_collider)
 	}
 
 }
-}
+
 
 void Player::ReflectionMX()
 {
