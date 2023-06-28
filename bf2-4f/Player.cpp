@@ -19,6 +19,8 @@ Player::Player()
 	player_state = IDOL;
 	location.x = 0;
 	location.y = 0;
+	area.height = PLAYER_SIZE;
+	area.width = PLAYER_SIZE;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -52,7 +54,7 @@ Player::~Player()
 void Player::Update()
 {
 	//—‰º(°‚ÆG‚ê‚Ä‚¢‚È‚¢–‚ğŒŸ’m‚·‚é)
-	if (locationy < FLOOR)
+	if (location.y < FLOOR)
 	{
 		player_state = FLY_RIGHT;
 
