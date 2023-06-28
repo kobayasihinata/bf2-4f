@@ -15,7 +15,6 @@ class Player :public BoxCollider
 {
 private:
     PLAYER_STATE player_state;
-    //float locationx, locationy;   //BoxColliderが出来たら対応する変数に差し替え
     int acs_left;   //左加速度
     int acs_right;  //右加速度
     int acs_up;     //上加速度
@@ -64,4 +63,13 @@ public:
     void OnHitCollision(const BoxCollider* box_collider);
     void HitCollision(const BoxCollider* box_collider);
 
+
+    //X方向に移動しているときに-X方向に反射する
+    void ReflectionMX();
+
+    //-X方向に移動しているときにX方向に反射する
+    void ReflectionPX();
+
+    //-Y方向に移動しているときにY方向に反射する
+    void ReflectionPY();
 };
