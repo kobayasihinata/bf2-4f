@@ -284,7 +284,7 @@ void Player::Draw()const
 
 }
 
-void Player::OnHitCollision(const BoxCollider* box_collider)
+void Player::HitStageCollision(const BoxCollider* box_collider)
 {
 	//自分の当たり判定の範囲
 	float my_x[2];
@@ -316,46 +316,19 @@ void Player::OnHitCollision(const BoxCollider* box_collider)
 		{
 			//StageFloorより下には行けないようにする
 			location.y = sub_y[0] - area.height - 1;
-			SetOnFloor(true);
 		}
-	}
-}
 
-void Player::HitCollision(const BoxCollider* box_collider)
-{
-	//自分の当たり判定の範囲
-	float my_x[2];
-	float my_y[2];
-
-	//相手の当たり判定の範囲
-	float sub_x[2];
-	float sub_y[2];
-
-	//自分の当たり判定の範囲の計算
-	my_x[0] = location.x;
-	my_y[0] = location.y;
-	my_x[1] = my_x[0] + area.width;
-	my_y[1] = my_y[0] + area.height;
-
-	//相手の当たり判定の範囲の計算
-	sub_x[0] = box_collider->GetLocation().x;
-	sub_y[0] = box_collider->GetLocation().y;
-	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
-	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
-
-	//StageFloorの横の範囲内
-	if (my_x[0] < sub_x[1] - 5 &&
-		sub_x[0] + 5 < my_x[1])
-	{
 		//PlayerがStageFloorより上へ行こうとした場合
 		if (my_y[0] < sub_y[1] + 2 &&
 			my_y[1] > sub_y[1])
 		{
 			//StageFloorより上には行けないようにする
 			location.y = sub_y[1] + 2;
+			//跳ね返る
+			ref_y = acs_up * 0.05;
+			acs_up -= 200;
 		}
 	}
-
 	//StaegFloorの縦の範囲内
 	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
@@ -366,6 +339,17 @@ void Player::HitCollision(const BoxCollider* box_collider)
 		{
 			//StageFloorより右には行けないようにする
 			location.x = sub_x[0] - area.width - 1;
+			//1回だけ左へ跳ね返る
+			if (ref_once1 == FALSE)
+			{
+				acs_left = acs_right * 0.8;
+				acs_right = 0;
+				ref_once1 = TRUE;
+			}		
+		}
+		else
+		{
+			ref_once1 = FALSE;
 		}
 		//PlayerがStageFloorより左へ行こうとした場合
 		if (my_x[0] < sub_x[1] + 1 &&
@@ -373,9 +357,20 @@ void Player::HitCollision(const BoxCollider* box_collider)
 		{
 			//StageFloorより左には行けないようにする
 			location.x = sub_x[1] + 1;
+			//1回だけ右へ跳ね返る
+			if (ref_once2 == FALSE)
+			{
+				acs_right = acs_left * 0.8;
+				acs_left = 0;
+				ref_once2 = TRUE;
+			}
 		}
-	}
+		else
+		{
+			ref_once2 = FALSE;
+		}
 
+	}
 	if (my_y[0] < FLOOR)
 	{
 		life--;

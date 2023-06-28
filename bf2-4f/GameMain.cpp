@@ -18,10 +18,8 @@ GameMain::~GameMain()
 
 AbstractScene* GameMain::Update()
 {
-	player->SetOnFloor(false);
-	player->OnHitCollision(stagefloor);
-	player->HitCollision(stagefloor);
-	player->HitCollision(staegwall);
+	player->HitStageCollision(stagefloor);
+	player->HitStageCollision(staegwall);
 	player->Update();
 	return this;
 }
