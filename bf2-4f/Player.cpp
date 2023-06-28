@@ -17,8 +17,8 @@
 Player::Player()
 {
 	player_state = IDOL;
-	x = 0;
-	y = 0;
+	location.x = 0;
+	location.y = 0;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -51,7 +51,7 @@ Player::~Player()
 void Player::Update()
 {
 	//落下(床と触れていない事を検知する)
-	if (y < FLOOR)
+	if (locationy < FLOOR)
 	{
 		player_state = FLY_RIGHT;
 
@@ -93,7 +93,7 @@ void Player::Update()
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (y < FLOOR)
+		if (location.y < FLOOR)
 		{		
 			player_state = FLY_RIGHT;
 			if (acs_right < MAX_SPEED)
@@ -133,7 +133,7 @@ void Player::Update()
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (y < FLOOR)
+		if (locationy < FLOOR)
 		{
 			player_state = FLY_LEFT;
 			if (acs_left < MAX_SPEED) 
@@ -168,7 +168,7 @@ void Player::Update()
 	}
 
 	//ジャンプ
-	if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B))
 	{
 		if (acs_right > 0)
 		{
@@ -185,9 +185,9 @@ void Player::Update()
 			//Aを押せば押すほど上加速度が上がる
 			if (jump_combo < MAX_JUMP)
 			{
-			if (jump_combo == 0)
-			{
-				jump_combo += 5;
+				if (jump_combo == 0)
+				{
+					jump_combo += 5;
 				}
 				jump_combo++;
 			}
@@ -233,21 +233,21 @@ void Player::Update()
 	}
 
 	//移動
-	x = x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-	y = y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+	location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+	location.y = location.y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
-	if (x < 0 - PLAYER_SIZE)
+	if (location.x < 0 - PLAYER_SIZE)
 	{
-		x = SCREEN_WIDTH + PLAYER_SIZE;
+		location.x = SCREEN_WIDTH + PLAYER_SIZE;
 	}
-	if (x > SCREEN_WIDTH + PLAYER_SIZE)
+	if (location.x > SCREEN_WIDTH + PLAYER_SIZE)
 	{
-		x = 0 - PLAYER_SIZE;
+		location.x = 0 - PLAYER_SIZE;
 	}
 
 	//画面上に当たると跳ね返る
-	if (y < 0)
+	if (location.y < 0)
 	{
 		ref_y = acs_up * 0.05;
 		acs_up -= 200;
@@ -264,7 +264,7 @@ void Player::Update()
 	}
 
 	//左から右反射実験
-	if ((x < b_x2) && (x + PLAYER_SIZE > b_x1) && (y < b_y2) && (y + PLAYER_SIZE > b_y1))
+	if ((location.x < b_x2) && (location.x + PLAYER_SIZE > b_x1) && (location.y < b_y2) && (location.y + PLAYER_SIZE > b_y1))
 	{
 		land_acs_right = 0;
 		if (ref_once1 == FALSE)
@@ -279,7 +279,7 @@ void Player::Update()
 		ref_once1 = FALSE;
 	}
 	//右から左反射実験
-	if ((x < b_x4) && (x + PLAYER_SIZE > b_x3) && (y < b_y4) && (y + PLAYER_SIZE > b_y3))
+	if ((location.x < b_x4) && (location.x + PLAYER_SIZE > b_x3) && (location.y < b_y4) && (location.y + PLAYER_SIZE > b_y3))
 	{
 		land_acs_left = 0;
 		if (ref_once2 == FALSE)
@@ -297,11 +297,9 @@ void Player::Update()
 
 void Player::Draw()const
 {
-	DrawBox(x, y, x + PLAYER_SIZE, y + PLAYER_SIZE, 0xff0000, TRUE);
+	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
 	DrawBox(b_x1, b_y1, b_x2, b_y2, 0xffff00, TRUE);
 	DrawBox(b_x3, b_y3, b_x4, b_y4, 0xff00ff, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
-	DrawFormatString(0, 40, 0x00ff00, "left:%d", acs_left);
-	DrawFormatString(0, 60, 0x00ff00, "right:%d", acs_right);
 
 }
