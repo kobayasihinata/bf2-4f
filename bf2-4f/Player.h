@@ -28,16 +28,9 @@ private:
     float ref_px;      //反発用変数（+ｘ）
     float ref_mx;      //反発用変数（-ｘ）
     float ref_y;      //反発用変数（ｙ）
+    int life;         //残機
 
     bool isOnFloor;     //デバッグ用
-
-    //自分の当たり判定の範囲
-    float my_x[2];  
-    float my_y[2];
-
-    //相手の当たり判定の範囲
-    float sub_x[2];
-    float sub_y[2];
 
     //反射実験用
     int b_x1, b_y1, b_x2, b_y2;
@@ -70,8 +63,7 @@ public:
         return isOnFloor;
     }
    
-    void SetCollisionLocation(const BoxCollider* box_collider);
-    void OnFloorCollision();
-    void FloorCollision();
+    void OnHitCollision(const BoxCollider* box_collider);
+    void HitCollision(const BoxCollider* box_collider);
 
 };
