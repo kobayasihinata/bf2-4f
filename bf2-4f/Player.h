@@ -63,6 +63,8 @@ public:
     void OnHitCollision(const BoxCollider* box_collider);
     void HitCollision(const BoxCollider* box_collider);
 
+    //°‚É’…’n‚·‚é
+    void OnFloor();
 
     //X•ûŒü‚ÉˆÚ“®‚µ‚Ä‚¢‚é‚Æ‚«‚É-X•ûŒü‚É”½Ë‚·‚é
     void ReflectionMX();

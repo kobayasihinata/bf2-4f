@@ -68,27 +68,7 @@ void Player::Update()
 	}
 	else
 	{
-		jump_combo = 0;
-		acs_down = 0;
-		acs_up = 0;
-		if (acs_left > 0)
-		{
-			acs_left--;
-		}
-		else
-		{
-			acs_left = 0;
-		}
-		if (acs_right > 0)
-		{
-			acs_right--;
-		}
-		else
-		{
-			acs_right = 0;
-		}
-		ref_y = 0;
-		player_state = IDOL;
+		OnFloor();
 	}
 
 	//‰E“ü—Í‚ðŒŸ’m
@@ -403,6 +383,30 @@ void Player::HitCollision(const BoxCollider* box_collider)
 
 }
 
+void Player::OnFloor()
+{
+	jump_combo = 0;
+	acs_down = 0;
+	acs_up = 0;
+	if (acs_left > 0)
+	{
+		acs_left--;
+	}
+	else
+	{
+		acs_left = 0;
+	}
+	if (acs_right > 0)
+	{
+		acs_right--;
+	}
+	else
+	{
+		acs_right = 0;
+	}
+	ref_y = 0;
+	player_state = IDOL;
+}
 
 void Player::ReflectionMX()
 {
