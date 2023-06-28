@@ -28,8 +28,6 @@ private:
     float ref_y;      //反発用変数（ｙ）
     int life;         //残機
 
-    bool isOnFloor;     //デバッグ用
-
     //反射実験用
     int b_x1, b_y1, b_x2, b_y2;
     int b_x3, b_y3, b_x4, b_y4;
@@ -50,18 +48,6 @@ public:
     //描画に関することを実装
     void Draw() const;
 
-    bool GetOnFloor()
-    {
-        return &isOnFloor;
-    }
-
-    bool SetOnFloor(bool flg)
-    {
-        isOnFloor = flg;
-        return isOnFloor;
-    }
-   
-    void OnHitCollision(const BoxCollider* box_collider);
-    void HitCollision(const BoxCollider* box_collider);
+    void HitStageCollision(const BoxCollider* box_collider);
 
 };
