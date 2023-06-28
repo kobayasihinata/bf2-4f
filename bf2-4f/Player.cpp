@@ -51,7 +51,7 @@ Player::~Player()
 void Player::Update()
 {
 	//—‰º(°‚ÆG‚ê‚Ä‚¢‚È‚¢–‚ğŒŸ’m‚·‚é)
-	if (locationy < FLOOR)
+	if (location.y < FLOOR)
 	{
 		player_state = FLY_RIGHT;
 
@@ -133,7 +133,7 @@ void Player::Update()
 	{
 		//•‚‚¢‚Ä‚¢‚é‚È‚ç‰Á‘¬ˆ—••‚‚¢‚Ä‚¢‚È‚¢‚È‚çŠµ«‚È‚µˆÚ“®
 		//(‚±‚±‚Å’n–Ê‚Æ‚Ì“–‚½‚è”»’è‚ğæ“¾‚µ‚Ä‚«‚Ästate‚ğ•Ï‚¦‚é)
-		if (locationy < FLOOR)
+		if (location.y < FLOOR)
 		{
 			player_state = FLY_LEFT;
 			if (acs_left < MAX_SPEED) 
