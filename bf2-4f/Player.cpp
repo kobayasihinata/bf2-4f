@@ -4,8 +4,8 @@
 
 #define FLOOR 400 //床（仮）
 
-#define MAX_SPEED 500		//最高速度と最低速度の差を調整する用
-#define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）
+#define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
+#define MAX_SPEED_LAND 50	//最高速度と最低速度の差を調整する用（地面）
 #define MAX_JUMP 10			//最大連打数
 #define JUMP_INTERVAL 40	//ジャンプボタン連打間隔
 #define FALL_SPPED 0.002	//最高落下速度
@@ -19,8 +19,6 @@ Player::Player()
 	player_state = IDOL;
 	location.x = 0;
 	location.y = 0;
-	area.height = PLAYER_SIZE;
-	area.width = PLAYER_SIZE;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -30,8 +28,6 @@ Player::Player()
 	jump_int = 0;
 	jump_combo = 0;
 	frame = 0;
-	ref_px = 0;
-	ref_mx = 0;
 	ref_y = 0;
 	life = 2;
 
@@ -56,7 +52,7 @@ Player::~Player()
 void Player::Update()
 {
 	//落下(床と触れていない事を検知する)
-	if (location.y < FLOOR)
+	if (locationy < FLOOR)
 	{
 		player_state = FLY_RIGHT;
 
@@ -66,8 +62,7 @@ void Player::Update()
 			acs_down++;
 		}
 
-		//下降処理
-		location.y += (acs_down + ref_y) * FALL_SPPED;
+
 	}
 	else
 	{
@@ -90,8 +85,6 @@ void Player::Update()
 		{
 			acs_right = 0;
 		}
-		ref_px = 0;
-		ref_mx = 0;
 		ref_y = 0;
 		player_state = IDOL;
 	}
@@ -119,12 +112,16 @@ void Player::Update()
 				land_acs_right++;
 			}
 		}
+
 	}
 	else
 	{
 		if (acs_right > 0)
 		{
+			if (frame % 10 == 0)
+			{
 			acs_right--;
+			}
 		}
 		if (land_acs_right > 0)
 		{
@@ -154,12 +151,16 @@ void Player::Update()
 				land_acs_left++;
 			}
 		}
+	
 	}
 	else
 	{
 		if (acs_left > 0)
 		{
-			acs_left--;
+			if (frame % 10 == 0)
+			{
+				acs_left--;
+			}
 		}
 		if (land_acs_left > 0)
 		{
@@ -168,34 +169,46 @@ void Player::Update()
 	}
 
 	//ジャンプ
-	if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A) && jump_int == 0)
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B))
 	{
-		jump_int = JUMP_INTERVAL;
-		//Aを押せば押すほど上加速度が上がる
-		if (jump_combo < MAX_JUMP)
+		if (acs_right > 0)
 		{
-			if (jump_combo == 0)
-			{
-				jump_combo += 3;
-			}
-			jump_combo++;
+			acs_right--;
 		}
-		acs_up += jump_combo * 10;
-		if (PAD_INPUT::GetLStick().ThumbX < -10000)
+		if (acs_left > 0)
 		{
-			if (acs_left < MAX_SPEED)
-			{
-				acs_left += 20;
-			}
+			acs_left--;
 		}
-		if (PAD_INPUT::GetLStick().ThumbX > 10000)
-		{
-			if (acs_right < MAX_SPEED)
-			{
-				acs_right += 20;
-			}
 
+		if (jump_int == 0)
+		{
+			jump_int = JUMP_INTERVAL;
+			//Aを押せば押すほど上加速度が上がる
+			if (jump_combo < MAX_JUMP)
+			{
+				if (jump_combo == 0)
+				{
+					jump_combo += 5;
+				}
+				jump_combo++;
+			}
+			acs_up += jump_combo * 8;
+			if (PAD_INPUT::GetLStick().ThumbX < -10000)
+			{
+				if (acs_left < MAX_SPEED)
+				{
+					acs_left += 10;
+				}
+			}
+			if (PAD_INPUT::GetLStick().ThumbX > 10000)
+			{
+				if (acs_right < MAX_SPEED)
+				{
+					acs_right += 10;
+				}
+			}
 		}
+		
 	}
 	else
 	{
@@ -222,7 +235,7 @@ void Player::Update()
 
 	//移動
 	location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-	location.y = location.y - (acs_up* RISE_SPPED);
+	location.y = location.y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
 	if (location.x < 0 - PLAYER_SIZE)
@@ -290,8 +303,6 @@ void Player::Draw()const
 	DrawBox(b_x1, b_y1, b_x2, b_y2, 0xffff00, TRUE);
 	DrawBox(b_x3, b_y3, b_x4, b_y4, 0xff00ff, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
-	DrawFormatString(0, 40, 0x00ff00, "left:%d", acs_left);
-	DrawFormatString(0, 60, 0x00ff00, "right:%d", acs_right);
 
 }
 
