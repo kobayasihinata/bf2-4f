@@ -3,12 +3,13 @@
 #include"PadInput.h"
 
 #include"Title.h"
+#include"Stage.h"
 
 
 #define FRAMERATE 60.0 //フレームレート
 
-#define SCREEN_WIDTH 640	//画面サイズ
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 900	//画面サイズ
+#define SCREEN_HEIGHT 674
 
 /***********************************************
  * プログラムの開始

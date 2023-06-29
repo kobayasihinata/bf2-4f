@@ -1,5 +1,5 @@
 #pragma once
-#include"AbstractScene.h"
+#include "AbstractScene.h"
 
 class Stage : public AbstractScene
 {

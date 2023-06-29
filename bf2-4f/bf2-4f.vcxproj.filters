@@ -51,4 +51,21 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\stages\stage1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\stages\stage2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\stages\stage3.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\stages\stage4.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\stages\stage5.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

@@ -165,6 +165,13 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\stages\stage1.png" />
+    <Image Include="images\stages\stage2.png" />
+    <Image Include="images\stages\stage3.png" />
+    <Image Include="images\stages\stage4.png" />
+    <Image Include="images\stages\stage5.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

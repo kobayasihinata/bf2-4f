@@ -15,7 +15,7 @@ Stage::~Stage()
 
 AbstractScene* Stage::Update()
 {
-	return 0;
+	return this;
 }
 
 void Stage::Draw() const
