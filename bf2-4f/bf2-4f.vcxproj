@@ -158,9 +158,12 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PadInput.cpp" />
+    <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StageFloor.cpp" />
+    <ClCompile Include="StageWall.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
@@ -175,11 +178,21 @@
     <ClInclude Include="Location.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="PadInput.h" />
+    <ClInclude Include="Pause.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="StageFloor.h" />
+    <ClInclude Include="StageWall.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\stages\stage1.png" />
+    <Image Include="images\stages\stage2.png" />
+    <Image Include="images\stages\stage3.png" />
+    <Image Include="images\stages\stage4.png" />
+    <Image Include="images\stages\stage5.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

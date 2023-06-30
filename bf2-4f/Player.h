@@ -15,7 +15,6 @@ class Player :public BoxCollider
 {
 private:
     PLAYER_STATE player_state;
-    //float x, y;   //BoxColliderが出来たら対応する変数に差し替え
     int acs_left;   //左加速度
     int acs_right;  //右加速度
     int acs_up;     //上加速度
@@ -25,9 +24,8 @@ private:
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
     int frame;      //フレーム計測用
-    float ref_px;      //反発用変数（+ｘ）
-    float ref_mx;      //反発用変数（-ｘ）
     float ref_y;      //反発用変数（ｙ）
+    int life;         //残機
 
     //反射実験用
     int b_x1, b_y1, b_x2, b_y2;
@@ -48,4 +46,18 @@ public:
 
     //描画に関することを実装
     void Draw() const;
+
+    void HitStageCollision(const BoxCollider* box_collider);
+
+    //床に着地する
+    void OnFloor();
+
+    //X方向に移動しているときに-X方向に反射する
+    void ReflectionMX();
+
+    //-X方向に移動しているときにX方向に反射する
+    void ReflectionPX();
+
+    //-Y方向に移動しているときにY方向に反射する
+    void ReflectionPY();
 };

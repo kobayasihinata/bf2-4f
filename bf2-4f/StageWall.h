@@ -1,13 +1,13 @@
 #pragma once
 #include "collider/BoxCollider.h"
-class StageFloor :
+class StageWall :
     public BoxCollider
 {
 public:
     //コンストラクタ
-    StageFloor();
+    StageWall();
     //デストラクタ
-    ~StageFloor();
+    ~StageWall();
 
     //描画以外の更新を実装する
     void Update();
