@@ -68,31 +68,11 @@ void Player::Update()
 	}
 	else
 	{
-		jump_combo = 0;
-		acs_down = 0;
-		acs_up = 0;
-		if (acs_left > 0)
-		{
-			acs_left--;
-		}
-		else
-		{
-			acs_left = 0;
-		}
-		if (acs_right > 0)
-		{
-			acs_right--;
-		}
-		else
-		{
-			acs_right = 0;
-		}
-		ref_y = 0;
-		player_state = IDOL;
+		OnFloor();
 	}
 
 	//右入力を検知
-	if (PAD_INPUT::GetLStick().ThumbX>10000)
+	if (PAD_INPUT::GetLStick().ThumbX>10000 || CheckHitKey(KEY_INPUT_D))
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
@@ -132,7 +112,7 @@ void Player::Update()
 	}
 
 	//左入力を検知
-	if (PAD_INPUT::GetLStick().ThumbX < -10000)
+	if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
@@ -171,7 +151,7 @@ void Player::Update()
 	}
 
 	//ジャンプ
-	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B))
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B)||CheckHitKey(KEY_INPUT_SPACE))
 	{
 		if (acs_right > 0)
 		{
@@ -252,8 +232,7 @@ void Player::Update()
 	//画面上に当たると跳ね返る
 	if (location.y < 0)
 	{
-		ref_y = acs_up * 0.05;
-		acs_up -= 200;
+		ReflectionPY();
 	}
 	if (ref_y > 0)
 	{
@@ -269,11 +248,9 @@ void Player::Update()
 	//左から右反射実験
 	if ((location.x < b_x2) && (location.x + PLAYER_SIZE > b_x1) && (location.y < b_y2) && (location.y + PLAYER_SIZE > b_y1))
 	{
-		land_acs_right = 0;
 		if (ref_once1 == FALSE)
 		{
-			acs_left = acs_right * 0.8;
-			acs_right = 0;
+			ReflectionMX();
 			ref_once1 = TRUE;
 		}
 	}
@@ -287,8 +264,7 @@ void Player::Update()
 		land_acs_left = 0;
 		if (ref_once2 == FALSE)
 		{
-			acs_right = acs_left * 0.8;
-			acs_left = 0;
+			ReflectionPX();
 			ref_once2 = TRUE;
 		}
 	}
@@ -399,4 +375,50 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 	{
 		life--;
 	}
+
+}
+
+void Player::OnFloor()
+{
+	jump_combo = 0;
+	acs_down = 0;
+	acs_up = 0;
+	if (acs_left > 0)
+	{
+		acs_left--;
+	}
+	else
+	{
+		acs_left = 0;
+	}
+	if (acs_right > 0)
+	{
+		acs_right--;
+	}
+	else
+	{
+		acs_right = 0;
+	}
+	ref_y = 0;
+	player_state = IDOL;
+}
+
+void Player::ReflectionMX()
+{
+	land_acs_right = 0;
+	acs_left = acs_right * 0.8;
+	acs_right = 0;
+}
+
+void Player::ReflectionPX()
+{
+	land_acs_left = 0;
+	acs_right = acs_left * 0.8;
+	acs_left = 0;
+}
+
+void Player::ReflectionPY()
+{
+	ref_y = acs_up * 0.05;
+	acs_up -= 200;
 }
