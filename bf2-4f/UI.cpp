@@ -1,5 +1,6 @@
 #include "DxLib.h"
 #include "UI.h"
+#include"GameMain.h"
 
 void UI::Init() {
 	gScore = 0;
@@ -7,10 +8,7 @@ void UI::Init() {
 
 int UI::Score()
 {
-	if () {
-
-		return 1;
-	}
+	return 0;
 }
 
 void UI::DrawScore()

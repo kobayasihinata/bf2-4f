@@ -11,6 +11,7 @@ private:
     StageFloor* stagefloor;
 
     bool collisionFlg;      //デバッグ用
+    static int BGM;
 
 public:
 
@@ -25,5 +26,7 @@ public:
 
     //描画に関することを実装
     void Draw() const override;
+
+    static int GetBGM() { return BGM; }
 };
 
