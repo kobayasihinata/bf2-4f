@@ -5,7 +5,9 @@ class Title :
     public AbstractScene
 {
 private:
- 
+    int titlelogo;
+    int titlecredit;
+    int titlemodeselect;
 
 public:
 

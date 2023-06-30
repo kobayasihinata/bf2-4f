@@ -171,6 +171,9 @@
     <Image Include="images\stages\stage3.png" />
     <Image Include="images\stages\stage4.png" />
     <Image Include="images\stages\stage5.png" />
+    <Image Include="images\Title\Title_Credit.png" />
+    <Image Include="images\Title\Title_Logo.png" />
+    <Image Include="images\Title\Title_ModeSelect.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

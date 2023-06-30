@@ -5,7 +5,7 @@
 
 Stage::Stage()
 {
-	stageimage = LoadGraph("images/stages/stage1.png");
+
 }
 
 Stage::~Stage()

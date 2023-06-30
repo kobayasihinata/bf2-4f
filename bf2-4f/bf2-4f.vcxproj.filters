@@ -67,5 +67,14 @@
     <Image Include="images\stages\stage5.png">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="images\Title\Title_Credit.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\Title\Title_Logo.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\Title\Title_ModeSelect.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>
