@@ -164,6 +164,7 @@
     <ClCompile Include="StageFloor.cpp" />
     <ClCompile Include="StageWall.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="StageFloor.h" />
     <ClInclude Include="StageWall.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\stages\stage1.png" />
