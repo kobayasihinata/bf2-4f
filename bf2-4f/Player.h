@@ -26,11 +26,7 @@ private:
     int frame;      //フレーム計測用
     float ref_y;      //反発用変数（ｙ）
     int life;         //残機
-
-    //反射実験用
-    int b_x1, b_y1, b_x2, b_y2;
-    int b_x3, b_y3, b_x4, b_y4;
-    int b_x5, b_y5, b_x6, b_y6;
+    bool onfloor_flg;   //StageFloorの上かどうか
     bool ref_once1;
     bool ref_once2;
 public:
