@@ -6,7 +6,6 @@ class Title :
 {
 private:
 
-
 public:
 
     //コンストラクタ

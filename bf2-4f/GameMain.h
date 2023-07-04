@@ -1,12 +1,16 @@
 #pragma once
 #include "AbstractScene.h"
 #include "Player.h"
+#include"StageFloor.h"
 
 class GameMain :
     public AbstractScene
 {
 private:
     Player* player;
+    StageFloor* stagefloor;
+
+    bool collisionFlg;      //デバッグ用
 
 public:
 
