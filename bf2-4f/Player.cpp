@@ -37,6 +37,8 @@ Player::Player()
 
 	ref_once1 = FALSE;
 	ref_once2 = FALSE;
+
+	LoadDivGraph("images/Player/Player_Animation.png", 30, 8, 4, 64, 64, player_image);
 }
 
 Player::~Player()
@@ -262,6 +264,19 @@ void Player::Draw()const
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
 	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
 	DrawFormatString(0, 60, 0x00ff00, "%d", life);
+
+	switch (player_state)
+	{
+	case 0:
+		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0], TRUE);
+		break;
+	case 1:
+		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8], TRUE);
+		break;
+	case 2:
+		DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y,player_image[8], TRUE);
+		break;
+	}
 
 }
 

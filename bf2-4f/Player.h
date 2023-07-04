@@ -2,6 +2,9 @@
 #include"Define.h"
 #include"Collider/BoxCollider.h"
 
+#define IMAGE_SHIFT_X 15 //画像ずらし用
+#define IMAGE_SHIFT_Y 6 //画像ずらし用
+
 enum PLAYER_STATE
 {
      IDOL = 0,
@@ -31,6 +34,8 @@ private:
     bool ref_once1;
     bool ref_once2;
     bool respawn_flg;
+
+    int player_image[30];   //プレイヤー画像
 public:
 
     //コンストラクタ
