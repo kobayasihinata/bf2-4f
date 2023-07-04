@@ -2,6 +2,7 @@
 #include"DxLib.h"
 
 #define BUTTONS 16
+#define MARGIN 32767*0.25
 
 //スティック
 struct Stick

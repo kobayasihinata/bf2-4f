@@ -9,6 +9,9 @@ private:
     int titlecredit;
     int titlemodeselect;
 
+    int JoyPadY;
+    int interval;
+    int select;
 public:
 
     //コンストラクタ
