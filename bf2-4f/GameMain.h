@@ -2,6 +2,7 @@
 #include "AbstractScene.h"
 #include "Player.h"
 #include"StageFloor.h"
+#include"StageWall.h"
 
 class GameMain :
     public AbstractScene
@@ -9,9 +10,7 @@ class GameMain :
 private:
     Player* player;
     StageFloor* stagefloor;
-
-    bool collisionFlg;      //デバッグ用
-
+    StageWall* staegwall;
 public:
 
     //コンストラクタ

@@ -5,9 +5,13 @@
 #include"Title.h"
 #include"GameMain.h"
 #include"Define.h"
+#include"StageFloor.h"
 
 
 #define FRAMERATE 60.0 //フレームレート
+
+#define SCREEN_WIDTH 900	//画面サイズ
+#define SCREEN_HEIGHT 674
 
 /***********************************************
  * プログラムの開始

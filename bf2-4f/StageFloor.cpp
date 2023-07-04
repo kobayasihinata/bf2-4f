@@ -4,7 +4,7 @@
 StageFloor::StageFloor()
 {
 	location.x = 225;
-	location.y = 300;
+	location.y = 200;
 	area.height = 20;
 	area.width = 200;
 }
