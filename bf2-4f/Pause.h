@@ -1,21 +1,19 @@
 #pragma once
 #include "AbstractScene.h"
 
-class Title :
+class Pause :
     public AbstractScene
 {
 private:
-    int titlelogo;
-    int titlecredit;
-    int titlemodeselect;
+
 
 public:
 
     //コンストラクタ
-    Title();
+    Pause();
 
     //デストラクタ
-    ~Title() final;
+    ~Pause() final;
 
     //描画以外の更新を実行
     AbstractScene* Update() override;
