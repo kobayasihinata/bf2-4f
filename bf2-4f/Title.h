@@ -8,6 +8,7 @@ private:
     int titlelogo;
     int titlecredit;
     int titlemodeselect;
+    int titlecursor[4];
 
 public:
 
