@@ -7,10 +7,10 @@ void UI::Init() {
 
 int UI::Score()
 {
-	if () {
+	//if () {
 
 		return 1;
-	}
+	//}
 }
 
 void UI::DrawScore()

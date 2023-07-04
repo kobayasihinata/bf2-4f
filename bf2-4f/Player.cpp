@@ -19,8 +19,8 @@ Player::Player()
 	player_state = IDOL;
 	location.x = 0;
 	location.y = 0;
-	area.height = PLAYER_SIZE;
-	area.width = PLAYER_SIZE;
+	area.height = PLAYER_HEIGHT;
+	area.width = PLAYER_WIDTH;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -213,13 +213,13 @@ void Player::Update()
 	location.y = location.y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
-	if (location.x < 0 - PLAYER_SIZE)
+	if (location.x < 0 - PLAYER_WIDTH)
 	{
-		location.x = SCREEN_WIDTH + PLAYER_SIZE;
+		location.x = SCREEN_WIDTH + PLAYER_WIDTH;
 	}
-	if (location.x > SCREEN_WIDTH + PLAYER_SIZE)
+	if (location.x > SCREEN_WIDTH + PLAYER_WIDTH)
 	{
-		location.x = 0 - PLAYER_SIZE;
+		location.x = 0 - PLAYER_WIDTH;
 	}
 
 	//画面上に当たると跳ね返る
@@ -252,11 +252,12 @@ void Player::Update()
 		respawn_flg = false;
 	}
 
-}
-
 void Player::Draw()const
 {
-	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
+	//プレイヤーの描画
+	DrawBox(location.x, location.y+PLAYER_BALOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+	//プレイヤーの風船の描画(仮)
+	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALOON_HEIGHT, 0x00ff00, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
 	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
 	DrawFormatString(0, 60, 0x00ff00, "%d", life);
