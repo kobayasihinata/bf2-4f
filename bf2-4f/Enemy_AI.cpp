@@ -17,7 +17,7 @@ Enemy_AI::~Enemy_AI()
 }
 void Enemy_AI::Update()
 {
-    // プレイヤーがどの位置にいるか(x座標)
+    // プレイヤーがどの方向にいるか(x座標)
 	if (E_x > P_x) {
 		pattern += 0;
 	}
@@ -26,7 +26,7 @@ void Enemy_AI::Update()
 		pattern += 1;
 	}
 
-	// プレイヤーがどの位置にいるか(y座標)
+	// プレイヤーがどの方向にいるか(y座標)
 	if (E_y >= P_y) {
 		pattern += 0;
 	}
