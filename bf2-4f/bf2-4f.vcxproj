@@ -154,6 +154,7 @@
     <ClCompile Include="AbstractScene.cpp" />
     <ClCompile Include="Collider\BoxCollider.cpp" />
     <ClCompile Include="Collider\ColliderBase.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy_AI.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Area.h" />
     <ClInclude Include="Collider\BoxCollider.h" />
     <ClInclude Include="Collider\ColliderBase.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy_AI.h" />
     <ClInclude Include="E_Collider.h" />
     <ClInclude Include="Location.h" />

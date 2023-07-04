@@ -19,8 +19,8 @@ Player::Player()
 	player_state = IDOL;
 	location.x = 0;
 	location.y = 0;
-	area.height = PLAYER_SIZE;
-	area.width = PLAYER_SIZE;
+	area.height = PLAYER_HEIGHT;
+	area.width = PLAYER_WIDTH;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -220,13 +220,13 @@ void Player::Update()
 	location.y = location.y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
-	if (location.x < 0 - PLAYER_SIZE)
+	if (location.x < 0 - PLAYER_WIDTH)
 	{
-		location.x = SCREEN_WIDTH + PLAYER_SIZE;
+		location.x = SCREEN_WIDTH + PLAYER_WIDTH;
 	}
-	if (location.x > SCREEN_WIDTH + PLAYER_SIZE)
+	if (location.x > SCREEN_WIDTH + PLAYER_WIDTH)
 	{
-		location.x = 0 - PLAYER_SIZE;
+		location.x = 0 - PLAYER_WIDTH;
 	}
 
 	//画面上に当たると跳ね返る
@@ -244,42 +244,14 @@ void Player::Update()
 	{
 		frame = 0;
 	}
-
-	//左から右反射実験
-	if ((location.x < b_x2) && (location.x + PLAYER_SIZE > b_x1) && (location.y < b_y2) && (location.y + PLAYER_SIZE > b_y1))
-	{
-		if (ref_once1 == FALSE)
-		{
-			ReflectionMX();
-			ref_once1 = TRUE;
-		}
-	}
-	else
-	{
-		ref_once1 = FALSE;
-	}
-	//右から左反射実験
-	if ((location.x < b_x4) && (location.x + PLAYER_SIZE > b_x3) && (location.y < b_y4) && (location.y + PLAYER_SIZE > b_y3))
-	{
-		land_acs_left = 0;
-		if (ref_once2 == FALSE)
-		{
-			ReflectionPX();
-			ref_once2 = TRUE;
-		}
-	}
-	else
-	{
-		ref_once2 = FALSE;
-	}
-
 }
 
 void Player::Draw()const
 {
-	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
-	DrawBox(b_x1, b_y1, b_x2, b_y2, 0xffff00, TRUE);
-	DrawBox(b_x3, b_y3, b_x4, b_y4, 0xff00ff, TRUE);
+	//プレイヤーの描画
+	DrawBox(location.x, location.y+PLAYER_BALOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+	//プレイヤーの風船の描画(仮)
+	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALOON_HEIGHT, 0x00ff00, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
 
 }
