@@ -47,7 +47,7 @@ Player::~Player()
 void Player::Update()
 {
 	//落下(床と触れていない事を検知する)
-	if (onfloor_flg!=true)
+	if (onfloor_flg != true)
 	{
 		player_state = FLY_RIGHT;
 
@@ -65,12 +65,12 @@ void Player::Update()
 	}
 
 	//右入力を検知
-	if (PAD_INPUT::GetLStick().ThumbX>10000 || CheckHitKey(KEY_INPUT_D))
+	if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (location.y < SEA_SURFACE)
-		{		
+		if (onfloor_flg != true)
+		{
 			player_state = FLY_RIGHT;
 			if (acs_right < MAX_SPEED)
 			{
@@ -80,7 +80,7 @@ void Player::Update()
 		}
 		//地面と接しているなら
 		else
-		{			
+		{
 			player_state = WALK_RIGHT;
 			if (land_acs_right < MAX_SPEED_LAND)
 			{
@@ -95,7 +95,7 @@ void Player::Update()
 		{
 			if (frame % 10 == 0)
 			{
-			acs_right--;
+				acs_right--;
 			}
 		}
 		if (land_acs_right > 0)
@@ -109,10 +109,10 @@ void Player::Update()
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (location.y < SEA_SURFACE)
+		if (onfloor_flg != true)
 		{
 			player_state = FLY_LEFT;
-			if (acs_left < MAX_SPEED) 
+			if (acs_left < MAX_SPEED)
 			{
 				acs_left += 2;
 			}
@@ -126,7 +126,7 @@ void Player::Update()
 				land_acs_left++;
 			}
 		}
-	
+
 	}
 	else
 	{
@@ -144,7 +144,7 @@ void Player::Update()
 	}
 
 	//ジャンプ
-	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B)||CheckHitKey(KEY_INPUT_SPACE))
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
 	{
 		if (acs_right > 0)
 		{
@@ -183,7 +183,7 @@ void Player::Update()
 				}
 			}
 		}
-		
+
 	}
 	else
 	{
@@ -210,7 +210,7 @@ void Player::Update()
 
 	//移動
 	location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-	location.y = location.y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+	location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
 	if (location.x < 0 - PLAYER_WIDTH)
@@ -251,6 +251,7 @@ void Player::Update()
 		location.y = 350;
 		respawn_flg = false;
 	}
+}
 
 void Player::Draw()const
 {
