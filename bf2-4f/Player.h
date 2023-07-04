@@ -25,6 +25,7 @@ private:
     int jump_combo;  //連打数
     int frame;      //フレーム計測用
     float ref_y;      //反発用変数（ｙ）
+    int balloon;         //残り風船
     int life;         //残機
     bool onfloor_flg;   //StageFloorの上かどうか
     bool ref_once1;
@@ -61,4 +62,5 @@ public:
 
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
+
 };
