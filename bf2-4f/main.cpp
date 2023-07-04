@@ -10,9 +10,6 @@
 
 #define FRAMERATE 60.0 //フレームレート
 
-#define SCREEN_WIDTH 900	//画面サイズ
-#define SCREEN_HEIGHT 674
-
 /***********************************************
  * プログラムの開始
  ***********************************************/
@@ -33,8 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	try
 	{
-		sceneMng = new SceneManager((AbstractScene*)new GameMain());
-
+		sceneMng = new SceneManager((AbstractScene*)new Title());
 	}
 	catch (const char* err)
 	{

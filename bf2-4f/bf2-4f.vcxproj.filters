@@ -57,6 +57,12 @@
     <ClCompile Include="Pause.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h">
@@ -107,6 +113,12 @@
     <ClInclude Include="Stage.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\stages\stage1.png">
@@ -124,8 +136,14 @@
     <Image Include="images\stages\stage5.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <ClInclude Include="Pause.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
+    <Image Include="images\Title\Title_Credit.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\Title\Title_Logo.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="images\Title\Title_ModeSelect.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

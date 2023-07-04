@@ -1,10 +1,19 @@
 #pragma once
 #include "AbstractScene.h"
 
-class Stage : public AbstractScene
+class Stage : 
+	public AbstractScene
 {
 private:
-	int stageimage;
+	int stagefloor;
+	int landleft;
+	int landright;
+	int sea;
+	int footing1;
+	int footing2;
+	int footing3;
+	int footing4;
+	int footing5;
 
 
 public:
