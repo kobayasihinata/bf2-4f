@@ -3,12 +3,16 @@
 
 Title::Title()
 {
-
+	titlelogo = LoadGraph("images/Title/Title_Logo.png");
+	titlecredit = LoadGraph("images/Title/Title_Credit.png");
+	titlemodeselect = LoadGraph("images/Title/Title_ModeSelect.png");
 }
 
 Title::~Title()
 {
-
+	DeleteGraph(titlelogo);
+	DeleteGraph(titlecredit);
+	DeleteGraph(titlemodeselect);
 }
 
 AbstractScene* Title::Update()
@@ -19,6 +23,7 @@ AbstractScene* Title::Update()
 
 void Title::Draw()const
 {
-	DrawString(0, 0, "ƒ^ƒCƒgƒ‹", 0xff0000);
-	
+	DrawGraph(45, 10, titlelogo, TRUE);
+	DrawGraph(165, 270, titlemodeselect, TRUE);
+	DrawGraph(189, 430, titlecredit, TRUE);
 }
