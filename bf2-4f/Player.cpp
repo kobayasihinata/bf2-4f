@@ -256,9 +256,9 @@ void Player::Update()
 void Player::Draw()const
 {
 	//プレイヤーの描画
-	DrawBox(location.x, location.y+PLAYER_BALOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+	DrawBox(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
 	//プレイヤーの風船の描画(仮)
-	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALOON_HEIGHT, 0x00ff00, TRUE);
+	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
 	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
 	DrawFormatString(0, 60, 0x00ff00, "%d", life);

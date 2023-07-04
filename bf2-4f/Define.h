@@ -8,5 +8,5 @@
 #define PLAYER_HEIGHT 60
 #define PLAYER_WIDTH  40
 
-#define PLAYER_BALOON_HEIGHT  30	//プレイヤーの風船の高さ
+#define PLAYER_BALLOON_HEIGHT  30	//プレイヤーの風船の高さ
 
