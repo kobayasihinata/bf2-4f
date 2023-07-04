@@ -2,12 +2,14 @@
 #include "GameMain.h"
 #include"Title.h"
 
+int GameMain::BGM;
 
 GameMain::GameMain()
 {
 	player = new Player();
 	stagefloor = new StageFloor();
 	staegwall = new StageWall();
+	BGM = LoadSoundMem("BGM/Trip.wav");
 }
 
 GameMain::~GameMain()

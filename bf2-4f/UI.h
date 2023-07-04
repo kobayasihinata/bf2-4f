@@ -6,8 +6,9 @@ public:
 
 public:
 	void Init();
-	int Score();				//スコア計算
-	void DrawScore();			//スコア表示
+	int Score();		    //スコア計算
+	void DrawScore();	    //スコア表示
+	int LoadImages(void);   //画像読込処理
 
 	void AddScore(int point) { gScore += point; }
 	int GetScore() { return gScore; }

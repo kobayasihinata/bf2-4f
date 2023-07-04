@@ -11,6 +11,7 @@ private:
     Player* player;
     StageFloor* stagefloor;
     StageWall* staegwall;
+    static int BGM;
 public:
 
     //コンストラクタ
