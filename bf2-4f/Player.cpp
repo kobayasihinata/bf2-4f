@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "PadInput.h"
 
-#define FLOOR 400 //床（仮）
+#define SEA_SURFACE 450 //海面（仮）
 
 #define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
 #define MAX_SPEED_LAND 50	//最高速度と最低速度の差を調整する用（地面）
@@ -33,6 +33,7 @@ Player::Player()
 	ref_y = 0;
 	life = 2;
 	onfloor_flg = false;
+	respawn_flg = false;
 
 	ref_once1 = FALSE;
 	ref_once2 = FALSE;
@@ -68,7 +69,7 @@ void Player::Update()
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (location.y < FLOOR)
+		if (location.y < SEA_SURFACE)
 		{		
 			player_state = FLY_RIGHT;
 			if (acs_right < MAX_SPEED)
@@ -108,7 +109,7 @@ void Player::Update()
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (location.y < FLOOR)
+		if (location.y < SEA_SURFACE)
 		{
 			player_state = FLY_LEFT;
 			if (acs_left < MAX_SPEED) 
@@ -236,6 +237,21 @@ void Player::Update()
 	{
 		frame = 0;
 	}
+
+	//プレイヤーが海面より下へ行くと残機 -1
+	if (location.y > SEA_SURFACE)
+	{
+		life = life - 1;
+		respawn_flg = true;
+	}
+	//リスポーンする
+	if (respawn_flg == true)
+	{
+		location.x = 300;
+		location.y = 350;
+		respawn_flg = false;
+	}
+
 }
 
 void Player::Draw()const
@@ -243,6 +259,7 @@ void Player::Draw()const
 	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
 	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
+	DrawFormatString(0, 60, 0x00ff00, "%d", life);
 
 }
 
@@ -347,12 +364,6 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 	{
 		onfloor_flg = false;
 	}
-
-	if (my_y[0] > FLOOR)
-	{
-		life--;
-	}
-
 }
 
 void Player::OnFloor()

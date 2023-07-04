@@ -29,6 +29,7 @@ private:
     bool onfloor_flg;   //StageFloorの上かどうか
     bool ref_once1;
     bool ref_once2;
+    bool respawn_flg;
 public:
 
     //コンストラクタ
@@ -43,6 +44,7 @@ public:
     //描画に関することを実装
     void Draw() const;
 
+    //ステージのオブジェクトとの当たり判定
     void HitStageCollision(const BoxCollider* box_collider);
 
     //床に着地する
@@ -56,4 +58,7 @@ public:
 
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
+
+    //プレイヤーの残機を取得する
+    int GetPlayerLife() { return life; }
 };
