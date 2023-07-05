@@ -36,6 +36,7 @@ private:
     bool respawn_flg;
 
     int player_image[30];   //プレイヤー画像
+    int player_anim;    //プレイヤーアニメーション用
 public:
 
     //コンストラクタ
