@@ -15,8 +15,8 @@ class Player :public BoxCollider
 {
 private:
     PLAYER_STATE player_state;
-    int acs_left;   //左加速度
-    int acs_right;  //右加速度
+    float acs_left;   //左加速度
+    float acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
     int land_acs_left;  //左加速度(地面にいるとき)
@@ -25,12 +25,13 @@ private:
     int jump_combo;  //連打数
     int frame;      //フレーム計測用
     float ref_y;      //反発用変数（ｙ）
-    int balloon;         //残り風船
-    int life;         //残機
+    int balloon;        //残り風船
+    int life;           //残機
     bool onfloor_flg;   //StageFloorの上かどうか
+    bool onshare_flg;   //StageFloorの上ということを共有するかどうか
     bool ref_once1;
     bool ref_once2;
-    bool respawn_flg;
+    bool respawn_flg;   //リスポーンするかどうか
 public:
 
     //コンストラクタ
@@ -45,8 +46,11 @@ public:
     //描画に関することを実装
     void Draw() const;
 
-    //ステージのオブジェクトとの当たり判定
+    //ステージのオブジェクトとの当たり判定処理
     void HitStageCollision(const BoxCollider* box_collider);
+
+    //床の上かどうか判定
+    bool IsOnFloor(const BoxCollider* box_collider)const;
 
     //床に着地する
     void OnFloor();
@@ -63,4 +67,14 @@ public:
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
 
+    //onshare_flgの値を設定する
+    void SetOnShareFlg(const bool flg) 
+    { 
+        onshare_flg = flg; 
+        //onshare_flgがtrueならonfloor_flgもtrueになる
+        if (onshare_flg == true)
+        {
+            onfloor_flg = true;
+        }
+    }
 };

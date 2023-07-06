@@ -9,8 +9,11 @@ class GameMain :
 {
 private:
     Player* player;
-    StageFloor* stagefloor;
+    StageFloor* stagefloor[3];
     StageWall* staegwall;
+
+    int seaImage;
+
 public:
 
     //コンストラクタ

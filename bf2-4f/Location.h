@@ -1,6 +1,6 @@
 #pragma once
 
-typedef struct Location
+struct Location
 {
 	float x;
 	float y;
