@@ -158,6 +158,7 @@
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PadInput.cpp" />
+    <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="StageFloor.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Location.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="PadInput.h" />
+    <ClInclude Include="Pause.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="StageFloor.h" />

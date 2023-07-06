@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "PadInput.h"
 
-#define FLOOR 400 //床（仮）
+#define SEA_SURFACE 450 //海面（仮）
 
 #define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
 #define MAX_SPEED_LAND 50	//最高速度と最低速度の差を調整する用（地面）
@@ -19,8 +19,8 @@ Player::Player()
 	player_state = IDOL;
 	location.x = 0;
 	location.y = 0;
-	area.height = PLAYER_SIZE;
-	area.width = PLAYER_SIZE;
+	area.height = PLAYER_HEIGHT;
+	area.width = PLAYER_WIDTH;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -32,16 +32,9 @@ Player::Player()
 	frame = 0;
 	ref_y = 0;
 	life = 2;
+	onfloor_flg = false;
+	respawn_flg = false;
 
-	b_x1 = 300;
-	b_y1 = 300;
-	b_x2 = 301;
-	b_y2 = 480;
-
-	b_x3 = 400;
-	b_y3 = 300;
-	b_x4 = 401;
-	b_y4 = 480;
 	ref_once1 = FALSE;
 	ref_once2 = FALSE;
 }
@@ -54,7 +47,7 @@ Player::~Player()
 void Player::Update()
 {
 	//落下(床と触れていない事を検知する)
-	if (location.y < FLOOR)
+	if (onfloor_flg != true)
 	{
 		player_state = FLY_RIGHT;
 
@@ -72,12 +65,12 @@ void Player::Update()
 	}
 
 	//右入力を検知
-	if (PAD_INPUT::GetLStick().ThumbX>10000 || CheckHitKey(KEY_INPUT_D))
+	if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (location.y < FLOOR)
-		{		
+		if (onfloor_flg != true)
+		{
 			player_state = FLY_RIGHT;
 			if (acs_right < MAX_SPEED)
 			{
@@ -87,7 +80,7 @@ void Player::Update()
 		}
 		//地面と接しているなら
 		else
-		{			
+		{
 			player_state = WALK_RIGHT;
 			if (land_acs_right < MAX_SPEED_LAND)
 			{
@@ -102,7 +95,7 @@ void Player::Update()
 		{
 			if (frame % 10 == 0)
 			{
-			acs_right--;
+				acs_right--;
 			}
 		}
 		if (land_acs_right > 0)
@@ -116,10 +109,10 @@ void Player::Update()
 	{
 		//浮いているなら加速処理＆浮いていないなら慣性なし移動
 		//(ここで地面との当たり判定を取得してきてstateを変える)
-		if (location.y < FLOOR)
+		if (onfloor_flg != true)
 		{
 			player_state = FLY_LEFT;
-			if (acs_left < MAX_SPEED) 
+			if (acs_left < MAX_SPEED)
 			{
 				acs_left += 2;
 			}
@@ -133,7 +126,7 @@ void Player::Update()
 				land_acs_left++;
 			}
 		}
-	
+
 	}
 	else
 	{
@@ -151,7 +144,7 @@ void Player::Update()
 	}
 
 	//ジャンプ
-	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B)||CheckHitKey(KEY_INPUT_SPACE))
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
 	{
 		if (acs_right > 0)
 		{
@@ -190,7 +183,7 @@ void Player::Update()
 				}
 			}
 		}
-		
+
 	}
 	else
 	{
@@ -217,16 +210,16 @@ void Player::Update()
 
 	//移動
 	location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-	location.y = location.y - (acs_up* RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+	location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
 
 	//画面端に行くとテレポート
-	if (location.x < 0 - PLAYER_SIZE)
+	if (location.x < 0 - PLAYER_WIDTH)
 	{
-		location.x = SCREEN_WIDTH + PLAYER_SIZE;
+		location.x = SCREEN_WIDTH + PLAYER_WIDTH;
 	}
-	if (location.x > SCREEN_WIDTH + PLAYER_SIZE)
+	if (location.x > SCREEN_WIDTH + PLAYER_WIDTH)
 	{
-		location.x = 0 - PLAYER_SIZE;
+		location.x = 0 - PLAYER_WIDTH;
 	}
 
 	//画面上に当たると跳ね返る
@@ -245,42 +238,30 @@ void Player::Update()
 		frame = 0;
 	}
 
-	//左から右反射実験
-	if ((location.x < b_x2) && (location.x + PLAYER_SIZE > b_x1) && (location.y < b_y2) && (location.y + PLAYER_SIZE > b_y1))
+	//プレイヤーが海面より下へ行くと残機 -1
+	if (location.y > SEA_SURFACE)
 	{
-		if (ref_once1 == FALSE)
-		{
-			ReflectionMX();
-			ref_once1 = TRUE;
-		}
+		life = life - 1;
+		respawn_flg = true;
 	}
-	else
+	//リスポーンする
+	if (respawn_flg == true)
 	{
-		ref_once1 = FALSE;
+		location.x = 300;
+		location.y = 350;
+		respawn_flg = false;
 	}
-	//右から左反射実験
-	if ((location.x < b_x4) && (location.x + PLAYER_SIZE > b_x3) && (location.y < b_y4) && (location.y + PLAYER_SIZE > b_y3))
-	{
-		land_acs_left = 0;
-		if (ref_once2 == FALSE)
-		{
-			ReflectionPX();
-			ref_once2 = TRUE;
-		}
-	}
-	else
-	{
-		ref_once2 = FALSE;
-	}
-
 }
 
 void Player::Draw()const
 {
-	DrawBox(location.x, location.y, location.x + PLAYER_SIZE, location.y + PLAYER_SIZE, 0xff0000, TRUE);
-	DrawBox(b_x1, b_y1, b_x2, b_y2, 0xffff00, TRUE);
-	DrawBox(b_x3, b_y3, b_x4, b_y4, 0xff00ff, TRUE);
+	//プレイヤーの描画
+	DrawBox(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+	//プレイヤーの風船の描画(仮)
+	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%d", player_state);
+	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
+	DrawFormatString(0, 60, 0x00ff00, "%d", life);
 
 }
 
@@ -311,34 +292,35 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 		sub_x[0] + 5 < my_x[1])
 	{
 		//PlayerがStageFloorより下へ行こうとした場合
-		if (my_y[1] > sub_y[0] - 1 &&
+		if (my_y[1] > sub_y[0] &&
 			my_y[0] < sub_y[0])
 		{
 			//StageFloorより下には行けないようにする
-			location.y = sub_y[0] - area.height - 1;
+			location.y = sub_y[0] - area.height;
 		}
 
 		//PlayerがStageFloorより上へ行こうとした場合
-		if (my_y[0] < sub_y[1] + 2 &&
+		if (my_y[0] < sub_y[1] &&
 			my_y[1] > sub_y[1])
 		{
 			//StageFloorより上には行けないようにする
-			location.y = sub_y[1] + 2;
+			location.y = sub_y[1];
 			//跳ね返る
 			ref_y = acs_up * 0.05;
 			acs_up -= 200;
 		}
 	}
+	
 	//StaegFloorの縦の範囲内
 	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
 		//PlayerがStageFloorより右へ行こうとした場合
-		if (my_x[1] > sub_x[0] - 1 &&
+		if (my_x[1] > sub_x[0] &&
 			my_x[0] < sub_x[0])
 		{
 			//StageFloorより右には行けないようにする
-			location.x = sub_x[0] - area.width - 1;
+			location.x = sub_x[0] - area.width;
 			//1回だけ左へ跳ね返る
 			if (ref_once1 == FALSE)
 			{
@@ -352,11 +334,11 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			ref_once1 = FALSE;
 		}
 		//PlayerがStageFloorより左へ行こうとした場合
-		if (my_x[0] < sub_x[1] + 1 &&
+		if (my_x[0] < sub_x[1] &&
 			my_x[1]>sub_x[1])
 		{
 			//StageFloorより左には行けないようにする
-			location.x = sub_x[1] + 1;
+			location.x = sub_x[1];
 			//1回だけ右へ跳ね返る
 			if (ref_once2 == FALSE)
 			{
@@ -371,11 +353,19 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 		}
 
 	}
-	if (my_y[0] < FLOOR)
-	{
-		life--;
-	}
 
+	//onfloor_flgの判定
+	if (my_x[0] < sub_x[1] &&
+		sub_x[0] < my_x[1] &&
+		my_y[1] > sub_y[0] - 1 &&	//-1はStaegFloorより下へ行けない処理に対する調整
+		my_y[0] < sub_y[0])
+	{
+		onfloor_flg = true;
+	}
+	else
+	{
+		onfloor_flg = false;
+	}
 }
 
 void Player::OnFloor()

@@ -1,5 +1,6 @@
 #include "Dxlib.h"
 #include "GameMain.h"
+#include"Title.h"
 
 
 GameMain::GameMain()
@@ -18,9 +19,12 @@ GameMain::~GameMain()
 
 AbstractScene* GameMain::Update()
 {
-	player->HitStageCollision(stagefloor);
 	player->HitStageCollision(staegwall);
+	player->HitStageCollision(stagefloor);
 	player->Update();
+	if (player->GetPlayerLife() < 0) {
+		return new Title();
+	}
 	return this;
 }
 

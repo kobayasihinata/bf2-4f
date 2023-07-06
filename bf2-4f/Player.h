@@ -25,14 +25,12 @@ private:
     int jump_combo;  //連打数
     int frame;      //フレーム計測用
     float ref_y;      //反発用変数（ｙ）
+    int balloon;         //残り風船
     int life;         //残機
-
-    //反射実験用
-    int b_x1, b_y1, b_x2, b_y2;
-    int b_x3, b_y3, b_x4, b_y4;
-    int b_x5, b_y5, b_x6, b_y6;
+    bool onfloor_flg;   //StageFloorの上かどうか
     bool ref_once1;
     bool ref_once2;
+    bool respawn_flg;
 public:
 
     //コンストラクタ
@@ -47,6 +45,7 @@ public:
     //描画に関することを実装
     void Draw() const;
 
+    //ステージのオブジェクトとの当たり判定
     void HitStageCollision(const BoxCollider* box_collider);
 
     //床に着地する
@@ -60,4 +59,8 @@ public:
 
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
+
+    //プレイヤーの残機を取得する
+    int GetPlayerLife() { return life; }
+
 };

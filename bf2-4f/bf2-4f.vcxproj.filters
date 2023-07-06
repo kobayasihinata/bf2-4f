@@ -12,6 +12,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="StageFloor.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Pause.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
@@ -28,5 +29,6 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="StageFloor.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Pause.h" />
   </ItemGroup>
 </Project>
