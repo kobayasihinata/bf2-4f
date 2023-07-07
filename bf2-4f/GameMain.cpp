@@ -1,6 +1,7 @@
 #include "Dxlib.h"
 #include "GameMain.h"
 #include"Title.h"
+#include"PadInput.h"
 
 
 GameMain::GameMain()
@@ -11,6 +12,8 @@ GameMain::GameMain()
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
 	staegwall = new StageWall();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
+
+	Pouse = false;
 }
 
 GameMain::~GameMain()
@@ -25,36 +28,43 @@ GameMain::~GameMain()
 
 AbstractScene* GameMain::Update()
 {
-	//stagefloorの範囲だけループする
-	for (BoxCollider* stagefloor : stagefloor)
-	{
-		//各オブジェクトとの当たり判定処理
-		player->HitStageCollision(stagefloor);
-		//どのオブジェクトとも着地していない場合
-		if (player->IsOnFloor(stagefloor) != true) {
-			//onshare_flgをfalseにする
-			player->SetOnShareFlg(false);
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+		Pouse = !Pouse;
+	}
+	if (Pouse == false) {
+		//stagefloorの範囲だけループする
+		for (BoxCollider* stagefloor : stagefloor)
+		{
+			//各オブジェクトとの当たり判定処理
+			player->HitStageCollision(stagefloor);
+			//どのオブジェクトとも着地していない場合
+			if (player->IsOnFloor(stagefloor) != true) {
+				//onshare_flgをfalseにする
+				player->SetOnShareFlg(false);
+			}
 		}
-	}
-	//各オブジェクトのいずれかに着地している場合
-	if (player->IsOnFloor(stagefloor[0]) == true ||
-		player->IsOnFloor(stagefloor[1]) == true ||
-		player->IsOnFloor(stagefloor[2]) == true)
-	{
-		//onshare_flgをtrueにする
-		player->SetOnShareFlg(true);
-	}
-	player->Update();
-	//プレイヤーの残機が0より小さい場合タイトルに戻る
-	if (player->GetPlayerLife() < 0) {
-		return new Title();
+		//各オブジェクトのいずれかに着地している場合
+		if (player->IsOnFloor(stagefloor[0]) == true ||
+			player->IsOnFloor(stagefloor[1]) == true ||
+			player->IsOnFloor(stagefloor[2]) == true)
+		{
+			//onshare_flgをtrueにする
+			player->SetOnShareFlg(true);
+		}
+		player->Update();
+		//プレイヤーの残機が0より小さい場合タイトルに戻る
+		if (player->GetPlayerLife() < 0) {
+			return new Title();
+		}
 	}
 	return this;
 }
 
 void GameMain::Draw()const
 {
-	player->Draw();
+	if (Pouse == false) {
+		player->Draw();
+	}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();

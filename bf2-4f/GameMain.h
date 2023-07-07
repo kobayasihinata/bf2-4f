@@ -13,6 +13,7 @@ private:
     StageWall* staegwall;
 
     int seaImage;
+    bool Pouse;
 
 public:
 
