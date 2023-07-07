@@ -13,6 +13,10 @@
     <ClCompile Include="StageFloor.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="StageWall.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
@@ -30,5 +34,9 @@
     <ClInclude Include="StageFloor.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Stage.h" />
+    <ClInclude Include="StageWall.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
 </Project>

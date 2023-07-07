@@ -1,5 +1,6 @@
 #include "Dxlib.h"
 #include "Pause.h"
+#include"PadInput.h"
 
 Pouse::Pouse()
 {
@@ -11,16 +12,29 @@ Pouse::~Pouse()
 
 }
 
-AbstractScene* Pouse::Update()
+void Pouse::Update()
 {
-	
+	//ポーズフラグ切り替え処理
+	if (DrawMenu == true) {
 
-	return this;
+	}
+	
 }
 
 void Pouse::Draw()const
 {
 	if (DrawMenu == true) {
-		DrawString(0, 0, "ポーズ", 0xff0000);
+		DrawString(100, 100, "pouse now", 0xffffff);
 	}
+	
 }
+bool Pouse::PouseMenu() {
+	if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+		DrawMenu = !DrawMenu;
+	}
+	if (!DrawMenu) {
+		Update();
+	}
+	return DrawMenu;
+}
+

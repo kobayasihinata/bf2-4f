@@ -1,7 +1,7 @@
 #pragma once
 #include"AbstractScene.h"
-class Pouse :
-    public AbstractScene
+
+class Pouse 
 {
 private:
     bool DrawMenu;
@@ -11,11 +11,15 @@ public:
     Pouse();
 
     //デストラクタ
-    ~Pouse() ;
+    ~Pouse();
 
     //描画以外の更新を実行
-    AbstractScene* Update() override;
+    void Update();
 
     //描画に関することを実装
-    void Draw() const override;
+    void Draw() const ;
+
+    bool PouseMenu();
+
+    void NowPouse();
 };

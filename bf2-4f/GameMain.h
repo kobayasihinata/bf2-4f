@@ -3,6 +3,7 @@
 #include "Player.h"
 #include"StageFloor.h"
 #include"StageWall.h"
+#include"Pause.h"
 
 class GameMain :
     public AbstractScene
@@ -11,6 +12,7 @@ private:
     Player* player;
     StageFloor* stagefloor;
     StageWall* staegwall;
+    bool Pouse;
 public:
 
     //コンストラクタ

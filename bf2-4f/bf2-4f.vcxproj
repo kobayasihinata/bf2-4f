@@ -154,6 +154,7 @@
     <ClCompile Include="AbstractScene.cpp" />
     <ClCompile Include="Collider\BoxCollider.cpp" />
     <ClCompile Include="Collider\ColliderBase.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy_AI.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,8 +162,11 @@
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StageFloor.cpp" />
+    <ClCompile Include="StageWall.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
@@ -170,6 +174,7 @@
     <ClInclude Include="Area.h" />
     <ClInclude Include="Collider\BoxCollider.h" />
     <ClInclude Include="Collider\ColliderBase.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy_AI.h" />
     <ClInclude Include="E_Collider.h" />
     <ClInclude Include="Location.h" />
@@ -178,8 +183,11 @@
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="StageFloor.h" />
+    <ClInclude Include="StageWall.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
