@@ -3,16 +3,17 @@
 #include "Player.h"
 #include"StageFloor.h"
 #include"StageWall.h"
-#include"Pause.h"
 
 class GameMain :
     public AbstractScene
 {
 private:
     Player* player;
-    StageFloor* stagefloor;
+    StageFloor* stagefloor[3];
     StageWall* staegwall;
-    bool Pouse;
+
+    int seaImage;
+
 public:
 
     //コンストラクタ

@@ -2,17 +2,17 @@
 #include "Player.h"
 #include "PadInput.h"
 
-#define SEA_SURFACE 450 //海面（仮）
+#define SEA_SURFACE 470 //海面（仮）
 
 #define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
 #define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）
 #define MAX_JUMP 10			//最大連打数
 #define JUMP_INTERVAL 40	//ジャンプボタン連打間隔
-#define FALL_SPPED 0.002	//最高落下速度
-#define MOVE_SPPED 0.005	//最高上昇速度
-#define RISE_SPPED 0.01		//最高上昇速度
+#define FALL_SPPED 0.002f	//最高落下速度
+#define MOVE_SPPED 0.005f	//最高上昇速度
+#define RISE_SPPED 0.01f	//最高上昇速度
 
-#define LAND_SPEED 0.01	//最高移動速度（地面）
+#define LAND_SPEED 0.01f	//最高移動速度（地面）
 
 Player::Player()
 {
@@ -35,6 +35,7 @@ Player::Player()
 	life = 2;
 	death_flg = false;
 	onfloor_flg = false;
+	onshare_flg = false;
 
 	ref_once1 = FALSE;
 	ref_once2 = FALSE;
@@ -78,12 +79,11 @@ void Player::Update()
 			acs_right += land_acs_right;
 			land_acs_left = 0;
 			land_acs_right = 0;
-
-			onfloor_flg = FALSE;
+			onfloor_flg = false;
 		}
 		else
 		{
-			onfloor_flg = TRUE;
+			onfloor_flg = true;
 			OnFloor();
 		}
 
@@ -315,12 +315,13 @@ void Player::Update()
 void Player::Draw()const
 {
 	//プレイヤーの描画
-	DrawBox(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+	DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
 	//プレイヤーの風船の描画(仮)
 	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
 	DrawFormatString(0, 20, 0x00ff00, "%f", acs_down);
 	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
 	DrawFormatString(0, 60, 0x00ff00, "%d", life);
+	DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 
 	switch (player_state)
 	{
@@ -358,12 +359,12 @@ void Player::Draw()const
 void Player::HitStageCollision(const BoxCollider* box_collider)
 {
 	//自分の当たり判定の範囲
-	float my_x[2];
-	float my_y[2];
+	float my_x[2]{ 0,0 };
+	float my_y[2]{ 0,0 };
 
 	//相手の当たり判定の範囲
-	float sub_x[2];
-	float sub_y[2];
+	float sub_x[2]{ 0,0 };
+	float sub_y[2]{ 0,0 };
 
 	//自分の当たり判定の範囲の計算
 	my_x[0] = location.x;
@@ -396,14 +397,13 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			//StageFloorより上には行けないようにする
 			location.y = sub_y[1];
 			//跳ね返る
-			ref_y = acs_up * 0.05;
-			acs_up -= 200;
+			ReflectionPY();
 		}
 	}
-	
+
 	//StaegFloorの縦の範囲内
-	if (my_y[0] < sub_y[1] - 5 &&
-		sub_y[0] + 5 < my_y[1])
+	if (my_y[0] < sub_y[1] &&
+		sub_y[0] < my_y[1])
 	{
 		//PlayerがStageFloorより右へ行こうとした場合
 		if (my_x[1] > sub_x[0] &&
@@ -414,8 +414,8 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			//1回だけ左へ跳ね返る
 			if (ref_once1 == FALSE)
 			{
-				acs_left = acs_right * 0.8;
-				acs_right = 0;
+				//跳ね返る
+				ReflectionMX();
 				ref_once1 = TRUE;
 			}		
 		}
@@ -432,8 +432,8 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			//1回だけ右へ跳ね返る
 			if (ref_once2 == FALSE)
 			{
-				acs_right = acs_left * 0.8;
-				acs_left = 0;
+				//跳ね返る
+				ReflectionPX();
 				ref_once2 = TRUE;
 			}
 		}
@@ -447,7 +447,7 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 	//onfloor_flgの判定
 	if (my_x[0] < sub_x[1] &&
 		sub_x[0] < my_x[1] &&
-		my_y[1] > sub_y[0] - 1 &&	//-1はStaegFloorより下へ行けない処理に対する調整
+		my_y[1] > sub_y[0] - 2 &&	//-２はStaegFloorより下へ行けない処理に対する調整
 		my_y[0] < sub_y[0])
 	{
 		onfloor_flg = true;
@@ -456,6 +456,44 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 	{
 		onfloor_flg = false;
 	}
+}
+
+bool Player::IsOnFloor(const BoxCollider* box_collider)const
+{
+	bool ret = false;
+
+	//自分の当たり判定の範囲
+	float my_x[2]{ 0,0 };
+	float my_y[2]{ 0,0 };
+
+	//相手の当たり判定の範囲
+	float sub_x[2]{ 0,0 };
+	float sub_y[2]{ 0,0 };
+
+	//自分の当たり判定の範囲の計算
+	my_x[0] = location.x;
+	my_y[0] = location.y;
+	my_x[1] = my_x[0] + area.width;
+	my_y[1] = my_y[0] + area.height;
+
+	//相手の当たり判定の範囲の計算
+	sub_x[0] = box_collider->GetLocation().x;
+	sub_y[0] = box_collider->GetLocation().y;
+	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
+	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
+
+	//StageFloorの横の範囲内
+	if (my_x[0] < sub_x[1] &&
+		sub_x[0] < my_x[1])
+	{
+		//PlayerがStageFloorより下へ行こうとした場合
+		if (my_y[1] > sub_y[0] - 2 &&
+			my_y[0] < sub_y[0])
+		{
+			ret = true;
+		}
+	}
+	return ret;
 }
 
 void Player::OnFloor()
@@ -497,20 +535,20 @@ void Player::OnFloor()
 void Player::ReflectionMX()
 {
 	land_acs_right = 0;
-	acs_left = acs_right * 0.8;
+	acs_left = acs_right * 0.8f;
 	acs_right = 0;
 }
 
 void Player::ReflectionPX()
 {
 	land_acs_left = 0;
-	acs_right = acs_left * 0.8;
+	acs_right = acs_left * 0.8f;
 	acs_left = 0;
 }
 
 void Player::ReflectionPY()
 {
-	ref_y = acs_up * 0.05;
+	ref_y = acs_up * 0.05f;
 	acs_up -= 200;
 }
 
