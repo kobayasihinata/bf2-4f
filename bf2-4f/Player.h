@@ -39,7 +39,7 @@ private:
     int balloon;        //残り風船
     int life;            //残機
     bool death_flg;      //死亡しているか判断
-
+    bool respawn_flg;   //リスポーン後の無敵中か判断
     float ref_y;      //反発用変数（ｙ）
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか

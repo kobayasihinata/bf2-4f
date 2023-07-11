@@ -36,6 +36,7 @@ AbstractScene* GameMain::Update()
 		//stagefloorの範囲だけループする
 		for (BoxCollider* stagefloor : stagefloor)
 		{
+			//プレイヤーが死亡中でないなら
 			if (player->GetPlayerDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
