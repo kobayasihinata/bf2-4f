@@ -27,6 +27,7 @@ Player::Player()
 	land_acs_right = 0;
 	jump_int = 0;
 	jump_combo = 0;
+	jump_cd = 0;
 	frame = 0;
 	ref_y = 0;
 	balloon = 2;
@@ -176,8 +177,8 @@ void Player::Update()
 			player_state = TURN_RIGHT;
 		}
 
-		//ジャンプ
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
+		//ジャンプ（長押し）
+		if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
 		{
 			if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 			{
@@ -218,7 +219,7 @@ void Player::Update()
 				{
 					if (jump_combo == 0)
 					{
-						jump_combo += 5;
+						jump_combo += 5 + balloon;
 					}
 					jump_combo+=2;
 				}
@@ -226,7 +227,104 @@ void Player::Update()
 			}
 
 		}
-		else
+		//ジャンプ（連打）
+		else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
+		{
+
+			if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+			{
+				if (acs_left < MAX_SPEED)
+				{
+					acs_left += 1;
+				}
+				if (acs_right > 0)
+				{
+					if (frame % 3 == 0)
+					{
+						acs_right--;
+					}
+				}
+			}
+
+			if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+			{
+				if (acs_right < MAX_SPEED)
+				{
+					acs_right += 1;
+				}
+				if (acs_left > 0)
+				{
+					if (frame % 3 == 0)
+					{
+						acs_left--;
+					}
+				}
+			}
+
+			if (jump_int == 0)
+			{
+				anim_boost = 30;
+				jump_int = JUMP_INTERVAL/4;
+				jump_cd = 20;
+				//Aを押せば押すほど上加速度が上がる
+				if (jump_combo < MAX_JUMP)
+				{
+					if (jump_combo == 0)
+					{
+						jump_combo += 5 + balloon;
+					}
+					jump_combo += 2;
+				}
+				acs_up += jump_combo * 3 + balloon;
+			}
+		}
+		//連打中に上昇値が減らないようにする
+		else if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
+		{
+			if (--jump_cd <= 0)
+			{
+				jump_cd = 0;
+				anim_boost = 0;
+				if (acs_up > 0)
+				{
+					acs_up--;
+				}
+			}
+			else
+			{
+				if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+				{
+					if (acs_left < MAX_SPEED)
+					{
+						acs_left += 1;
+					}
+					if (acs_right > 0)
+					{
+						if (frame % 3 == 0)
+						{
+							acs_right--;
+						}
+					}
+				}
+
+				if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+				{
+					if (acs_right < MAX_SPEED)
+					{
+						acs_right += 1;
+					}
+					if (acs_left > 0)
+					{
+						if (frame % 3 == 0)
+						{
+							acs_left--;
+						}
+					}
+				}
+			}
+		}
+
+		else 
 		{
 			anim_boost = 0;
 			if (acs_up > 0)
@@ -255,6 +353,7 @@ void Player::Update()
 		{
 			last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
 		}
+
 		//移動
 		location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
 		location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;

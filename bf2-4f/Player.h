@@ -32,6 +32,7 @@ private:
 
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
+    int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
 
     int frame;      //フレーム計測用
 
@@ -86,6 +87,9 @@ public:
 
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
+
+    //プレイヤーが死んでいる途中かを取得する
+    int GetPlayerDeathFlg() { return death_flg; }
 
     //プレイヤーリスポーン
     void PlayerRespawn(int x,int y);
