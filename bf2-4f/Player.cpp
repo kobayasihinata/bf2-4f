@@ -220,7 +220,7 @@ void Player::Update()
 					{
 						jump_combo += 5;
 					}
-					jump_combo++;
+					jump_combo+=2;
 				}
 				acs_up += jump_combo * 3 + balloon;
 			}
@@ -262,11 +262,11 @@ void Player::Update()
 		//画面端に行くとテレポート
 		if (location.x < 0 - PLAYER_WIDTH)
 		{
-			location.x = SCREEN_WIDTH + PLAYER_WIDTH;
+			location.x = SCREEN_WIDTH;
 		}
-		if (location.x > SCREEN_WIDTH + PLAYER_WIDTH)
+		if (location.x > SCREEN_WIDTH)
 		{
-			location.x = 0 - PLAYER_WIDTH;
+			location.x = 0 - PLAYER_WIDTH+2;
 		}
 
 		//画面上に当たると跳ね返る
@@ -306,7 +306,7 @@ void Player::Update()
 	if (location.y > SEA_SURFACE)
 	{
 		life = life - 1;
-		PlayerRespawn(300, 350);
+		PlayerRespawn(100, 350);
 	}
 }
 
