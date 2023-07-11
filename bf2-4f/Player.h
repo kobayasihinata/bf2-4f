@@ -16,7 +16,8 @@ enum PLAYER_STATE
      FLY_LEFT,
      FLY_RIGHT,
      DEATH,
-     THUNDER_DEATH
+     THUNDER_DEATH,
+     INVINCIBLE
 };
 class Player :public BoxCollider
 {
@@ -39,7 +40,8 @@ private:
     int balloon;        //残り風船
     int life;            //残機
     bool death_flg;      //死亡しているか判断
-    bool respawn_flg;   //リスポーン後の無敵中か判断
+    int  death_acs;      //死亡中の落ち方制御
+    int respawn;   //リスポーン後の無敵中か判断
     float ref_y;      //反発用変数（ｙ）
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
@@ -51,7 +53,7 @@ private:
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
-    bool last_input;    //移動方向保存用(0=左　1=右)
+    bool last_input;    //入力方向保存用(0=左　1=右)
 
 public:
 
@@ -87,6 +89,9 @@ public:
 
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
+
+    //プレイヤーが無敵中か取得する
+    int GetPlayerRespawn() { return respawn; }
 
     //プレイヤーが死んでいる途中かを取得する
     int GetPlayerDeathFlg() { return death_flg; }

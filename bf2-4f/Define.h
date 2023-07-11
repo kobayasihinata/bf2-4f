@@ -10,4 +10,7 @@
 
 #define PLAYER_BALLOON_HEIGHT  25	//プレイヤーの風船の高さ
 
+#define PLAYER_RESPAWN_POS_X 100	//プレイヤーのリスポーン位置(X)
+#define PLAYER_RESPAWN_POS_Y 369	//プレイヤーのリスポーン位置(Y)
+
 #define SEA_SURFACE 470 //海面（仮）
