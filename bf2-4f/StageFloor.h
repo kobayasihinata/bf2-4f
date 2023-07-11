@@ -4,7 +4,7 @@ class StageFloor :
     public BoxCollider
 {
 private:
-    int margin;        //‰æ‘œ’²®
+    int shift;        //‰æ‘œ’²®
 
     int landleft;
     int landright;

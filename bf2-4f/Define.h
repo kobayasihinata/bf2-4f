@@ -10,3 +10,4 @@
 
 #define PLAYER_BALLOON_HEIGHT  25	//プレイヤーの風船の高さ
 
+#define SEA_SURFACE 470 //海面（仮）

@@ -11,6 +11,7 @@ GameMain::GameMain()
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
 	staegwall = new StageWall();
+	fish = new Fish();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	Pouse = false;
@@ -52,6 +53,7 @@ AbstractScene* GameMain::Update()
 			player->SetOnShareFlg(true);
 		}
 		player->Update();
+		fish->Update(player);
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
 		if (player->GetPlayerLife() < 0) {
 			return new Title();
@@ -75,4 +77,5 @@ void GameMain::Draw()const
 	}
 	DrawString(0, 0, "ゲームメイン", 0xff0000);
 	DrawGraph(159, 444, seaImage, TRUE);
+	fish->Draw();
 }

@@ -3,6 +3,7 @@
 #include "Player.h"
 #include"StageFloor.h"
 #include"StageWall.h"
+#include"Fish.h"
 
 class GameMain :
     public AbstractScene
@@ -11,6 +12,7 @@ private:
     Player* player;
     StageFloor* stagefloor[3];
     StageWall* staegwall;
+    Fish* fish;
 
     int seaImage;
     bool Pouse;

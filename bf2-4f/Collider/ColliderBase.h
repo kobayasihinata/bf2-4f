@@ -12,6 +12,7 @@ public:
 	ColliderBase(Location location = { 100,100 })
 	{
 		this->location = location;
+		colliderType = E_Collider::Null;
 	}
 
 protected:
