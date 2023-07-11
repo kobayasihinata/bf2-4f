@@ -1,13 +1,13 @@
 #include "StageFloor.h"
 #include"DxLib.h"
 
-StageFloor::StageFloor(int x, int y, int height, int width,int margin)
+StageFloor::StageFloor(int x, int y, int height, int width,int shift)
 {
 	location.x = (float)x;
-	location.y = (float)y + margin;
+	location.y = (float)y + shift;
 	area.height = (float)height;
 	area.width = (float)width;
-	this->margin = margin;
+	this->shift = shift;
 
 	landleft = LoadGraph("images/Stage/Stage_Land_Left01.png");
 	landright = LoadGraph("images/Stage/Stage_Land_Right01.png");
@@ -43,17 +43,17 @@ void StageFloor::Draw()const
 
 void StageFloor::DrawLandLeft()
 {
-	DrawGraphF(location.x, location.y - margin, landleft, TRUE);
+	DrawGraphF(location.x, location.y - shift, landleft, TRUE);
 }
 
 void StageFloor::DrawLandRight()
 {
-	DrawGraphF(location.x, location.y - margin, landright, TRUE);
+	DrawGraphF(location.x, location.y - shift, landright, TRUE);
 }
 
 void StageFloor::DrawFooting1()
 {
-	DrawGraphF(location.x, location.y - margin, footing1, TRUE);
+	DrawGraphF(location.x, location.y - shift, footing1, TRUE);
 }
 
 void StageFloor::DrawFooting2()

@@ -2,8 +2,6 @@
 #include "Player.h"
 #include "PadInput.h"
 
-#define SEA_SURFACE 470 //海面（仮）
-
 #define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
 #define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）
 #define MAX_JUMP 10			//最大連打数
