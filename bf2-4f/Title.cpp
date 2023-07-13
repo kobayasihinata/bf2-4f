@@ -54,5 +54,4 @@ void Title::Draw()const
 	DrawGraph(45, 10, titlelogo, TRUE);
 	DrawGraph(165, 270, titlemodeselect, TRUE);
 	DrawGraph(189, 430, titlecredit, TRUE);
-	DrawFormatString(100, 300, 0xffffff, "%d", select);
 }
