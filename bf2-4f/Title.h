@@ -18,7 +18,6 @@ private:
     int interval;
 
     int JoyPadY;
-    int interval;
     int select;
 public:
 
