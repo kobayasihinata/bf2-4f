@@ -28,23 +28,17 @@ AbstractScene* Title::Update()
 		interval++;
 	}
 
-	if (PAD_INPUT::GetLStick().ThumbY <= -32767 * 0.25 && interval >= 30||CheckHitKey(KEY_INPUT_S))
-	{
+	if (PAD_INPUT::GetLStick().ThumbY > MARGIN || CheckHitKey(KEY_INPUT_W) && interval >= 30) {
+		cursor_num--;
+		interval = 0;
+	}
+	else if (PAD_INPUT::GetLStick().ThumbY < -MARGIN || CheckHitKey(KEY_INPUT_S) && interval >= 30) {
 		cursor_num++;
-		if (cursor_num > 2) {
-			cursor_num = 0;
-		}
 		interval = 0;
 	}
 
-	if (PAD_INPUT::GetLStick().ThumbY >= 32767 * 0.25 && interval > 30 || CheckHitKey(KEY_INPUT_W))
-	{
-		cursor_num--;
-		if (cursor_num < 0) {
-			cursor_num = 2;
-		}
-		interval = 0;
-	}
+	if (cursor_num < 0)cursor_num = 2;
+	if (cursor_num > 2)cursor_num = 0;
 
 	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_A) || CheckHitKey(KEY_INPUT_SPACE))
 	{
@@ -60,4 +54,5 @@ void Title::Draw()const
 	DrawGraph(TITLEMODESELECT_X, TITLEMODESELECT_Y, titlemodeselect, TRUE);
 	DrawGraph(189, 430, titlecredit, TRUE);
 	DrawGraph(TITLEMODESELECT_X - 50, TITLEMODESELECT_Y - 20 + cursor_y, titlecursor[1], TRUE);
+	DrawFormatString(100, 100, 0xffffff, "%d", PAD_INPUT::GetLStick().ThumbY);
 }

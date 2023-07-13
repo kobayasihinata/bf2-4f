@@ -16,10 +16,6 @@ private:
     int cursor_y;
     int cursor_num;
     int interval;
-
-    int JoyPadY;
-    int interval;
-    int select;
 public:
 
     //コンストラクタ
