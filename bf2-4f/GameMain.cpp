@@ -36,8 +36,12 @@ AbstractScene* GameMain::Update()
 		//stagefloorの範囲だけループする
 		for (BoxCollider* stagefloor : stagefloor)
 		{
-			//各オブジェクトとの当たり判定処理
-			player->HitStageCollision(stagefloor);
+			//プレイヤーが死亡中でないなら
+			if (player->GetPlayerDeathFlg() == false)
+			{
+				//各オブジェクトとの当たり判定処理
+				player->HitStageCollision(stagefloor);
+			}
 			//どのオブジェクトとも着地していない場合
 			if (player->IsOnFloor(stagefloor) != true) {
 				//onshare_flgをfalseにする
