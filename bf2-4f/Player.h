@@ -45,8 +45,8 @@ private:
     float ref_y;      //反発用変数（ｙ）
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
-    bool ref_once1;
-    bool ref_once2;
+    bool ref_once_left;
+    bool ref_once_right;
 
     int player_image[30];   //プレイヤー画像
     int player_anim;    //プレイヤーアニメーション用
