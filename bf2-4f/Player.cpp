@@ -39,8 +39,8 @@ Player::Player()
 	onfloor_flg = false;
 	onshare_flg = false;
 
-	ref_once1 = FALSE;
-	ref_once2 = FALSE;
+	ref_once_left = FALSE;
+	ref_once_right = FALSE;
 
 	LoadDivGraph("images/Player/Player_Animation.png", 30, 8, 4, 64, 64, player_image);
 	player_anim = 0;
@@ -439,8 +439,8 @@ void Player::Draw()const
 	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
 	////プレイヤーの風船当たり判定の描画(仮)
 	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
-	//DrawFormatString(0, 20, 0x00ff00, "%f", acs_down);
-	//DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
+	DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
+	DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 	
@@ -540,16 +540,16 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			//StageFloorより右には行けないようにする
 			location.x = sub_x[0] - area.width;
 			//1回だけ左へ跳ね返る
-			if (ref_once1 == FALSE)
+			if (ref_once_left == FALSE)
 			{
 				//跳ね返る
 				ReflectionMX();
-				ref_once1 = TRUE;
+				ref_once_left = TRUE;
 			}		
 		}
 		else
 		{
-			ref_once1 = FALSE;
+			ref_once_left = FALSE;
 		}
 		//PlayerがStageFloorより左へ行こうとした場合
 		if (my_x[0] < sub_x[1] &&
@@ -558,16 +558,16 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			//StageFloorより左には行けないようにする
 			location.x = sub_x[1];
 			//1回だけ右へ跳ね返る
-			if (ref_once2 == FALSE)
+			if (ref_once_right == FALSE)
 			{
 				//跳ね返る
 				ReflectionPX();
-				ref_once2 = TRUE;
+				ref_once_right = TRUE;
 			}
 		}
 		else
 		{
-			ref_once2 = FALSE;
+			ref_once_right = FALSE;
 		}
 
 	}
@@ -642,7 +642,7 @@ void Player::OnFloor()
 	if (acs_left > 0)
 	{
 		player_state = WALK_LEFT;
-		acs_left--;
+		acs_left-=2;
 	}
 	else
 	{
@@ -651,7 +651,7 @@ void Player::OnFloor()
 	if (acs_right > 0)
 	{
 		player_state = WALK_RIGHT;
-		acs_right--;
+		acs_right-=2;
 	}
 	else
 	{
@@ -676,8 +676,8 @@ void Player::ReflectionPX()
 
 void Player::ReflectionPY()
 {
-	ref_y = acs_up * 0.05f;
-	acs_up -= 200;
+	ref_y = acs_up * 0.01f;
+	acs_up -= 150;
 }
 
 void Player::PlayerRespawn(float x, float y)
