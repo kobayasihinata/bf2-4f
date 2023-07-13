@@ -28,11 +28,11 @@ AbstractScene* Title::Update()
 		interval++;
 	}
 
-	if (PAD_INPUT::GetLStick().ThumbY > MARGIN || CheckHitKey(KEY_INPUT_W) && interval >= 30) {
+	if ((PAD_INPUT::GetLStick().ThumbY > MARGIN || CheckHitKey(KEY_INPUT_W)) && interval >= 30) {
 		cursor_num--;
 		interval = 0;
 	}
-	else if (PAD_INPUT::GetLStick().ThumbY < -MARGIN || CheckHitKey(KEY_INPUT_S) && interval >= 30) {
+	else if ((PAD_INPUT::GetLStick().ThumbY < -MARGIN || CheckHitKey(KEY_INPUT_S)) && interval >= 30) {
 		cursor_num++;
 		interval = 0;
 	}
@@ -54,5 +54,4 @@ void Title::Draw()const
 	DrawGraph(TITLEMODESELECT_X, TITLEMODESELECT_Y, titlemodeselect, TRUE);
 	DrawGraph(189, 430, titlecredit, TRUE);
 	DrawGraph(TITLEMODESELECT_X - 50, TITLEMODESELECT_Y - 20 + cursor_y, titlecursor[1], TRUE);
-	DrawFormatString(100, 100, 0xffffff, "%d", PAD_INPUT::GetLStick().ThumbY);
 }
