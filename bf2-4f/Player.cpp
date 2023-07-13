@@ -15,8 +15,8 @@
 Player::Player()
 {
 	player_state = IDOL_RIGHT;
-	location.x = 0;
-	location.y = 0;
+	location.x = 300;
+	location.y = 350;
 	area.height = PLAYER_HEIGHT;
 	area.width = PLAYER_WIDTH;
 	acs_left = 0;
@@ -32,6 +32,7 @@ Player::Player()
 	balloon = 2;
 	life = 2;
 	death_flg = false;
+	Show_flg = true;
 	onfloor_flg = false;
 	onshare_flg = false;
 
@@ -53,257 +54,261 @@ Player::~Player()
 
 void Player::Update()
 {
+	
 	if (death_flg == false)
 	{
-
-		//落下(床と触れていない事を検知する)
-		if (onfloor_flg != true)
+		if (Show_flg == true)
 		{
-			if (last_input == 0)
-			{
-				player_state = FLY_LEFT;
-			}
-			else
-			{
-				player_state = FLY_RIGHT;
-			}
-
-			//落下し続ける程下に加速
-			if (acs_down < MAX_SPEED)
-			{
-				acs_down += (3 - balloon);
-			}
-			acs_left += land_acs_left;
-			acs_right += land_acs_right;
-			land_acs_left = 0;
-			land_acs_right = 0;
-			onfloor_flg = false;
-		}
-		else
-		{
-			onfloor_flg = true;
-			OnFloor();
-		}
-
-		//右入力を検知
-		if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
-		{
-			//浮いているなら加速処理＆浮いていないなら慣性なし移動
-			//(ここで地面との当たり判定を取得してきてstateを変える)
+			//落下(床と触れていない事を検知する)
 			if (onfloor_flg != true)
 			{
-				last_input = 1;
-				if (acs_right < MAX_SPEED)
+				if (last_input == 0)
 				{
-					acs_right += 2;
+					player_state = FLY_LEFT;
+				}
+				else
+				{
+					player_state = FLY_RIGHT;
 				}
 
-			}
-			//地面と接しているなら
-			else
-			{
-				player_state = WALK_RIGHT;
-				if (land_acs_right < MAX_SPEED_LAND)
+				//落下し続ける程下に加速
+				if (acs_down < MAX_SPEED)
 				{
-					land_acs_right++;
+					acs_down += (3 - balloon);
 				}
-			}
-
-		}
-		else
-		{
-			if (acs_right > 0)
-			{
-				if (frame % 10 == 0)
-				{
-					acs_right--;
-				}
-			}
-			if (land_acs_right > 0)
-			{
-				player_state = WALK_RIGHT;
-				land_acs_right--;
-			}
-		}
-
-		//左入力を検知
-		if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
-		{
-			//浮いているなら加速処理＆浮いていないなら慣性なし移動
-			//(ここで地面との当たり判定を取得してきてstateを変える)
-			if (onfloor_flg != true)
-			{
-				last_input = 0;
-				if (acs_left < MAX_SPEED)
-				{
-					acs_left += 2;
-				}
-
+				acs_left += land_acs_left;
+				acs_right += land_acs_right;
+				land_acs_left = 0;
+				land_acs_right = 0;
+				onfloor_flg = false;
 			}
 			else
 			{
-				player_state = WALK_LEFT;
-				if (land_acs_left < MAX_SPEED_LAND)
-				{
-					land_acs_left++;
-				}
+				onfloor_flg = true;
+				OnFloor();
 			}
 
-		}
-		else
-		{
-			if (acs_left > 0)
+			//右入力を検知
+			if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
 			{
-				if (frame % 10 == 0)
+				//浮いているなら加速処理＆浮いていないなら慣性なし移動
+				//(ここで地面との当たり判定を取得してきてstateを変える)
+				if (onfloor_flg != true)
 				{
-					acs_left--;
+					last_input = 1;
+					if (acs_right < MAX_SPEED)
+					{
+						acs_right += 2;
+					}
+
 				}
-			}
-			if (land_acs_left > 0)
-			{
-				player_state = WALK_LEFT;
-				land_acs_left--;
-			}
-		}
-
-		//急転回判断
-		if ((PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
-		{
-			player_state = TURN_LEFT;
-		}
-		if ((PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
-		{
-			player_state = TURN_RIGHT;
-		}
-
-		//ジャンプ
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
-		{
-			if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
-			{
-				if (acs_left < MAX_SPEED)
+				//地面と接しているなら
+				else
 				{
-					acs_left += 1;
+					player_state = WALK_RIGHT;
+					if (land_acs_right < MAX_SPEED_LAND)
+					{
+						land_acs_right++;
+					}
 				}
+
+			}
+			else
+			{
 				if (acs_right > 0)
 				{
-					if (frame % 3 == 0)
+					if (frame % 10 == 0)
 					{
 						acs_right--;
 					}
 				}
-			}
-			if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
-			{
-				if (acs_right < MAX_SPEED)
+				if (land_acs_right > 0)
 				{
-					acs_right += 1;
+					player_state = WALK_RIGHT;
+					land_acs_right--;
 				}
+			}
+
+			//左入力を検知
+			if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+			{
+				//浮いているなら加速処理＆浮いていないなら慣性なし移動
+				//(ここで地面との当たり判定を取得してきてstateを変える)
+				if (onfloor_flg != true)
+				{
+					last_input = 0;
+					if (acs_left < MAX_SPEED)
+					{
+						acs_left += 2;
+					}
+
+				}
+				else
+				{
+					player_state = WALK_LEFT;
+					if (land_acs_left < MAX_SPEED_LAND)
+					{
+						land_acs_left++;
+					}
+				}
+
+			}
+			else
+			{
 				if (acs_left > 0)
 				{
-					if (frame % 3 == 0)
+					if (frame % 10 == 0)
 					{
 						acs_left--;
 					}
 				}
-			}
-
-
-			if (jump_int == 0)
-			{
-				anim_boost = 30;
-				jump_int = JUMP_INTERVAL;
-				//Aを押せば押すほど上加速度が上がる
-				if (jump_combo < MAX_JUMP)
+				if (land_acs_left > 0)
 				{
-					if (jump_combo == 0)
-					{
-						jump_combo += 5;
-					}
-					jump_combo++;
+					player_state = WALK_LEFT;
+					land_acs_left--;
 				}
-				acs_up += jump_combo * 3 + balloon;
 			}
 
-		}
-		else
-		{
-			anim_boost = 0;
-			if (acs_up > 0)
+			//急転回判断
+			if ((PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
 			{
-				acs_up--;
+				player_state = TURN_LEFT;
 			}
-		}
-
-		//ジャンプ連打数を減らす
-		if (jump_combo > 0)
-		{
-			if (frame % 120 == 0)
+			if ((PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
 			{
-				jump_combo--;
+				player_state = TURN_RIGHT;
 			}
-		}
 
-		//ジャンプ間隔管理
-		if (jump_int > 0)
-		{
-			jump_int--;
-		}
-
-		//移動距離を保存
-		if ((acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED) != 0)
-		{
-			last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-		}
-		//移動
-		location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-		location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
-
-		//画面端に行くとテレポート
-		if (location.x < 0 - PLAYER_WIDTH)
-		{
-			location.x = SCREEN_WIDTH + PLAYER_WIDTH;
-		}
-		if (location.x > SCREEN_WIDTH + PLAYER_WIDTH)
-		{
-			location.x = 0 - PLAYER_WIDTH;
-		}
-
-		//画面上に当たると跳ね返る
-		if (location.y < 0)
-		{
-			ReflectionPY();
-		}
-		if (ref_y > 0)
-		{
-			ref_y--;
-		}
-
-		//フレームを計測する(10秒ごとにリセット)
-		if (++frame > 600)
-		{
-			frame = 0;
-		}
-
-		//アニメーション
-		if (frame % (45 - anim_boost) == 0)
-		{
-			player_anim++;
-			if (player_anim > 3)
+			//ジャンプ
+			if (PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
 			{
-				player_anim = 0;
-			}
-		}
+				if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+				{
+					if (acs_left < MAX_SPEED)
+					{
+						acs_left += 1;
+					}
+					if (acs_right > 0)
+					{
+						if (frame % 3 == 0)
+						{
+							acs_right--;
+						}
+					}
+				}
+				if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+				{
+					if (acs_right < MAX_SPEED)
+					{
+						acs_right += 1;
+					}
+					if (acs_left > 0)
+					{
+						if (frame % 3 == 0)
+						{
+							acs_left--;
+						}
+					}
+				}
 
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))BalloonDec();
+
+				if (jump_int == 0)
+				{
+					anim_boost = 30;
+					jump_int = JUMP_INTERVAL;
+					//Aを押せば押すほど上加速度が上がる
+					if (jump_combo < MAX_JUMP)
+					{
+						if (jump_combo == 0)
+						{
+							jump_combo += 5;
+						}
+						jump_combo++;
+					}
+					acs_up += jump_combo * 3 + balloon;
+				}
+
+			}
+			else
+			{
+				anim_boost = 0;
+				if (acs_up > 0)
+				{
+					acs_up--;
+				}
+			}
+
+			//ジャンプ連打数を減らす
+			if (jump_combo > 0)
+			{
+				if (frame % 120 == 0)
+				{
+					jump_combo--;
+				}
+			}
+
+			//ジャンプ間隔管理
+			if (jump_int > 0)
+			{
+				jump_int--;
+			}
+
+			//移動距離を保存
+			if ((acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED) != 0)
+			{
+				last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+			}
+			//移動
+			location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+			location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+
+			//画面端に行くとテレポート
+			if (location.x < 0 - PLAYER_WIDTH)
+			{
+				location.x = SCREEN_WIDTH + PLAYER_WIDTH;
+			}
+			if (location.x > SCREEN_WIDTH + PLAYER_WIDTH)
+			{
+				location.x = 0 - PLAYER_WIDTH;
+			}
+
+			//画面上に当たると跳ね返る
+			if (location.y < 0)
+			{
+				ReflectionPY();
+			}
+			if (ref_y > 0)
+			{
+				ref_y--;
+			}
+
+			//フレームを計測する(10秒ごとにリセット)
+			if (++frame > 600)
+			{
+				frame = 0;
+			}
+
+			//アニメーション
+			if (frame % (45 - anim_boost) == 0)
+			{
+				player_anim++;
+				if (player_anim > 3)
+				{
+					player_anim = 0;
+				}
+			}
+
+			if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))BalloonDec();
+		}
 	}
 	//死亡中の演出
 	else
 	{
 		location.y++;
 	}
+	
 	//プレイヤーが海面より下へ行くと残機 -1
-	if (location.y > SEA_SURFACE)
+	if (location.y > UNDER_WATER && Show_flg == true)
 	{
 		life = life - 1;
 		PlayerRespawn(300, 350);
@@ -312,46 +317,48 @@ void Player::Update()
 
 void Player::Draw()const
 {
-	//プレイヤーの描画
-	DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
-	//プレイヤーの風船の描画(仮)
-	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
-	DrawFormatString(0, 20, 0x00ff00, "%f", acs_down);
-	DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
-	DrawFormatString(0, 60, 0x00ff00, "%d", life);
-	DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
-
-	switch (player_state)
+	if (Show_flg == true)
 	{
-	case IDOL_RIGHT:
-		DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4) ], TRUE);
-		break;
-	case IDOL_LEFT:
-		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
-		break;
-	case WALK_LEFT:
-		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
-		break;
-	case TURN_LEFT:
-		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
-		break;
-	case WALK_RIGHT:
-		DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y,player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
-		break;
-	case TURN_RIGHT:
-		DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
-		break;
-	case FLY_LEFT:
-		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
-		break;
-	case FLY_RIGHT:
-		DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
-		break;
-	case DEATH:
-		DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim%3)], TRUE);
-		break;
-	}
+		//プレイヤーの描画
+		DrawBoxAA(location.x, location.y + PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+		//プレイヤーの風船の描画(仮)
+		DrawBoxAA(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
+		DrawFormatString(0, 20, 0x00ff00, "%f", acs_down);
+		DrawFormatString(0, 40, 0x00ff00, "%d", onfloor_flg);
+		DrawFormatString(0, 60, 0x00ff00, "%d", life);
+		DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 
+		switch (player_state)
+		{
+		case IDOL_RIGHT:
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
+			break;
+		case IDOL_LEFT:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
+			break;
+		case WALK_LEFT:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+			break;
+		case TURN_LEFT:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
+			break;
+		case WALK_RIGHT:
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+			break;
+		case TURN_RIGHT:
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
+			break;
+		case FLY_LEFT:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
+			break;
+		case FLY_RIGHT:
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
+			break;
+		case DEATH:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 3)], TRUE);
+			break;
+		}
+	}
 }
 
 void Player::HitStageCollision(const BoxCollider* box_collider)
@@ -550,7 +557,7 @@ void Player::ReflectionPY()
 	acs_up -= 200;
 }
 
-void Player::PlayerRespawn(int x,int y) 
+void Player::PlayerRespawn(float x, float y)
 {
 	player_state = IDOL_RIGHT;
 	location.x = x;
@@ -565,7 +572,8 @@ void Player::PlayerRespawn(int x,int y)
 	jump_combo = 0;
 	ref_y = 0;
 	balloon = 2;
-	death_flg = FALSE;
+	death_flg = false;
+	Show_flg = true;
 }
 
 void Player::BalloonDec()

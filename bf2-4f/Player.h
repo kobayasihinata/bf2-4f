@@ -87,8 +87,11 @@ public:
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
 
+    //プレイヤーの残機を設定する
+    void SetPlayerLife(const int life) { this->life = this->life + life; }
+
     //プレイヤーリスポーン
-    void PlayerRespawn(int x,int y);
+    void PlayerRespawn(float x, float y);
 
     //プレイヤーの風船を減らす
     void BalloonDec();

@@ -54,6 +54,18 @@ AbstractScene* GameMain::Update()
 		}
 		player->Update();
 		fish->Update(player);
+		if (fish->GetIsPreyedOnPlayer() == true)
+		{
+     		player->SetShowFlg(false);
+		}	
+		if (fish->GetRespawnFlg() == true)
+		{
+			player->SetShowFlg(true);
+   			player->SetPlayerLife(-1);
+			player->PlayerRespawn(300, 350);
+			fish->SetRespawnFlg(false);
+		}
+
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
 		if (player->GetPlayerLife() < 0) {
 			return new Title();
@@ -76,6 +88,6 @@ void GameMain::Draw()const
 		stagefloor->Draw();
 	}
 	DrawString(0, 0, "ゲームメイン", 0xff0000);
-	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
+	DrawGraph(159, 444, seaImage, TRUE);
 }
