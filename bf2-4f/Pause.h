@@ -1,17 +1,17 @@
 #pragma once
 #include"AbstractScene.h"
 
-class Pouse 
+class Pause 
 {
 private:
     bool DrawMenu;
 public:
 
     //コンストラクタ
-    Pouse();
+    Pause();
 
     //デストラクタ
-    ~Pouse();
+    ~Pause();
 
     //描画以外の更新を実行
     void Update();
@@ -19,7 +19,7 @@ public:
     //描画に関することを実装
     void Draw() const ;
 
-    bool PouseMenu();
+    bool PauseMenu();
 
-    void NowPouse();
+    void NowPause();
 };

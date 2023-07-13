@@ -2,17 +2,17 @@
 #include "Pause.h"
 #include"PadInput.h"
 
-Pouse::Pouse()
+Pause::Pause()
 {
 	DrawMenu = false;
 }
 
-Pouse::~Pouse()
+Pause::~Pause()
 {
 
 }
 
-void Pouse::Update()
+void Pause::Update()
 {
 	//ポーズフラグ切り替え処理
 	if (DrawMenu == true) {
@@ -21,14 +21,14 @@ void Pouse::Update()
 	
 }
 
-void Pouse::Draw()const
+void Pause::Draw()const
 {
 	if (DrawMenu == true) {
 		DrawString(100, 100, "pouse now", 0xffffff);
 	}
 	
 }
-bool Pouse::PouseMenu() {
+bool Pause::PauseMenu() {
 	if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
 		DrawMenu = !DrawMenu;
 	}
