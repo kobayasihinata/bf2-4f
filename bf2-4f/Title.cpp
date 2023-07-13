@@ -1,15 +1,17 @@
 #include "Dxlib.h"
 #include "Title.h"
-#include "GameMain.h"
-#include "PadInput.h"
+#include"PadInput.h"
+#include"GameMain.h"
 
 Title::Title()
 {
 	titlelogo = LoadGraph("images/Title/Title_Logo.png");
 	titlecredit = LoadGraph("images/Title/Title_Credit.png");
 	titlemodeselect = LoadGraph("images/Title/Title_ModeSelect.png");
-	interval = 75;
-	select = 0;
+	LoadDivGraph("images/Title/Title_CursorAnimation.png", 4, 4, 1, 32, 64, titlecursor);
+	cursor_num = 0;
+	cursor_y = 0;
+	interval = 0;
 }
 
 Title::~Title()
@@ -21,29 +23,32 @@ Title::~Title()
 
 AbstractScene* Title::Update()
 {
-	GetJoypadInputState(DX_INPUT_KEY_PAD1);
-	if (interval < 75)interval++;
-	JoyPadY = PAD_INPUT::GetLStick().ThumbY;
-
-	if (JoyPadY > MARGIN && interval >= 75) {
-		select--;
-		interval = 0;
-	}
-	else if (JoyPadY < -MARGIN && interval >= 75) {
-		select++;
-		interval = 0;
+	cursor_y = cursor_num * 35;
+	if (interval < 30) {
+		interval++;
 	}
 
-	if (select < 0)select = 2;
-	if (select > 2)select = 0;
+	if (PAD_INPUT::GetLStick().ThumbY <= -32767 * 0.25 && interval >= 30||CheckHitKey(KEY_INPUT_S))
+	{
+		cursor_num++;
+		if (cursor_num > 2) {
+			cursor_num = 0;
+		}
+		interval = 0;
+	}
 
-	if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+	if (PAD_INPUT::GetLStick().ThumbY >= 32767 * 0.25 && interval > 30 || CheckHitKey(KEY_INPUT_W))
+	{
+		cursor_num--;
+		if (cursor_num < 0) {
+			cursor_num = 2;
+		}
+		interval = 0;
+	}
 
-		//ŠeƒV[ƒ“
-		if (select == 0) return new GameMain();
-		//if (select == 1) return new Ranking();
-		//if (select == 2) return new End();
-
+	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_A) || CheckHitKey(KEY_INPUT_SPACE))
+	{
+		return new GameMain();
 	}
 
 	return this;
@@ -52,7 +57,7 @@ AbstractScene* Title::Update()
 void Title::Draw()const
 {
 	DrawGraph(45, 10, titlelogo, TRUE);
-	DrawGraph(165, 270, titlemodeselect, TRUE);
+	DrawGraph(TITLEMODESELECT_X, TITLEMODESELECT_Y, titlemodeselect, TRUE);
 	DrawGraph(189, 430, titlecredit, TRUE);
-	DrawFormatString(100, 300, 0xffffff, "%d", select);
+	DrawGraph(TITLEMODESELECT_X - 50, TITLEMODESELECT_Y - 20 + cursor_y, titlecursor[1], TRUE);
 }
