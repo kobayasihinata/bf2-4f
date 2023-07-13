@@ -7,7 +7,7 @@ class BoxCollider :
 {
 protected:
     Area area;
-	bool Show_flg;
+	bool show_flg;
 
 public:
 	BoxCollider(Location location = Location{}, Area area = Area{ 100,100 });
@@ -40,6 +40,6 @@ public:
 		return Location{ location.x + area.width / 2,location.y + area.height / 2 };
 	}
 
-	void SetShowFlg(const bool flg) { Show_flg = flg; }
+	void SetShowFlg(const bool flg) { show_flg = flg; }
 };
 
