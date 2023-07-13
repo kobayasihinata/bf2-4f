@@ -3,7 +3,7 @@
 
 /*
 * コンストラクタ
-* Location ColliderBase 中心座標
+* Location ColliderBase  座標
 * Area		BoxCollider	 範囲
 */
 BoxCollider::BoxCollider(Location location, Area area)
@@ -72,12 +72,11 @@ bool BoxCollider::HitBox(const BoxCollider* box_collider) const
 	{
 		ret = true;
 	}
-
 	return ret;
 }
 
 //-----------------------------------
-// 中心座標の取得
+// 座標の取得
 //-----------------------------------
 Location BoxCollider::GetLocation()const
 {

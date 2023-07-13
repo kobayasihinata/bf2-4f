@@ -15,9 +15,10 @@ public:
 	virtual void Draw()const;
 
 	//BoxCollider‚Æ‚Ì“–‚½‚è”»’è
-	bool HitBox(const class BoxCollider* box_collider) const override;
+	bool HitBox(const BoxCollider* box_collider) const override;
 
-	//’†SÀ•W‚Ìæ“¾
+
+	//À•W‚Ìæ“¾
 	Location GetLocation()const;
 
 	//”ÍˆÍ‚Ìæ“¾
