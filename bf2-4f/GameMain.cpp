@@ -9,7 +9,6 @@ GameMain::GameMain()
 	player = new Player();
 	stagefloor = new StageFloor();
 	staegwall = new StageWall();
-	BGM = LoadSoundMem("BGM/Trip.wav");
 }
 
 GameMain::~GameMain()

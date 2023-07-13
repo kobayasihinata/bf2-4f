@@ -12,6 +12,7 @@ private:
     StageFloor* stagefloor;
     StageWall* staegwall;
     static int BGM;
+    int MainImg;
 public:
 
     //コンストラクタ

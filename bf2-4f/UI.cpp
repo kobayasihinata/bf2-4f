@@ -13,6 +13,11 @@ int UI::Score()
 	}
 }
 
+int UI::LoadImages()
+{
+	UI = LoadGraph("images/UI/UI_Score.png");
+}
+
 void UI::DrawScore()
 {
 	//スコアの表示
