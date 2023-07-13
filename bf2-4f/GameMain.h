@@ -1,6 +1,7 @@
 #pragma once
 #include "AbstractScene.h"
 #include "Player.h"
+#include "Enemy.h"
 #include"StageFloor.h"
 #include"StageWall.h"
 #include"Fish.h"
@@ -10,6 +11,7 @@ class GameMain :
 {
 private:
     Player* player;
+    Enemy* enemy;
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
