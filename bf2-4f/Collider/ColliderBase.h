@@ -12,21 +12,22 @@ public:
 	ColliderBase(Location location = { 100,100 })
 	{
 		this->location = location;
+		colliderType = E_Collider::Null;
 	}
 
 protected:
 
 	E_Collider colliderType;
-	Location location;	//中心座標
+	Location location;	//座標
 
 public:
 
-	//中心座標の取得
+	//座標の取得
 	Location GetLocation()const
 	{
 		return location;
 	}
-	//中心座標の設定
+	//座標の設定
 	virtual void SetLocation(Location location)
 	{
 		this->location = location;

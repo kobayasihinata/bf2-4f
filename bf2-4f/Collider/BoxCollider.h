@@ -7,17 +7,18 @@ class BoxCollider :
 {
 protected:
     Area area;
+	bool show_flg;
 
 public:
 	BoxCollider(Location location = Location{}, Area area = Area{ 100,100 });
 	~BoxCollider();
 
 	virtual void Draw()const;
-
+	
 	//BoxColliderとの当たり判定
-	bool HitBox(const class BoxCollider* box_collider) const override;
+	bool HitBox(const BoxCollider* box_collider) const override;
 
-	//中心座標の取得
+	//座標の取得
 	Location GetLocation()const;
 
 	//範囲の取得
@@ -33,5 +34,12 @@ public:
 	{
 		return Location{ location.x + area.width,location.y + area.height};
 	}
+	//中心座標を取得
+	Location GetCenter()const
+	{
+		return Location{ location.x + area.width / 2,location.y + area.height / 2 };
+	}
+
+	void SetShowFlg(const bool flg) { show_flg = flg; }
 };
 
