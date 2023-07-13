@@ -7,7 +7,7 @@
 GameMain::GameMain()
 {
 	player = new Player();
-	enemy = new Enemy(300,210);
+	enemy = new Enemy(300,210,1);
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);

@@ -2,7 +2,7 @@
 #include "Enemy.h"
 #include "PadInput.h"
 
-Enemy::Enemy(int x,int y)
+Enemy::Enemy(int x,int y,int level)
 {
 	location.x = x;
 	location.y = y;
@@ -17,9 +17,13 @@ Enemy::Enemy(int x,int y)
 	jump_cd = 0;
 	frame = 0;
 	ref_y = 0;
-	balloon = 2;
-	wait_time = 60;
+	balloon = 1;
+	wait_time = 0;
 	charge = 0;
+	enemy_level = level;
+	first_flg = true;
+	levelup_once = false;
+	para_flg = false;
 	death_flg = false;
 	death_acs = 0;
 	show_flg = true;
@@ -28,12 +32,23 @@ Enemy::Enemy(int x,int y)
 	move_right_flg = false;
 	move_left_flg = false;
 	jump_flg = false;
+	ref_once_left = false;
+	ref_once_right = false;
 
-	ref_once_left = FALSE;
-	ref_once_right = FALSE;
-
-	LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+	switch (level)
+	{
+	case 1:
+		LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		break;
+	case 2:
+		LoadDivGraph("images/Enemy/Enemy_G_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		break;
+	case 3:
+		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		break;
+	}
 	enemy_anim = 0;
+	para_anim = 0;
 	anim_boost = 0;
 
 	last_move_x = 1;
@@ -52,171 +67,226 @@ void Enemy::Update()
 {
 	if (show_flg == true)
 	{
-			if (charge < 5)
+		if (--wait_time >= 0)
+		{
+			if (last_input == 0)
 			{
-				enemy_state = CHARGE_LEFT;
-				if (frame % 90 == 0)
-				{
-					charge++;
-				}
+				enemy_state = E_IDOL_LEFT;
 			}
-			//風船を膨らませたなら
 			else
 			{
-				//落下(床と触れていない事を検知する)
-				if (onfloor_flg != true)
+				enemy_state = E_IDOL_RIGHT;
+			}
+		}
+		//風船を膨らませる	
+		else if (charge < 6)
+		{
+			if (last_input == 0)
+			{
+				enemy_state = CHARGE_LEFT;
+			}
+			else
+			{
+				enemy_state = CHARGE_RIGHT;
+			}
+			if (frame % 90 == 0)
+			{
+				charge++;
+			}
+		}
+		//風船を膨らませたなら
+		else
+		{
+			//最初の風船を膨らませる時はレベルを上げないで、２回目以降はレベルを上げる処理
+			if (first_flg == false)
+			{
+				if (levelup_once == false)
 				{
-					if (last_input == 0)
-					{
-						enemy_state = E_FLY_LEFT;
-					}
-					else
-					{
-						enemy_state = E_FLY_RIGHT;
-					}
+					EnemyLevelUp();
+					levelup_once = true;
+				}
+			}
+			else
+			{
+				if (levelup_once == false)
+				{
+					first_flg = false;
+					levelup_once = true;
+				}
+			}
 
-					//落下し続ける程下に加速
-					if (acs_down < MAX_SPEED)
-					{
-						acs_down += (3 - balloon);
-					}
-					onfloor_flg = false;
-				}
-				//床に触れているときの処理
-				else
-				{
-					if (last_input == 0)
-					{
-						enemy_state = E_FLY_LEFT;
-					}
-					else
-					{
-						enemy_state = E_FLY_RIGHT;
-					}
-					onfloor_flg = true;
-					OnFloor();
-				}
-
-				//右入力されている時の処理
-				if (move_right_flg==true)
-				{
-					enemy_state = E_FLY_RIGHT;
-					last_input = 1;
-					if (acs_right < MAX_SPEED)
-					{
-						acs_right += 2;
-					}
-				}
-				//右入力されていない時の処理
-				else
-				{
-					if (acs_right > 0)
-					{
-						if (frame % 10 == 0)
-						{
-							acs_right--;
-						}
-					}
-				}
-				//左入力されている時の処理
-				if (move_left_flg == true)
+			//落下(床と触れていない事を検知する)
+			if (onfloor_flg != true)
+			{
+				if (last_input == 0)
 				{
 					enemy_state = E_FLY_LEFT;
-					last_input = 0;
-					if (acs_left < MAX_SPEED)
-					{
-						acs_left += 2;
-					}
 				}
-				//左入力されていない時の処理
 				else
 				{
-					if (acs_left > 0)
-					{
-						if (frame % 10 == 0)
-						{
-							acs_left--;
-						}
-					}
-				}
-				//ジャンプ入力されている時の処理
-				if (jump_flg == true)
-				{
-					if (jump_int == 0)
-					{
-						anim_boost = 30;
-						jump_int = JUMP_INTERVAL;
-
-						if (jump_combo < MAX_JUMP)
-						{
-							//初速を上げる
-							if (jump_combo == 0)
-							{
-								jump_combo += 5 + balloon;
-							}
-							jump_combo += 2;
-						}
-						acs_up += jump_combo * 3 + balloon;
-					}
-				}
-				//ジャンプ入力されていない時の処理
-				else
-				{
-					anim_boost = 0;
-					if (acs_up > 0)
-					{
-						acs_up--;
-					}
+					enemy_state = E_FLY_RIGHT;
 				}
 
-				//ジャンプ連打数を減らす
-				if (jump_combo > 0)
+				//落下し続ける程下に加速
+				if (acs_down < MAX_SPEED)
 				{
-					if (frame % 120 == 0)
-					{
-						jump_combo--;
-					}
+					acs_down += 1;
 				}
-
-				//ジャンプ間隔管理
-				if (jump_int > 0)
-				{
-					jump_int--;
-				}
-
-				//移動距離を保存
-				if ((acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) != 0)
-				{
-					last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
-				}
-
-				//移動
-				location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
-				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
-
-				//画面端に行くとテレポート
-				if (location.x < 0 - PLAYER_WIDTH)
-				{
-					location.x = SCREEN_WIDTH;
-				}
-				if (location.x > SCREEN_WIDTH)
-				{
-					location.x = 0 - PLAYER_WIDTH + 2;
-				}
-
-				//画面上に当たると跳ね返る
-				if (location.y < 0)
-				{
-					ReflectionPY();
-				}
-				if (ref_y > 0)
-				{
-					ref_y--;
-				}
-
-				if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))BalloonDec();
+				onfloor_flg = false;
 			}
+			//床に触れているときの処理
+			else
+			{
+				if (last_input == 0)
+				{
+					enemy_state = E_FLY_LEFT;
+				}
+				else
+				{
+					enemy_state = E_FLY_RIGHT;
+				}
+				onfloor_flg = true;
+				OnFloor();
+				if (para_flg == true)
+				{
+					EnemyReset();
+				}
+			}
+			//右入力されている時の処理
+			if (move_right_flg == true)
+			{
+				enemy_state = E_FLY_RIGHT;
+				if (para_flg == true)
+				{
+					enemy_state = PARACHUTE_RIGHT;
+				}
+				last_input = 0;
+				if (acs_right < MAX_SPEED)
+				{
+					acs_right += 2;
+				}
+			}
+			//右入力されていない時の処理
+			else
+			{
+				if (acs_right > 0)
+				{
+					if (frame % 10 == 0)
+					{
+						acs_right--;
+					}
+				}
+			}
+			//左入力されている時の処理
+			if (move_left_flg == true)
+			{
+				enemy_state = E_FLY_LEFT;
+				if (para_flg == true)
+				{
+					enemy_state = PARACHUTE_LEFT;
+				}
+				last_input = 1;
+				if (acs_left < MAX_SPEED)
+				{
+					acs_left += 2;
+				}
+			}
+			//左入力されていない時の処理
+			else
+			{
+				if (acs_left > 0)
+				{
+					if (frame % 10 == 0)
+					{
+						acs_left--;
+					}
+				}
+			}
+			//ジャンプ入力されている時の処理
+			if (jump_flg == true && para_flg == false)
+			{
+				if (jump_int == 0)
+				{
+					anim_boost = 30;
+					jump_int = JUMP_INTERVAL;
+
+					if (jump_combo < MAX_JUMP)
+					{
+						//初速を上げる
+						if (jump_combo == 0)
+						{
+							jump_combo += 5 + balloon;
+						}
+						jump_combo += 2;
+					}
+					acs_up += jump_combo * 3 + balloon;
+				}
+			}
+			//ジャンプ入力されていない時の処理
+			else
+			{
+				anim_boost = 0;
+				if (acs_up > 0)
+				{
+					acs_up--;
+				}
+			}
+
+			//ジャンプ連打数を減らす
+			if (jump_combo > 0)
+			{
+				if (frame % 120 == 0)
+				{
+					jump_combo--;
+				}
+			}
+
+			//ジャンプ間隔管理
+			if (jump_int > 0)
+			{
+				jump_int--;
+			}
+
+			//移動
+			location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
+			if (para_flg == false)
+			{
+				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+			}
+			else
+			{
+				location.y += 0.2f;
+			}
+
+			//画面端に行くとテレポート
+			if (location.x < 0 - PLAYER_WIDTH)
+			{
+				location.x = SCREEN_WIDTH;
+			}
+			if (location.x > SCREEN_WIDTH)
+			{
+				location.x = 0 - PLAYER_WIDTH + 2;
+			}
+
+			//画面上に当たると跳ね返る
+			if (location.y < 0)
+			{
+				ReflectionPY();
+			}
+			if (ref_y > 0)
+			{
+				ref_y--;
+			}
+
+			if (CheckHitKey(KEY_INPUT_1))BalloonDec();
+			//風船が0こになったなら
+			if (balloon <= 0)
+			{
+				para_flg = true;
+			}
+		}
 	}
+
 	//フレームを計測する(10秒ごとにリセット)
 	if (++frame > 600)
 	{
@@ -230,6 +300,16 @@ void Enemy::Update()
 		if (enemy_anim > 3)
 		{
 			enemy_anim = 0;
+		}
+	}
+	if (para_flg == true)
+	{
+		if (frame % 60 == 0)
+		{
+			para_anim++;
+			if (para_anim >= 2)
+
+				para_anim = 2;
 		}
 	}
 	//敵が海面より下へ行くと死亡
@@ -256,28 +336,34 @@ void Enemy::Draw()const
 		switch (enemy_state)
 		{
 		case E_IDOL_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
-			break;
-		case E_IDOL_LEFT:
 			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
 			break;
-		case CHARGE_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0+enemy_anim+charge], TRUE);
+		case E_IDOL_LEFT:
+			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
 			break;
 		case CHARGE_RIGHT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + enemy_anim], TRUE);
+			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+			break;
+		case CHARGE_LEFT:
+			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
 			break;
 		case E_FLY_RIGHT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
-			break;
-		case E_FLY_LEFT:
 			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 			break;
+		case E_FLY_LEFT:
+			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+			break;
+		case  PARACHUTE_RIGHT:
+			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+			break;
+		case  PARACHUTE_LEFT:
+			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+			break;
 		case DEATH_RIGHT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 			break;
 		case DEATH_LEFT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13+ (enemy_anim % 2)], TRUE);
+			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13+ (enemy_anim % 2)], TRUE);
 			break;
 		}
 	}
@@ -479,4 +565,45 @@ void Enemy::EnemyJump()
 void Enemy::EnemyJumpStop()
 {
 	jump_flg = false;
+}
+
+void Enemy::EnemyReset()
+{
+	acs_left = 0;
+	acs_right = 0;
+	acs_up = 0;
+	acs_down = 0;
+	jump_int = 0;
+	jump_combo = 0;
+	jump_cd = 0;
+	wait_time = 300;
+	balloon = 1;
+	para_flg = false;
+	charge = 0;
+	move_right_flg = false;
+	move_left_flg = false;
+	jump_flg = false;
+	ref_once_left = false;
+	ref_once_right = false;
+	levelup_once = false;
+}
+
+void Enemy::EnemyLevelUp()
+{
+	if (enemy_level < 3)
+	{
+		enemy_level++;
+	}
+	switch (enemy_level)
+	{
+	case 1:
+		LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		break;
+	case 2:
+		LoadDivGraph("images/Enemy/Enemy_G_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		break;
+	case 3:
+		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		break;
+	}
 }

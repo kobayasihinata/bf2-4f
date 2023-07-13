@@ -35,6 +35,9 @@ private:
     int frame;      //フレーム計測用
 
     int charge;     //風船を膨らませる時間
+    int enemy_level;    //敵のレベル
+    bool first_flg;     //敵が始めて風船を膨らませるか判断
+    bool levelup_once;     //敵が始めて風船を膨らませるか判断
     int balloon;        //残り風船
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
@@ -53,15 +56,16 @@ private:
 
     int enemy_image[20];   //敵画像
     int enemy_anim;    //敵アニメーション用
+    int para_anim;    //敵アニメーション用
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
-    bool last_input;    //入力方向保存用(0=左　1=右)
+    bool last_input;    //入力方向保存用(0=右　1=左)
 
 public:
 
     //コンストラクタ
-    Enemy(int x,int y);
+    Enemy(int x,int y, int level);
 
     //デストラクタ
     ~Enemy();
@@ -119,4 +123,10 @@ public:
 
     //ジャンプ入力をやめる
     void EnemyJumpStop();
+
+    //リセット
+    void EnemyReset();
+
+    //レベルアップ
+    void EnemyLevelUp();
 };
