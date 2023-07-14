@@ -2,8 +2,8 @@
 #include "GameMain.h"
 #include"Title.h"
 #include"PadInput.h"
+#include "UI.h"
 
-int GameMain::BGM;
 
 GameMain::GameMain()
 {
