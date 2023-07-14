@@ -45,8 +45,8 @@ private:
     float ref_y;      //反発用変数（ｙ）
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
-    bool ref_once1;
-    bool ref_once2;
+    bool ref_once_left;
+    bool ref_once_right;
 
     int player_image[30];   //プレイヤー画像
     int player_anim;    //プレイヤーアニメーション用
@@ -90,6 +90,9 @@ public:
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
 
+    //プレイヤーの残機を設定する
+    void SetPlayerLife(const int life) { this->life = this->life + life; }
+
     //プレイヤーが無敵中か取得する
     int GetPlayerRespawn() { return respawn; }
 
@@ -97,7 +100,7 @@ public:
     int GetPlayerDeathFlg() { return death_flg; }
 
     //プレイヤーリスポーン
-    void PlayerRespawn(int x,int y);
+    void PlayerRespawn(float x, float y);
 
     //プレイヤーの風船を減らす
     void BalloonDec();

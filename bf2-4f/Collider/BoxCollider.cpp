@@ -11,7 +11,7 @@ BoxCollider::BoxCollider(Location location, Area area)
 {
 	colliderType = E_Collider::Box;
 	this->area = area;
-
+	show_flg = true;
 }
 
 //-----------------------------------

@@ -7,16 +7,16 @@ class BoxCollider :
 {
 protected:
     Area area;
+	bool show_flg;
 
 public:
 	BoxCollider(Location location = Location{}, Area area = Area{ 100,100 });
 	~BoxCollider();
 
 	virtual void Draw()const;
-
+	
 	//BoxCollider‚Æ‚Ì“–‚½‚è”»’è
 	bool HitBox(const BoxCollider* box_collider) const override;
-
 
 	//À•W‚Ìæ“¾
 	Location GetLocation()const;
@@ -34,5 +34,12 @@ public:
 	{
 		return Location{ location.x + area.width,location.y + area.height};
 	}
+	//’†SÀ•W‚ğæ“¾
+	Location GetCenter()const
+	{
+		return Location{ location.x + area.width / 2,location.y + area.height / 2 };
+	}
+
+	void SetShowFlg(const bool flg) { show_flg = flg; }
 };
 
