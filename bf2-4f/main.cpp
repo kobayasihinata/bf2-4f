@@ -16,7 +16,9 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow)
 {
-	SetMainWindowText("C++BreakOut");
+	double dNextTime = GetNowCount();
+
+	SetMainWindowText("BallonFight");
 
 	ChangeWindowMode(TRUE);		// ウィンドウモードで起動
 
@@ -61,6 +63,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
+
+		//フレームレートの設定
+		dNextTime += 1.0 / 60.0 * 1000.0;
+
+		if (dNextTime > GetNowCount())
+		{
+			WaitTimer(static_cast<int>(dNextTime) - GetNowCount());
+		}
+		else { dNextTime = GetNowCount(); }		//補正
 	}
 	return 0;
 }

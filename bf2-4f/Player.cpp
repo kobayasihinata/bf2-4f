@@ -26,6 +26,7 @@ Player::Player()
 	death_flg = false;
 	death_acs = 0;
 	show_flg = true;
+	is_player = true;
 	onfloor_flg = false;
 	onshare_flg = false;
 

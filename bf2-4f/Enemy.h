@@ -65,7 +65,7 @@ private:
 public:
 
     //コンストラクタ
-    Enemy(int x,int y, int level);
+    Enemy(int x, int y, int level);
 
     //デストラクタ
     ~Enemy();
@@ -129,4 +129,7 @@ public:
 
     //レベルアップ
     void EnemyLevelUp();
+
+    //enemy_levelを取得
+    int GetEnemyLevel()const { return enemy_level; }
 };

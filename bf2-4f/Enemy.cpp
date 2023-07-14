@@ -27,6 +27,7 @@ Enemy::Enemy(int x,int y,int level)
 	death_flg = false;
 	death_acs = 0;
 	show_flg = true;
+	is_player = false;
 	onfloor_flg = false;
 	onshare_flg = false;
 	move_right_flg = false;

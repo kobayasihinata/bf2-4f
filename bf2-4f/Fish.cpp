@@ -1,4 +1,5 @@
 #include "Fish.h"
+#include"Enemy.h"
 #include"DxLib.h"
 #include"Define.h"
 
@@ -58,7 +59,7 @@ void Fish::Update(BoxCollider* boxcollider)
 		if (--player_flying_on_sea_timer < 0 && probability < 10)
 		{
 			//上がる処理
-			if (boxcollider->GetMax().y < location.y + area.height)
+			if (boxcollider->GetMax().y < location.y + area.height && location.y + area.height > SEA_SURFACE)
 			{
 				if (this->GetCenter().x < boxcollider->GetMin().x)
 				{
@@ -84,11 +85,28 @@ void Fish::Update(BoxCollider* boxcollider)
 			else if (fish_state == Rising_Fish_1 || fish_state == Rising_Fish_2 || fish_state == PreyingOn_Player)
 			{
 				//食べる処理
-				if (boxcollider->GetMax().y >= location.y + area.height)
+				if (boxcollider->GetMax().y >= location.y + area.height / 2)
 				{//要調整
 					location.y -= speed;
-					/*敵ができ次第ここにプレイヤーか否かの判定をかく*/
-					fish_state = PreyingOn_Player;
+					if (boxcollider->GetIsPlayer() == true)
+					{
+						fish_state = PreyingOn_Player;
+					}
+					else
+					{
+						if (GetSaveEnemyLevel() == 1)
+						{
+							fish_state = PreyingOn_Enemy_1;
+						}
+						else if (GetSaveEnemyLevel() == 2)
+						{
+							fish_state = PreyingOn_Enemy_2;
+						}
+						else
+						{
+							fish_state = PreyingOn_Enemy_3;
+						}
+					}
 					boxcollider->SetShowFlg(false);
 					if (location.y + area.height < SEA_SURFACE)
 					{
@@ -153,8 +171,8 @@ void Fish::Update(BoxCollider* boxcollider)
 
 void Fish::Draw()const
 {
-	//BoxCollider::Draw();
-	//DrawFormatString(0, 100, 0xff00ff, "%d", player_flying_on_sea_timer / 60);
+	BoxCollider::Draw();
+	DrawFormatString(0, 100, 0xff00ff, "%d", fish_state);
 	if (reversal_flg == false)
 	{
 		DrawGraphF(location.x, location.y - IMAGE_SHIFT, fish_image[fish_state], TRUE);
