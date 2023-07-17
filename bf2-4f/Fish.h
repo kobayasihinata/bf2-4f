@@ -3,7 +3,7 @@
 
 #define SECOND_TO_FRAME(sec) ((sec)*60)
 #define IMAGE_SHIFT 10       //画像調整用
-#define SEASURFACE_START_X 159
+#define SEASURFACE_START_X 158
 #define SEASURFACE_END_X 480
 
 class Fish :
@@ -33,8 +33,8 @@ private:
     
     bool is_rising;                     //さかなが海から飛び上がっているか？
     bool is_falling;                    //さかなが海に落ちているか？
-    bool is_preyed_on_player;           //捕食したのはプレイヤーか？
-    bool is_preyed_on_enemy;            //捕食したのは敵か？
+    bool is_preying_on_player;          //捕食しているのはプレイヤーか？
+    bool is_preying_on_enemy;           //捕食しているのは敵か？
     bool reversal_flg;                  //画像は反転するか？
     bool respawn_flg;                   //プレイヤーをリスポーンさせるか？
 
@@ -52,7 +52,7 @@ public:
     void Draw()const;
 
     //is_preyed_on_playerの値を取得する
-    bool GetIsPreyedOnPlayer() { return is_preyed_on_player; }
+    bool GetIsPreyedOnPlayer() { return is_preying_on_player; }
 
     //respawn_flgの値を取得する
     bool GetRespawnFlg() { return respawn_flg; }

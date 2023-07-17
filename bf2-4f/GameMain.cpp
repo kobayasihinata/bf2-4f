@@ -117,7 +117,6 @@ void GameMain::Draw()const
 		stagefloor->Draw();
 	}
 	DrawString(0, 0, "ƒQ[ƒ€ƒƒCƒ“", 0xff0000);
-	
-	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
+	DrawGraph(159, 444, seaImage, TRUE);
 }

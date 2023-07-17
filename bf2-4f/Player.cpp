@@ -524,8 +524,8 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 	}
 
 	//StaegFloor‚Ìc‚Ì”ÍˆÍ“à
-	if (my_y[0] < sub_y[1] &&
-		sub_y[0] < my_y[1])
+	if (my_y[0] < sub_y[1] - 5 &&
+		sub_y[0] + 5 < my_y[1])
 	{
 		//Player‚ªStageFloor‚æ‚è‰E‚Ös‚±‚¤‚Æ‚µ‚½ê‡
 		if (my_x[1] > sub_x[0] &&
