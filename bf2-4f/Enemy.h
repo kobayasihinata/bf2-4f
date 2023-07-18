@@ -23,6 +23,8 @@ class Enemy :public BoxCollider
 private:
 
     ENEMY_STATE enemy_state;
+
+    bool flg;   //敵を表示するか（生きているか）
     float acs_left;   //左加速度
     float acs_right;  //右加速度
     int acs_up;     //上加速度
@@ -41,9 +43,7 @@ private:
     int balloon;        //残り風船
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
-
-    float ref_y;            //反発用変数（ｙ）
-
+    int protect;        //復活後一瞬だけ無敵(バグ解消のため)
     int wait_time;           //風船を膨らませる前か判断
     bool onfloor_flg;        //StageFloorの上かどうか
     bool onshare_flg;       //StageFloorの上ということを共有するかどうか
@@ -132,4 +132,7 @@ public:
 
     //enemy_levelを取得
     int GetEnemyLevel()const { return enemy_level; }
+
+    //敵が生きているか取得
+    int GetFlg() { return flg; }
 };

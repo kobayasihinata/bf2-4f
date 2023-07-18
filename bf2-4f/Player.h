@@ -34,6 +34,7 @@ private:
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
     int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
+    bool jump_flg;      //ジャンプ中か判断
 
     int frame;      //フレーム計測用
 
@@ -42,7 +43,6 @@ private:
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
     int respawn;   //リスポーン後の無敵中か判断
-    float ref_y;      //反発用変数（ｙ）
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
     bool ref_once_left;

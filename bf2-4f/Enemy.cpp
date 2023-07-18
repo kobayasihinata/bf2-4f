@@ -1,9 +1,11 @@
 #include "Dxlib.h"
+#include <math.h>
 #include "Enemy.h"
 #include "PadInput.h"
 
 Enemy::Enemy(int x,int y,int level)
 {
+	flg = true;
 	location.x = x;
 	location.y = y;
 	area.height = PLAYER_HEIGHT;
@@ -16,7 +18,6 @@ Enemy::Enemy(int x,int y,int level)
 	jump_combo = 0;
 	jump_cd = 0;
 	frame = 0;
-	ref_y = 0;
 	balloon = 1;
 	wait_time = 0;
 	charge = 0;
@@ -25,7 +26,8 @@ Enemy::Enemy(int x,int y,int level)
 	levelup_once = false;
 	para_flg = false;
 	death_flg = false;
-	death_acs = 0;
+	death_acs = -120;
+	protect = 0;
 	show_flg = true;
 	is_player = false;
 	onfloor_flg = false;
@@ -90,7 +92,7 @@ void Enemy::Update()
 			{
 				enemy_state = CHARGE_RIGHT;
 			}
-			if (frame % 90 == 0)
+			if (frame % 22 == 0)
 			{
 				charge++;
 			}
@@ -117,7 +119,7 @@ void Enemy::Update()
 			}
 
 			//落下(床と触れていない事を検知する)
-			if (onfloor_flg != true)
+			if (onshare_flg==false)
 			{
 				if (last_input == 0)
 				{
@@ -252,11 +254,11 @@ void Enemy::Update()
 			location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
 			if (para_flg == false)
 			{
-				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 			}
 			else
 			{
-				location.y += 0.2f;
+				location.y += 0.8f;
 			}
 
 			//画面端に行くとテレポート
@@ -272,12 +274,10 @@ void Enemy::Update()
 			//画面上に当たると跳ね返る
 			if (location.y < 0)
 			{
+				location.y = 0;
 				ReflectionPY();
 			}
-			if (ref_y > 0)
-			{
-				ref_y--;
-			}
+
 
 			if (CheckHitKey(KEY_INPUT_1))BalloonDec();
 			//風船が0こになったなら
@@ -295,7 +295,7 @@ void Enemy::Update()
 	}
 
 	//アニメーション
-	if (frame % (45 - anim_boost) == 0)
+	if (frame % (20 - anim_boost) == 0)
 	{
 		enemy_anim++;
 		if (enemy_anim > 3)
@@ -305,26 +305,24 @@ void Enemy::Update()
 	}
 	if (para_flg == true)
 	{
-		if (frame % 60 == 0)
+		if (frame % 15 == 0)
 		{
 			para_anim++;
-			if (para_anim >= 2)
-
-				para_anim = 2;
+			if (para_anim >= 2)para_anim = 2;
 		}
 	}
 	//敵が海面より下へ行くと死亡
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
-		
+		flg = false;
 	}
 }
 
 void Enemy::Draw()const
 {
-	////プレイヤーの当たり判定の描画
+	////敵の当たり判定の描画
 	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
-	////プレイヤーの風船当たり判定の描画(仮)
+	////敵の風船当たり判定の描画(仮)
 	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
 	//DrawFormatString(0, 20, 0x00ff00, "%d", charge);
 	//DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
@@ -333,39 +331,42 @@ void Enemy::Draw()const
 
 	if (show_flg == true)
 	{
-		//プレイヤーの描画
-		switch (enemy_state)
+		if (flg == true)
 		{
-		case E_IDOL_RIGHT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
-			break;
-		case E_IDOL_LEFT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
-			break;
-		case CHARGE_RIGHT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
-			break;
-		case CHARGE_LEFT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
-			break;
-		case E_FLY_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
-			break;
-		case E_FLY_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
-			break;
-		case  PARACHUTE_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
-			break;
-		case  PARACHUTE_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
-			break;
-		case DEATH_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
-			break;
-		case DEATH_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13+ (enemy_anim % 2)], TRUE);
-			break;
+			//プレイヤーの描画
+			switch (enemy_state)
+			{
+			case E_IDOL_RIGHT:
+				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
+				break;
+			case E_IDOL_LEFT:
+				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
+				break;
+			case CHARGE_RIGHT:
+				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+				break;
+			case CHARGE_LEFT:
+				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+				break;
+			case E_FLY_RIGHT:
+				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+				break;
+			case E_FLY_LEFT:
+				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+				break;
+			case  PARACHUTE_RIGHT:
+				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				break;
+			case  PARACHUTE_LEFT:
+				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				break;
+			case DEATH_RIGHT:
+				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				break;
+			case DEATH_LEFT:
+				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				break;
+			}
 		}
 	}
 
@@ -417,7 +418,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 	}
 
 	//StaegFloorの縦の範囲内
-	if (my_y[0] < sub_y[1] &&
+	else if (my_y[0] < sub_y[1] &&
 		sub_y[0] < my_y[1])
 	{
 		//PlayerがStageFloorより右へ行こうとした場合
@@ -501,7 +502,7 @@ bool Enemy::IsOnFloor(const BoxCollider* box_collider)const
 	if (my_x[0] < sub_x[1] &&
 		sub_x[0] < my_x[1])
 	{
-		//PlayerがStageFloorより下へ行こうとした場合
+		//敵がStageFloorより下へ行こうとした場合
 		if (my_y[1] > sub_y[0] - 2 &&
 			my_y[0] < sub_y[0])
 		{
@@ -514,24 +515,23 @@ bool Enemy::IsOnFloor(const BoxCollider* box_collider)const
 void Enemy::OnFloor()
 {
 	acs_down = 0;
-	ref_y = 0;
 }
 void Enemy::ReflectionMX()
 {
-	acs_left = acs_right * 0.8f;
+	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
 }
 
 void Enemy::ReflectionPX()
 {
-	acs_right = acs_left * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
 }
 
 void Enemy::ReflectionPY()
 {
-	ref_y = acs_up * 0.01f;
-	acs_up -= 150;
+	acs_down = acs_up * 0.8f;
+	acs_up = 0;
 }
 
 void Enemy::BalloonDec()
@@ -559,7 +559,6 @@ void Enemy::EnemyMoveStop()
 }
 void Enemy::EnemyJump()
 {
-	
 	jump_flg = true;
 }
 
@@ -577,10 +576,11 @@ void Enemy::EnemyReset()
 	jump_int = 0;
 	jump_combo = 0;
 	jump_cd = 0;
-	wait_time = 300;
+	wait_time = 75;
 	balloon = 1;
 	para_flg = false;
 	charge = 0;
+	protect = 5;
 	move_right_flg = false;
 	move_left_flg = false;
 	jump_flg = false;

@@ -11,7 +11,7 @@ class GameMain :
 {
 private:
     Player* player;
-    Enemy* enemy;
+    Enemy* enemy[3];
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
@@ -32,5 +32,6 @@ public:
 
     //•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ðŽÀ‘•
     void Draw() const override;
+
 };
 
