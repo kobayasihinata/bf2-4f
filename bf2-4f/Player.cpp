@@ -410,7 +410,7 @@ void Player::Update()
 	}
 
 	//アニメーション
-	if (frame % (45 - anim_boost) == 0)
+	if (frame % (10 - anim_boost) == 0)
 	{
 		player_anim++;
 		if (player_anim > 3)

@@ -17,10 +17,10 @@
 #define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）
 #define MAX_JUMP 10			//最大連打数
 #define JUMP_INTERVAL 40	//ジャンプボタン連打間隔
-#define FALL_SPPED 0.002f	//最高落下速度
-#define MOVE_SPPED 0.005f	//最高移動速度
-#define RISE_SPPED 0.01f	//最高上昇速度
-#define LAND_SPEED 0.01f	//最高移動速度（地面）
+#define FALL_SPPED 0.008f	//最高落下速度
+#define MOVE_SPPED 0.020f	//最高移動速度
+#define RISE_SPPED 0.04f	//最高上昇速度
+#define LAND_SPEED 0.04f	//最高移動速度（地面）
 
 #define SEA_SURFACE 445		//海面
 #define UNDER_WATER 470		//海のなか
