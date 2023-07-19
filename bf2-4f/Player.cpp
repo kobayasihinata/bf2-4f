@@ -196,6 +196,7 @@ void Player::Update()
 						if (acs_left < MAX_SPEED)
 						{
 							acs_left += 4;
+							acs_up -= 3;
 						}
 						if (acs_right > 0)
 						{
@@ -207,6 +208,7 @@ void Player::Update()
 						if (acs_right < MAX_SPEED)
 						{
 							acs_right += 4;
+							acs_up -= 3;
 						}
 						if (acs_left > 0)
 						{
@@ -250,7 +252,10 @@ void Player::Update()
 							}
 							jump_combo += 2;
 						}
-						acs_up += jump_combo * 3 + balloon;
+						if (acs_up, MAX_SPEED)
+						{
+							acs_up += jump_combo * 3 + balloon;
+						}
 					}
 				}
 				//ジャンプ（連打）
@@ -264,10 +269,7 @@ void Player::Update()
 						}
 						if (acs_right > 0)
 						{
-							if (frame % 3 == 0)
-							{
-								acs_right--;
-							}
+							acs_right--;
 						}
 					}
 
@@ -279,10 +281,7 @@ void Player::Update()
 						}
 						if (acs_left > 0)
 						{
-							if (frame % 3 == 0)
-							{
-								acs_left--;
-							}
+							acs_left--;
 						}
 					}
 
@@ -320,14 +319,12 @@ void Player::Update()
 						{
 							if (acs_left < MAX_SPEED)
 							{
-								acs_left += 1;
+								acs_left += 2;
+								acs_up -= 3;
 							}
 							if (acs_right > 0)
 							{
-								if (frame % 3 == 0)
-								{
-									acs_right--;
-								}
+								acs_right--;
 							}
 						}
 
@@ -335,14 +332,12 @@ void Player::Update()
 						{
 							if (acs_right < MAX_SPEED)
 							{
-								acs_right += 1;
+								acs_right += 2;
+								acs_up -= 3;
 							}
 							if (acs_left > 0)
 							{
-								if (frame % 3 == 0)
-								{
-									acs_left--;
-								}
+								acs_left--;
 							}
 						}
 					}
@@ -459,7 +454,7 @@ void Player::Draw()const
 	////プレイヤーの風船当たり判定の描画(仮)
 	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
-	DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
+	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 	
@@ -694,7 +689,7 @@ void Player::ReflectionPX()
 
 void Player::ReflectionPY()
 {
-	acs_down = acs_up * 0.8f;
+	acs_down = fabsf(acs_up - acs_down) * 1.8f;
 	acs_up = 0;
 }
 
