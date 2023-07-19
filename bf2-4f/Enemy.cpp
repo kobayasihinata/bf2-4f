@@ -77,10 +77,10 @@ void Enemy::Update()
 		if (death_flg == false)
 		{
 			//ダメージ実験
-			if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
-			{
-				test_score += ApplyDamege();
-			}
+			//if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
+			//{
+			//	test_score += ApplyDamege();
+			//}
 
 			//パラシュート着地後の待機時間処理
 			if (--wait_time >= 0)
@@ -177,7 +177,7 @@ void Enemy::Update()
 				}
 
 				//右入力されている時の処理
-				if (PAD_INPUT::GetLStick().ThumbX > 10000 || move_right_flg == true)
+				if (move_right_flg == true)
 				{
 					enemy_state = E_FLY_RIGHT;
 					last_input = 0;
@@ -203,7 +203,7 @@ void Enemy::Update()
 				}
 
 				//左入力されている時の処理
-				if (PAD_INPUT::GetLStick().ThumbX < -10000 || move_left_flg == true)
+				if (move_left_flg == true)
 				{
 					enemy_state = E_FLY_LEFT;
 					last_input = 1;
@@ -229,9 +229,9 @@ void Enemy::Update()
 				}
 
 				//ジャンプ入力されている時の処理
-				if ((PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || jump_flg == true) && para_flg == false)
+				if (jump_flg == true && para_flg == false)
 				{
-					if (PAD_INPUT::GetLStick().ThumbX < -10000 || move_left_flg == true)
+					if (move_left_flg == true)
 					{
 						if (acs_left < MAX_SPEED)
 						{
@@ -243,7 +243,7 @@ void Enemy::Update()
 							acs_right--;
 						}
 					}
-					if (PAD_INPUT::GetLStick().ThumbX > 10000 || move_right_flg == true)
+					if (move_right_flg == true)
 					{
 						if (acs_right < MAX_SPEED)
 						{
@@ -429,7 +429,7 @@ void Enemy::Draw()const
 	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
 	////敵の風船当たり判定の描画(仮)
 	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
-	DrawFormatString(0, 20, 0x00ff00, "%d", test_score);
+	//DrawFormatString(0, 20, 0x00ff00, "%d", test_score);
 	//DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", balloon);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
