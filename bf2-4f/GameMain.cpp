@@ -7,7 +7,10 @@
 GameMain::GameMain()
 {
 	player = new Player();
-	enemy = new Enemy(300,210,1);
+	for (int i = 0; i < 3; i++)
+	{
+		enemy[i] = new Enemy(250+i*50, 210, 1);
+	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
@@ -21,7 +24,10 @@ GameMain::GameMain()
 GameMain::~GameMain()
 {
 	delete player;
-	delete enemy;
+	for (int i = 0; i < 3; i++)
+	{
+		delete enemy[i];
+	}
 	delete staegwall;
 	delete stagefloor[0];
 	delete stagefloor[1];
@@ -45,19 +51,23 @@ AbstractScene* GameMain::Update()
 				player->HitStageCollision(stagefloor);
 			}
 
-			//各オブジェクトとの当たり判定処理
-			enemy->HitStageCollision(stagefloor);
-		
 			//プレイヤーがどのオブジェクトとも着地していない場合
 			if (player->IsOnFloor(stagefloor) != true) {
 				//onshare_flgをfalseにする
 				player->SetOnShareFlg(false);
 			}
 
-			//敵がどのオブジェクトとも着地していない場合
-			if (enemy->IsOnFloor(stagefloor) != true) {
-				//onshare_flgをfalseにする
-				enemy->SetOnShareFlg(false);
+			for (int i = 0; i < 3; i++)
+			{
+				//各オブジェクトとの当たり判定処理
+				enemy[i]->HitStageCollision(stagefloor);
+
+
+				//敵がどのオブジェクトとも着地していない場合
+				if (enemy[i]->IsOnFloor(stagefloor) != true) {
+					//onshare_flgをfalseにする
+					enemy[i]->SetOnShareFlg(false);
+				}
 			}
 		}
 		//プレイヤーが各オブジェクトのいずれかに着地している場合
@@ -68,19 +78,24 @@ AbstractScene* GameMain::Update()
 			//onshare_flgをtrueにする
 			player->SetOnShareFlg(true);
 		}
-		//敵が各オブジェクトのいずれかに着地している場合
-		if (enemy->IsOnFloor(stagefloor[0]) == true ||
-			enemy->IsOnFloor(stagefloor[1]) == true ||
-			enemy->IsOnFloor(stagefloor[2]) == true)
+		for (int i = 0; i < 3; i++)
 		{
-			//onshare_flgをtrueにする
-			enemy->SetOnShareFlg(true);
+			//敵が各オブジェクトのいずれかに着地している場合
+			if (enemy[i]->IsOnFloor(stagefloor[0]) == true ||
+				enemy[i]->IsOnFloor(stagefloor[1]) == true ||
+				enemy[i]->IsOnFloor(stagefloor[2]) == true)
+			{
+				//onshare_flgをtrueにする
+				enemy[i]->SetOnShareFlg(true);
+			}
+			enemy[i]->Update();
+			enemy[i]->EnemyMoveLeft();
+			enemy[i]->EnemyJump();
+
+			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
+
 		player->Update();
-		enemy->Update();
-		enemy->EnemyMoveLeft();
-		enemy->EnemyJump();
-		fish->SetSaveEnemyLevel(enemy->GetEnemyLevel());
 		fish->Update(player);
 		if (fish->GetIsPreyedOnPlayer() == true)
 		{
@@ -106,7 +121,10 @@ void GameMain::Draw()const
 {
 	if (Pouse == false) {
 		player->Draw();
-		enemy->Draw();
+		for (int i = 0; i < 3; i++)
+		{
+			enemy[i]->Draw();
+		}
 	}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
@@ -119,4 +137,5 @@ void GameMain::Draw()const
 	DrawString(0, 0, "ゲームメイン", 0xff0000);
 	fish->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
+	fish->Draw();
 }

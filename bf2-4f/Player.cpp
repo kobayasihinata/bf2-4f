@@ -1,4 +1,5 @@
 #include "Dxlib.h"
+#include <math.h>
 #include "Player.h"
 #include "PadInput.h"
 
@@ -18,13 +19,13 @@ Player::Player()
 	jump_int = 0;
 	jump_combo = 0;
 	jump_cd = 0;
+	jump_flg = false;
 	frame = 0;
-	ref_y = 0;
 	balloon = 2;
 	life = 2;
-	respawn = 60;
+	respawn = 15;
 	death_flg = false;
-	death_acs = 0;
+	death_acs = -120;
 	show_flg = true;
 	is_player = true;
 	onfloor_flg = false;
@@ -62,19 +63,26 @@ void Player::Update()
 				//落下(床と触れていない事を検知する)
 				if (onfloor_flg != true)
 				{
-					if (last_input == 0)
+					if (last_move_x <= 0) 
 					{
 						player_state = FLY_LEFT;
 					}
 					else
 					{
-						player_state = FLY_RIGHT;
+						player_state = FLY_RIGHT; 
 					}
 
 					//落下し続ける程下に加速
-					if (acs_down < MAX_SPEED)
+					if (jump_flg == false)
 					{
-						acs_down += (3 - balloon);
+						if (acs_down < MAX_SPEED)
+						{
+							acs_down += 9 - (balloon*3);
+						}
+						else
+						{
+							acs_down = MAX_SPEED;
+						}
 					}
 					acs_left += land_acs_left;
 					acs_right += land_acs_right;
@@ -108,7 +116,7 @@ void Player::Update()
 						player_state = WALK_RIGHT;
 						if (land_acs_right < MAX_SPEED_LAND)
 						{
-							land_acs_right++;
+							land_acs_right+=4;
 						}
 					}
 
@@ -125,7 +133,7 @@ void Player::Update()
 					if (land_acs_right > 0)
 					{
 						player_state = WALK_RIGHT;
-						land_acs_right--;
+						land_acs_right-=4;
 					}
 				}
 
@@ -148,7 +156,7 @@ void Player::Update()
 						player_state = WALK_LEFT;
 						if (land_acs_left < MAX_SPEED_LAND)
 						{
-							land_acs_left++;
+							land_acs_left+=4;
 						}
 					}
 
@@ -165,7 +173,7 @@ void Player::Update()
 					if (land_acs_left > 0)
 					{
 						player_state = WALK_LEFT;
-						land_acs_left--;
+						land_acs_left-=4;
 					}
 				}
 
@@ -182,39 +190,56 @@ void Player::Update()
 				//ジャンプ（長押し）
 				if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
 				{
+					jump_flg = true;
 					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 					{
 						if (acs_left < MAX_SPEED)
 						{
-							acs_left += 1;
+							acs_left += 4;
 						}
 						if (acs_right > 0)
 						{
-							if (frame % 3 == 0)
-							{
-								acs_right--;
-							}
+							acs_right--;
 						}
 					}
 					if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
 					{
 						if (acs_right < MAX_SPEED)
 						{
-							acs_right += 1;
+							acs_right += 4;
 						}
 						if (acs_left > 0)
 						{
-							if (frame % 3 == 0)
-							{
-								acs_left--;
-							}
+							acs_left--;
+
 						}
 					}
 
+					//下加速度減少
+					if (acs_down >= 0)
+					{
+						if (acs_down >= 0)
+						{
+							acs_down -= 2;
+						}
+						else
+						{
+							acs_down = 0;
+						}
+					}
+
+					//アニメーション
+					if (frame % 5 == 0)
+					{
+						player_anim++;
+					}
+					if (player_anim > 3)
+					{
+						player_anim = 0;
+					}
 
 					if (jump_int == 0)
 					{
-						anim_boost = 30;
 						jump_int = JUMP_INTERVAL;
 						//Aを押せば押すほど上加速度が上がる
 						if (jump_combo < MAX_JUMP)
@@ -227,13 +252,11 @@ void Player::Update()
 						}
 						acs_up += jump_combo * 3 + balloon;
 					}
-
 				}
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
-
-					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+					if (PAD_INPUT::GetLStick().ThumbX < -10000)
 					{
 						if (acs_left < MAX_SPEED)
 						{
@@ -248,7 +271,7 @@ void Player::Update()
 						}
 					}
 
-					if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+					if (PAD_INPUT::GetLStick().ThumbX > 10000)
 					{
 						if (acs_right < MAX_SPEED)
 						{
@@ -265,9 +288,8 @@ void Player::Update()
 
 					if (jump_int == 0)
 					{
-						anim_boost = 30;
-						jump_int = JUMP_INTERVAL / 4;
-						jump_cd = 20;
+						jump_int = JUMP_INTERVAL;
+						jump_cd = 5;
 						//Aを押せば押すほど上加速度が上がる
 						if (jump_combo < MAX_JUMP)
 						{
@@ -283,10 +305,10 @@ void Player::Update()
 				//連打中に上昇値が減らないようにする
 				else if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
 				{
+					jump_flg = true;
 					if (--jump_cd <= 0)
 					{
 						jump_cd = 0;
-						anim_boost = 0;
 						if (acs_up > 0)
 						{
 							acs_up--;
@@ -328,7 +350,7 @@ void Player::Update()
 
 				else
 				{
-					anim_boost = 0;
+					jump_flg = false;
 					if (acs_up > 0)
 					{
 						acs_up--;
@@ -358,14 +380,14 @@ void Player::Update()
 
 				//移動
 				location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down + ref_y) * FALL_SPPED;
+				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 
 				//画面端に行くとテレポート
 				if (location.x < 0 - PLAYER_WIDTH)
 				{
-					location.x = SCREEN_WIDTH;
+					location.x = SCREEN_WIDTH - 2;
 				}
-				if (location.x > SCREEN_WIDTH)
+				if (location.x > SCREEN_WIDTH - 1)
 				{
 					location.x = 0 - PLAYER_WIDTH + 2;
 				}
@@ -373,11 +395,8 @@ void Player::Update()
 				//画面上に当たると跳ね返る
 				if (location.y < 0)
 				{
+					location.y = 0;
 					ReflectionPY();
-				}
-				if (ref_y > 0)
-				{
-					ref_y--;
 				}
 
 				if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))BalloonDec();
@@ -385,7 +404,7 @@ void Player::Update()
 			//リスポーン後の無敵状態なら
 			else
 			{
-				anim_boost = 30;
+				anim_boost = 10;
 				player_state = INVINCIBLE;
 			}
 
@@ -394,12 +413,11 @@ void Player::Update()
 		//死亡中の演出
 		else
 		{
-			anim_boost = 30;
 			player_state = DEATH;
-			if (++death_acs > 20)
-			{
-				death_acs -= 2;
-			}
+
+				death_acs += 4;
+
+
 			location.y += death_acs * FALL_SPPED;
 		}
 	}
@@ -410,7 +428,7 @@ void Player::Update()
 	}
 
 	//アニメーション
-	if (frame % (10 - anim_boost) == 0)
+	if (frame % (20 - anim_boost) == 0 && player_state != FLY_LEFT && player_state != FLY_RIGHT)
 	{
 		player_anim++;
 		if (player_anim > 3)
@@ -418,7 +436,14 @@ void Player::Update()
 			player_anim = 0;
 		}
 	}
-
+	if (player_state != FLY_LEFT && player_state != FLY_RIGHT && player_state !=IDOL_LEFT && player_state != IDOL_RIGHT)
+	{
+		anim_boost = 15;
+	}
+	else
+	{
+		anim_boost = 0;
+	}
 	//プレイヤーが海面より下へ行くと残機 -1
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
@@ -434,7 +459,7 @@ void Player::Draw()const
 	////プレイヤーの風船当たり判定の描画(仮)
 	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
-	//DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
+	DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 	
@@ -636,7 +661,7 @@ void Player::OnFloor()
 	if (acs_left > 0)
 	{
 		player_state = WALK_LEFT;
-		acs_left-=2;
+		acs_left-=6;
 	}
 	else
 	{
@@ -645,33 +670,32 @@ void Player::OnFloor()
 	if (acs_right > 0)
 	{
 		player_state = WALK_RIGHT;
-		acs_right-=2;
+		acs_right-=6;
 	}
 	else
 	{
 		acs_right = 0;
 	}
-	ref_y = 0;
 }
 
 void Player::ReflectionMX()
 {
 	land_acs_right = 0;
-	acs_left = acs_right * 0.8f;
+	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
 }
 
 void Player::ReflectionPX()
 {
 	land_acs_left = 0;
-	acs_right = acs_left * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
 }
 
 void Player::ReflectionPY()
 {
-	ref_y = acs_up * 0.01f;
-	acs_up -= 150;
+	acs_down = acs_up * 0.8f;
+	acs_up = 0;
 }
 
 void Player::PlayerRespawn(float x, float y)
@@ -687,9 +711,9 @@ void Player::PlayerRespawn(float x, float y)
 	land_acs_right = 0;
 	jump_int = 0;
 	jump_combo = 0;
-	ref_y = 0;
 	balloon = 2;
 	death_flg = false;
+	death_acs = -120;
 	respawn = 60;
 	show_flg=true;
 }
