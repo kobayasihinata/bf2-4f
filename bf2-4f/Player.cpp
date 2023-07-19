@@ -103,6 +103,7 @@ void Player::Update()
 					//(ここで地面との当たり判定を取得してきてstateを変える)
 					if (onfloor_flg != true)
 					{
+						player_state = FLY_RIGHT;
 						last_input = 1;
 						if (acs_right < MAX_SPEED)
 						{
@@ -144,6 +145,7 @@ void Player::Update()
 					//(ここで地面との当たり判定を取得してきてstateを変える)
 					if (onfloor_flg != true)
 					{
+						player_state = FLY_LEFT;
 						last_input = 0;
 						if (acs_left < MAX_SPEED)
 						{
@@ -342,7 +344,6 @@ void Player::Update()
 						}
 					}
 				}
-
 				else
 				{
 					jump_flg = false;
@@ -551,7 +552,7 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			my_x[0] < sub_x[0])
 		{
 			//StageFloorより右には行けないようにする
-			location.x = sub_x[0] - area.width-5;
+			location.x = sub_x[0] - area.width - 5;
 			//1回だけ左へ跳ね返る
 			if (ref_once_left == FALSE)
 			{
@@ -569,7 +570,7 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			my_x[1]>sub_x[1])
 		{
 			//StageFloorより左には行けないようにする
-			location.x = sub_x[1]+5;
+			location.x = sub_x[1] + 5;
 			//1回だけ右へ跳ね返る
 			if (ref_once_right == FALSE)
 			{

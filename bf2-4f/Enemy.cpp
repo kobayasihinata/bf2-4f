@@ -141,7 +141,7 @@ void Enemy::Update()
 				//落下(床と触れていない事を検知する)
 				if (onshare_flg == false)
 				{
-					if (last_input == 0)
+					if (last_move_x < 0)
 					{
 						enemy_state = E_FLY_LEFT;
 					}
@@ -531,7 +531,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			my_x[0] < sub_x[0])
 		{
 			//StageFloorより右には行けないようにする
-			location.x = sub_x[0] - area.width-5;
+			location.x = sub_x[0] - area.width - 5;
 			//1回だけ左へ跳ね返る
 			if (ref_once_left == FALSE)
 			{
@@ -549,7 +549,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			my_x[1]>sub_x[1])
 		{
 			//StageFloorより左には行けないようにする
-			location.x = sub_x[1]+5;
+			location.x = sub_x[1] + 5;
 			//1回だけ右へ跳ね返る
 			if (ref_once_right == FALSE)
 			{
