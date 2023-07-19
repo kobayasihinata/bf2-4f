@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		ScreenFlip();			// 裏画面の内容を表画面に反映
 
 		//フレームレートの設定
-		dNextTime += 1.0 / 60.0 * 1000.0;
+		dNextTime += 1.0 / FRAMERATE * 1000.0;
 
 		if (dNextTime > GetNowCount())
 		{

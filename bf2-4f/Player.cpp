@@ -410,8 +410,7 @@ void Player::Update()
 		{
 			player_state = DEATH;
 
-				death_acs += 4;
-
+			death_acs += 4;
 
 			location.y += death_acs * FALL_SPPED;
 		}

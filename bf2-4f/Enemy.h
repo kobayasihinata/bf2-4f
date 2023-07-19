@@ -43,6 +43,7 @@ private:
     int balloon;        //残り風船
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
+    int damage;         //やられモーション中待機
     int protect;        //復活後一瞬だけ無敵(バグ解消のため)
     int wait_time;           //風船を膨らませる前か判断
     bool onfloor_flg;        //StageFloorの上かどうか
@@ -94,9 +95,14 @@ public:
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
 
+    //プレイヤーとぶつかった時にパラシュート状態になるか死亡モーションに入るか判断する
+    void ApplyDamege();
 
     //敵の風船を減らす
     void BalloonDec();
+
+    //敵を死亡モーションに移行させる
+    void EnemyDeath();
 
     //onshare_flgの値を設定する
     void SetOnShareFlg(const bool flg)
@@ -109,6 +115,9 @@ public:
         }
     }
 
+    /******************************
+     AIで移動させるときに使う関数
+     ******************************/
     //右入力
     void EnemyMoveRight();
 
@@ -123,6 +132,7 @@ public:
 
     //ジャンプ入力をやめる
     void EnemyJumpStop();
+    /******************************/
 
     //リセット
     void EnemyReset();
@@ -132,6 +142,9 @@ public:
 
     //enemy_levelを取得
     int GetEnemyLevel()const { return enemy_level; }
+
+    //敵が死亡モーション中か取得
+    int GetEnemyDeathFlg() { return death_flg; }
 
     //敵が生きているか取得
     int GetFlg() { return flg; }

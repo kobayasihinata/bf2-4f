@@ -59,8 +59,12 @@ AbstractScene* GameMain::Update()
 
 			for (int i = 0; i < 3; i++)
 			{
-				//各オブジェクトとの当たり判定処理
-				enemy[i]->HitStageCollision(stagefloor);
+				//敵が死亡中でないなら
+				if (enemy[i]->GetEnemyDeathFlg() == false)
+				{
+					//各オブジェクトとの当たり判定処理
+					enemy[i]->HitStageCollision(stagefloor);
+				}
 
 
 				//敵がどのオブジェクトとも着地していない場合
