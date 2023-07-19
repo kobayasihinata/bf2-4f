@@ -161,13 +161,9 @@ void Enemy::Update()
 				}
 
 				//‰E“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
-				if (move_right_flg == true)
+				if (PAD_INPUT::GetLStick().ThumbX > 10000 || move_right_flg == true)
 				{
 					enemy_state = E_FLY_RIGHT;
-					if (para_flg == true)
-					{
-						enemy_state = PARACHUTE_RIGHT;
-					}
 					last_input = 0;
 					if (acs_right < MAX_SPEED)
 					{
@@ -187,13 +183,9 @@ void Enemy::Update()
 				}
 
 				//¶“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
-				if (move_left_flg == true)
+				if (PAD_INPUT::GetLStick().ThumbX < -10000 || move_left_flg == true)
 				{
 					enemy_state = E_FLY_LEFT;
-					if (para_flg == true)
-					{
-						enemy_state = PARACHUTE_LEFT;
-					}
 					last_input = 1;
 					if (acs_left < MAX_SPEED)
 					{
@@ -213,11 +205,36 @@ void Enemy::Update()
 				}
 
 				//ƒWƒƒƒ“ƒv“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
-				if (jump_flg == true && para_flg == false)
+				if ((PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || jump_flg == true) && para_flg == false)
 				{
+					if (PAD_INPUT::GetLStick().ThumbX < -10000 || move_left_flg == true)
+					{
+						if (acs_left < MAX_SPEED)
+						{
+							acs_left += 4;
+							acs_up -= 3;
+						}
+						if (acs_right > 0)
+						{
+							acs_right--;
+						}
+					}
+					if (PAD_INPUT::GetLStick().ThumbX > 10000 || move_right_flg == true)
+					{
+						if (acs_right < MAX_SPEED)
+						{
+							acs_right += 4;
+							acs_up -= 3;
+						}
+						if (acs_left > 0)
+						{
+							acs_left--;
+
+						}
+					}
 					if (jump_int == 0)
 					{
-						anim_boost = 30;
+						anim_boost = 10;
 						jump_int = JUMP_INTERVAL;
 
 						if (jump_combo < MAX_JUMP)
@@ -255,6 +272,12 @@ void Enemy::Update()
 				if (jump_int > 0)
 				{
 					jump_int--;
+				}
+
+				//ˆÚ“®‹——£‚ð•Û‘¶
+				if ((acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) != 0)
+				{
+					last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
 				}
 
 				//ˆÚ“®
@@ -319,8 +342,9 @@ void Enemy::Update()
 		}
 		else
 		{
+		para_flg = false;
 		anim_boost = 15;
-		if (last_input == 0)
+		if (last_move_x > 0)
 		{
 			enemy_state = DEATH_RIGHT;
 		}
@@ -352,6 +376,14 @@ void Enemy::Update()
 	}
 	if (para_flg == true)
 	{
+		if (last_move_x < 0)
+		{
+			enemy_state = PARACHUTE_LEFT;
+		}
+		else
+		{
+			enemy_state = PARACHUTE_RIGHT;
+		}
 		if (frame % 15 == 0)
 		{
 			para_anim++;

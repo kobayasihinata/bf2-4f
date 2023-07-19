@@ -93,8 +93,7 @@ AbstractScene* GameMain::Update()
 				enemy[i]->SetOnShareFlg(true);
 			}
 			enemy[i]->Update();
-			enemy[i]->EnemyMoveLeft();
-			enemy[i]->EnemyJump();
+
 
 			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
