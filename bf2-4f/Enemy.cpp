@@ -18,7 +18,7 @@ Enemy::Enemy(int x,int y,int level)
 	jump_combo = 0;
 	jump_cd = 0;
 	frame = 0;
-	balloon = 1;
+	balloon = 0;
 	wait_time = 0;
 	charge = 0;
 	enemy_level = level;
@@ -28,7 +28,7 @@ Enemy::Enemy(int x,int y,int level)
 	death_flg = false;
 	death_acs = -120;
 	damage = 0;
-	protect = 0;
+	protect = -1;
 	show_flg = true;
 	is_player = false;
 	onfloor_flg = false;
@@ -57,6 +57,9 @@ Enemy::Enemy(int x,int y,int level)
 
 	last_move_x = 1;
 	last_input = 1;
+
+	test_score = 0;
+
 }
 
 Enemy::~Enemy()
@@ -73,6 +76,12 @@ void Enemy::Update()
 	{
 		if (death_flg == false)
 		{
+			//ダメージ実験
+			if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
+			{
+				test_score += ApplyDamege();
+			}
+
 			//パラシュート着地後の待機時間処理
 			if (--wait_time >= 0)
 			{
@@ -88,6 +97,7 @@ void Enemy::Update()
 			//風船を膨らませる	
 			else if (charge < 6)
 			{
+				anim_boost = 0;
 				if (last_input == 0)
 				{
 					enemy_state = CHARGE_LEFT;
@@ -104,11 +114,15 @@ void Enemy::Update()
 			//風船を膨らませたなら
 			else
 			{
+				//一瞬だけ無敵（ApplyDamegeが反応しないようにしてある）
+				if (--protect < 0)protect = -1;
 				//最初の風船を膨らませる時はレベルを上げないで、２回目以降はレベルを上げる処理
 				if (first_flg == false)
 				{
 					if (levelup_once == false)
 					{
+						balloon = 1;
+						protect = 4;
 						EnemyLevelUp();
 						levelup_once = true;
 					}
@@ -117,6 +131,8 @@ void Enemy::Update()
 				{
 					if (levelup_once == false)
 					{
+						balloon = 1;
+						protect = 4;
 						first_flg = false;
 						levelup_once = true;
 					}
@@ -179,6 +195,10 @@ void Enemy::Update()
 						{
 							acs_right--;
 						}
+						if (para_flg == true)
+						{
+							acs_right--;
+						}
 					}
 				}
 
@@ -198,6 +218,10 @@ void Enemy::Update()
 					if (acs_left > 0)
 					{
 						if (frame % 10 == 0)
+						{
+							acs_left--;
+						}
+						if (para_flg == true)
 						{
 							acs_left--;
 						}
@@ -232,6 +256,16 @@ void Enemy::Update()
 
 						}
 					}
+					//ジャンプ中のアニメーション
+					if (frame % 5 == 0)
+					{
+						enemy_anim++;
+					}
+					if (enemy_anim > 3)
+					{
+						enemy_anim = 0;
+					}
+
 					if (jump_int == 0)
 					{
 						anim_boost = 10;
@@ -308,14 +342,6 @@ void Enemy::Update()
 					ReflectionPY();
 				}
 
-				//ダメージ実験
-				if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
-				{
-					ApplyDamege();
-				}
-				//無限に値が膨れ上がるの防止
-				if (--protect < 0)protect = -1;
-
 				//風船が0こになったなら
 				if (balloon <= 0)
 				{
@@ -366,7 +392,7 @@ void Enemy::Update()
 	}
 
 	//アニメーション
-	if (frame % (20 - anim_boost) == 0)
+	if (frame % (20 - anim_boost) == 0 && enemy_state != E_FLY_LEFT && enemy_state != E_FLY_RIGHT)
 	{
 		enemy_anim++;
 		if (enemy_anim > 3)
@@ -403,7 +429,7 @@ void Enemy::Draw()const
 	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
 	////敵の風船当たり判定の描画(仮)
 	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
-	//DrawFormatString(0, 20, 0x00ff00, "%d", charge);
+	DrawFormatString(0, 20, 0x00ff00, "%d", test_score);
 	//DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", balloon);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
@@ -433,10 +459,10 @@ void Enemy::Draw()const
 			case E_FLY_LEFT:
 				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 				break;
-			case  PARACHUTE_RIGHT:
+			case PARACHUTE_RIGHT:
 				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
 				break;
-			case  PARACHUTE_LEFT:
+			case PARACHUTE_LEFT:
 				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
 				break;
 			case DEATH_RIGHT:
@@ -505,7 +531,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			my_x[0] < sub_x[0])
 		{
 			//StageFloorより右には行けないようにする
-			location.x = sub_x[0] - area.width;
+			location.x = sub_x[0] - area.width-5;
 			//1回だけ左へ跳ね返る
 			if (ref_once_left == FALSE)
 			{
@@ -523,7 +549,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			my_x[1]>sub_x[1])
 		{
 			//StageFloorより左には行けないようにする
-			location.x = sub_x[1];
+			location.x = sub_x[1]+5;
 			//1回だけ右へ跳ね返る
 			if (ref_once_right == FALSE)
 			{
@@ -613,18 +639,32 @@ void Enemy::ReflectionPY()
 	acs_up = 0;
 }
 
-void Enemy::ApplyDamege()
+int Enemy::ApplyDamege()
 {
 	if (protect < 0)
 	{
 		if (balloon > 0)
 		{
 			BalloonDec();
+			return 500;
 		}
 		else
 		{
-			EnemyDeath();
+			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
+			{
+				EnemyDeath();
+				return 1000;
+			}
+			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
+			{
+				EnemyDeath();
+				return 750;
+			}
 		}
+	}
+	else
+	{
+		return 0;
 	}
 }
 
@@ -676,11 +716,9 @@ void Enemy::EnemyReset()
 	jump_combo = 0;
 	jump_cd = 0;
 	wait_time = (GetRand(100) + 300) - (enemy_level * 30);
-	balloon = 1;
 	para_flg = false;
 	charge = 0;
 	damage = 0;
-	protect = 4;
 	move_right_flg = false;
 	move_left_flg = false;
 	jump_flg = false;

@@ -230,7 +230,7 @@ void Player::Update()
 						}
 					}
 
-					//アニメーション
+					//ジャンプ中のアニメーション
 					if (frame % 5 == 0)
 					{
 						player_anim++;
@@ -551,7 +551,7 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			my_x[0] < sub_x[0])
 		{
 			//StageFloorより右には行けないようにする
-			location.x = sub_x[0] - area.width;
+			location.x = sub_x[0] - area.width-5;
 			//1回だけ左へ跳ね返る
 			if (ref_once_left == FALSE)
 			{
@@ -569,7 +569,7 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 			my_x[1]>sub_x[1])
 		{
 			//StageFloorより左には行けないようにする
-			location.x = sub_x[1];
+			location.x = sub_x[1]+5;
 			//1回だけ右へ跳ね返る
 			if (ref_once_right == FALSE)
 			{

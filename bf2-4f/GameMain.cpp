@@ -9,7 +9,7 @@ GameMain::GameMain()
 	player = new Player();
 	for (int i = 0; i < 3; i++)
 	{
-		enemy[i] = new Enemy(250+i*50, 210, 1);
+		enemy[i] = new Enemy(220+i*80, 210, i+1);
 	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);

@@ -63,6 +63,8 @@ private:
     float last_move_x;    //移動方向保存用
     bool last_input;    //入力方向保存用(0=右　1=左)
 
+    int test_score; //点数加算確認用
+
 public:
 
     //コンストラクタ
@@ -95,8 +97,8 @@ public:
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
 
-    //プレイヤーとぶつかった時にパラシュート状態になるか死亡モーションに入るか判断する
-    void ApplyDamege();
+    //ダメージを与えて敵の状態に対応した処理を行い、対応したスコアを返す
+    int ApplyDamege();
 
     //敵の風船を減らす
     void BalloonDec();
