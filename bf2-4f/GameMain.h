@@ -19,6 +19,8 @@ private:
     int seaImage;
     bool Pouse;
 
+    int score;  //仮のスコア格納場所
+
 public:
 
     //コンストラクタ

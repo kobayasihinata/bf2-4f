@@ -395,7 +395,7 @@ void Player::Update()
 					ReflectionPY();
 				}
 
-				if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))BalloonDec();
+				if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_THUMB))BalloonDec();
 			}
 			//ÉäÉXÉ|Å[Éìå„ÇÃñ≥ìGèÛë‘Ç»ÇÁ
 			else

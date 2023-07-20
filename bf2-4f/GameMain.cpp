@@ -19,6 +19,8 @@ GameMain::GameMain()
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	Pouse = false;
+
+	score = 0;
 }
 
 GameMain::~GameMain()
@@ -82,6 +84,7 @@ AbstractScene* GameMain::Update()
 			//onshare_flgをtrueにする
 			player->SetOnShareFlg(true);
 		}
+		//敵の数だけ繰り返す
 		for (int i = 0; i < 3; i++)
 		{
 			//敵が各オブジェクトのいずれかに着地している場合
@@ -97,7 +100,9 @@ AbstractScene* GameMain::Update()
 
 			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
-
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_SHOULDER))score += enemy[0]->ApplyDamege();
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER))score += enemy[1]->ApplyDamege();
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_THUMB))score += enemy[2]->ApplyDamege();
 		player->Update();
 		fish->Update(player);
 		if (fish->GetIsPreyedOnPlayer() == true)
@@ -137,8 +142,15 @@ void GameMain::Draw()const
 	{
 		stagefloor->Draw();
 	}
-	DrawString(0, 0, "ゲームメイン", 0xff0000);
 	fish->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
+
+
+	//スコア表示（仮）
+	DrawFormatString(600, 0, 0x00ffff, "%d",score);
+	DrawString(0, 0, "LBボタン：敵１にダメージ", 0xff0000);
+	DrawString(0, 20, "RBボタン：敵２にダメージ", 0xff0000);
+	DrawString(0, 40, "左スティック押し込み：敵３にダメージ", 0xff0000);
+	DrawString(0, 60, "右スティック押し込み：プレイヤーにダメージ", 0xff0000);
 }

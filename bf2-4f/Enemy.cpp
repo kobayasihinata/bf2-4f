@@ -662,10 +662,7 @@ int Enemy::ApplyDamege()
 			}
 		}
 	}
-	else
-	{
-		return 0;
-	}
+	return 0;
 }
 
 void Enemy::BalloonDec()
