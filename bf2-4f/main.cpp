@@ -1,7 +1,7 @@
 #include"DxLib.h"
 #include"SceneManager.h"
 #include"PadInput.h"
-
+#include"Stage.h"
 #include"Title.h"
 #include"GameMain.h"
 #include"Define.h"
@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	try
 	{
-		sceneMng = new SceneManager((AbstractScene*)new Title());
+		sceneMng = new SceneManager((AbstractScene*)new Stage());
 	}
 	catch (const char* err)
 	{
