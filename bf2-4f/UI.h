@@ -6,8 +6,8 @@ public:
 	mutable int gScore = 0;
 
 public:
-	int Score();		    //スコア計算
-	UI();   //画像読込処理
+	int Score();		    
+	UI();  
 	~UI() {};
 	void Draw()const;
 	int UI_image1;
