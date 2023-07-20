@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include "Enemy_AI.h"
 
-Enemy_AI::Enemy_AI()
+ENEMY_AI::ENEMY_AI()
 {
-	// やること:プレイヤー座標と敵の座標を更新
 	P_x = 100;
 	P_y = 100;
 	E_x = 200;
@@ -11,12 +10,19 @@ Enemy_AI::Enemy_AI()
 	// パターンのリセット
 	pattern = 0;
 }
-Enemy_AI::~Enemy_AI()
+ENEMY_AI::~ENEMY_AI()
 {
 
 }
-void Enemy_AI::Update()
+int ENEMY_AI::Update(int px, int py, int ex, int ey)
 {
+	P_x = px;
+	P_y = py;
+	E_x = ex;
+	E_y = ey;
+
+	pattern = 0;
+
     // プレイヤーがどの方向にいるか(x座標)
 	if (E_x > P_x) {
 		pattern += 0;
@@ -42,5 +48,5 @@ void Enemy_AI::Update()
 	}
 
 	//パターンを返す
-	return;
+	return pattern;
 }

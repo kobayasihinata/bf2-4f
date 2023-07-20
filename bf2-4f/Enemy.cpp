@@ -76,6 +76,8 @@ void Enemy::Update()
 	{
 		if (death_flg == false)
 		{
+
+
 			//É_ÉÅÅ[ÉWé¿å±
 			//if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
 			//{

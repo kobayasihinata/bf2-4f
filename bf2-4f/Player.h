@@ -116,4 +116,5 @@ public:
             onfloor_flg = true;
         }
     }
+    Location GetPlayerLocation() { return location; }
 };

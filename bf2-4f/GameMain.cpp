@@ -10,6 +10,7 @@ GameMain::GameMain()
 	for (int i = 0; i < 3; i++)
 	{
 		enemy[i] = new Enemy(220+i*80, 210, i+1);
+		enemy_ai[i] = new ENEMY_AI;
 	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
@@ -20,6 +21,7 @@ GameMain::GameMain()
 
 	Pouse = false;
 
+	px, py, ex, ey = 0;
 	score = 0;
 }
 
@@ -50,7 +52,7 @@ AbstractScene* GameMain::Update()
 			if (player->GetPlayerDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
-				player->HitStageCollision(stagefloor);
+				player->HitStageCollision(stagefloor);				
 			}
 
 			//プレイヤーがどのオブジェクトとも着地していない場合
@@ -66,6 +68,31 @@ AbstractScene* GameMain::Update()
 				{
 					//各オブジェクトとの当たり判定処理
 					enemy[i]->HitStageCollision(stagefloor);
+					//敵のAI取得
+					switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
+						enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+					{
+					case 0:
+						enemy[i]->EnemyMoveLeft();
+						enemy[i]->EnemyJump();
+						break;
+					case 1:
+						enemy[i]->EnemyMoveRight();
+						enemy[i]->EnemyJump();
+						break;
+					case 2:
+						enemy[i]->EnemyMoveLeft();
+						enemy[i]->EnemyJumpStop();
+						break;
+					case 3:
+						enemy[i]->EnemyMoveRight();
+						enemy[i]->EnemyJumpStop();
+						break;
+					case 4:
+						break;
+					default:
+						break;
+					}
 				}
 
 				//敵がどのオブジェクトとも着地していない場合
@@ -95,7 +122,6 @@ AbstractScene* GameMain::Update()
 				enemy[i]->SetOnShareFlg(true);
 			}
 			enemy[i]->Update();
-
 
 			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
