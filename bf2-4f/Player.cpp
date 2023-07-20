@@ -389,8 +389,9 @@ void Player::Update()
 				if (underwater_flg == false)
 				{
 					location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+					location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 				}
-				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
+
 
 				//画面端に行くとテレポート
 				if (location.x < 0 - PLAYER_WIDTH)
@@ -748,6 +749,7 @@ void Player::PlayerRespawn(float x, float y)
 	death_wait = 120;
 	respawn = 600;
 	show_flg=true;
+	underwater_flg=false;
 }
 
 void Player::BalloonDec()
