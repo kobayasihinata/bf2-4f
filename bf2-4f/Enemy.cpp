@@ -177,7 +177,7 @@ void Enemy::Update()
 				}
 
 				//‰E“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
-				if (PAD_INPUT::GetLStick().ThumbX > 10000 || move_right_flg == true)
+				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
 					last_input = 1;
 					if (acs_right < MAX_SPEED)
@@ -202,7 +202,7 @@ void Enemy::Update()
 				}
 
 				//¶“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
-				if (PAD_INPUT::GetLStick().ThumbX < -10000 || move_left_flg == true)
+				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
 					last_input = -1;
 					if (acs_left < MAX_SPEED)
@@ -227,9 +227,9 @@ void Enemy::Update()
 				}
 
 				//ƒWƒƒƒ“ƒv“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
-				if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || jump_flg == true && para_flg == false)
+				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
-					if (move_left_flg == true)
+					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < MAX_SPEED)
 						{
@@ -241,7 +241,7 @@ void Enemy::Update()
 							acs_right--;
 						}
 					}
-					if (move_right_flg == true)
+					if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_right_flg == true)
 					{
 						if (acs_right < MAX_SPEED)
 						{
