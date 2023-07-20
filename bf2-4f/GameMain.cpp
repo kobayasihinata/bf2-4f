@@ -141,7 +141,7 @@ AbstractScene* GameMain::Update()
 		{
 			player->SetShowFlg(true);
    			player->SetPlayerLife(-1);
-			player->PlayerRespawn(300, 350);
+			player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 			fish->SetRespawnFlg(false);
 		}
 
