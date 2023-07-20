@@ -170,8 +170,8 @@ void GameMain::Draw()const
 			enemy[i]->Draw();
 		}
 	}
-	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
+	DrawGraph(159, 444, seaImage, TRUE);
 
 
 	//スコア表示（仮）

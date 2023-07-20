@@ -299,7 +299,7 @@ void Player::Update()
 
 					if (jump_int == 0)
 					{
-						jump_int = JUMP_INTERVAL;
+						jump_int = JUMP_INTERVAL-3;
 						jump_cd = 5;
 						//A‚ğ‰Ÿ‚¹‚Î‰Ÿ‚·‚Ù‚Çã‰Á‘¬“x‚ªã‚ª‚é
 						if (jump_combo < MAX_JUMP)
@@ -749,6 +749,7 @@ void Player::PlayerRespawn(float x, float y)
 	death_wait = 120;
 	respawn = 600;
 	show_flg=true;
+	underwater_flg=false;
 }
 
 void Player::BalloonDec()
