@@ -258,7 +258,7 @@ void Player::Update()
 							}
 							jump_combo += 2;
 						}
-						if (acs_up, MAX_SPEED)
+						if (acs_up < MAX_SPEED)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
@@ -267,6 +267,12 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
+					//ジャンプ中のアニメーション
+					player_anim++;
+					if (player_anim > 3)
+					{
+						player_anim = 0;
+					}
 					if (PAD_INPUT::GetLStick().ThumbX < -10000)
 					{
 						if (acs_left < MAX_SPEED)
@@ -311,12 +317,13 @@ void Player::Update()
 				else if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
 				{
 					jump_flg = true;
-					if (--jump_cd <= 0)
+					if (--jump_cd < 0)
 					{
-						jump_cd = 0;
+						jump_flg = false;
+						jump_cd = -1;
 						if (acs_up > 0)
 						{
-							acs_up--;
+							acs_up -= 2;
 						}
 					}
 					else
