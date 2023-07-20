@@ -7,17 +7,18 @@
 
 enum PLAYER_STATE
 {
-     IDOL_RIGHT = 0,
-     IDOL_LEFT,
-     WALK_LEFT,
-     TURN_LEFT,
-     WALK_RIGHT,
-     TURN_RIGHT,
-     FLY_LEFT,
-     FLY_RIGHT,
-     DEATH,
-     THUNDER_DEATH,
-     INVINCIBLE
+    IDOL_RIGHT = 0,
+    IDOL_LEFT,
+    WALK_LEFT,
+    TURN_LEFT,
+    WALK_RIGHT,
+    TURN_RIGHT,
+    FLY_LEFT,
+    FLY_RIGHT,
+    DEATH,
+    THUNDER_DEATH,
+    INVINCIBLE,
+    SUBMERGED
 };
 class Player :public BoxCollider
 {
@@ -37,11 +38,12 @@ private:
     bool jump_flg;      //ジャンプ中か判断
 
     int frame;      //フレーム計測用
-
     int balloon;        //残り風船
     int life;            //残機
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
+    int  death_wait;      //死亡後の待ち時間
+    bool  underwater_flg;      //水没中か判断
     int respawn;   //リスポーン後の無敵中か判断
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
@@ -49,11 +51,13 @@ private:
     bool ref_once_right;
 
     int player_image[30];   //プレイヤー画像
+    int splash_image[3];   //プレイヤー画像
     int player_anim;    //プレイヤーアニメーション用
+    int splash_anim;    //水没アニメーション用
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
-    bool last_input;    //入力方向保存用(0=左　1=右)
+    int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
 public:
 
@@ -115,4 +119,5 @@ public:
             onfloor_flg = true;
         }
     }
+    Location GetPlayerLocation() { return location; }
 };

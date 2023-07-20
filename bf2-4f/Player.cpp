@@ -23,9 +23,11 @@ Player::Player()
 	frame = 0;
 	balloon = 2;
 	life = 2;
-	respawn = 15;
+	respawn = 600;
 	death_flg = false;
 	death_acs = -120;
+	death_wait = 120;
+	underwater_flg = false;
 	show_flg = true;
 	is_player = true;
 	onfloor_flg = false;
@@ -35,7 +37,9 @@ Player::Player()
 	ref_once_right = FALSE;
 
 	LoadDivGraph("images/Player/Player_Animation.png", 30, 8, 4, 64, 64, player_image);
+	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
 	player_anim = 0;
+	splash_anim = 0;
 	anim_boost = 0;
 
 	last_move_x = 1;
@@ -63,11 +67,11 @@ void Player::Update()
 				//落下(床と触れていない事を検知する)
 				if (onfloor_flg != true)
 				{
-					if (last_move_x <= 0) 
+					if (last_input < 0) 
 					{
 						player_state = FLY_LEFT;
 					}
-					else
+					else if(last_input > 0)
 					{
 						player_state = FLY_RIGHT; 
 					}
@@ -146,7 +150,7 @@ void Player::Update()
 					if (onfloor_flg != true)
 					{
 						player_state = FLY_LEFT;
-						last_input = 0;
+						last_input = -1;
 						if (acs_left < MAX_SPEED)
 						{
 							acs_left += 2;
@@ -254,7 +258,7 @@ void Player::Update()
 							}
 							jump_combo += 2;
 						}
-						if (acs_up, MAX_SPEED)
+						if (acs_up < MAX_SPEED)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
@@ -263,6 +267,12 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
+					//ジャンプ中のアニメーション
+					player_anim++;
+					if (player_anim > 3)
+					{
+						player_anim = 0;
+					}
 					if (PAD_INPUT::GetLStick().ThumbX < -10000)
 					{
 						if (acs_left < MAX_SPEED)
@@ -307,12 +317,13 @@ void Player::Update()
 				else if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
 				{
 					jump_flg = true;
-					if (--jump_cd <= 0)
+					if (--jump_cd < 0)
 					{
-						jump_cd = 0;
+						jump_flg = false;
+						jump_cd = -1;
 						if (acs_up > 0)
 						{
-							acs_up--;
+							acs_up -= 2;
 						}
 					}
 					else
@@ -375,7 +386,10 @@ void Player::Update()
 				}
 
 				//移動
-				location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+				if (underwater_flg == false)
+				{
+					location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+				}
 				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 
 				//画面端に行くとテレポート
@@ -395,12 +409,16 @@ void Player::Update()
 					ReflectionPY();
 				}
 
-				if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))BalloonDec();
+				if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_THUMB))BalloonDec();
 			}
 			//リスポーン後の無敵状態なら
 			else
 			{
-				anim_boost = 10;
+				if (PAD_INPUT::GetLStick().ThumbX > 10000 || PAD_INPUT::GetLStick().ThumbX < -10000 || PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnButton(XINPUT_BUTTON_B))
+			{
+				respawn = 0;
+			}
+				anim_boost = 15;
 				player_state = INVINCIBLE;
 			}
 
@@ -439,11 +457,25 @@ void Player::Update()
 	{
 		anim_boost = 0;
 	}
+
 	//プレイヤーが海面より下へ行くと残機 -1
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
-		life = life - 1;
-		PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		underwater_flg = true;
+		//プレイヤーを水没中に設定
+		player_state = SUBMERGED;
+		location.y = 470;
+		if (frame % 10 == 0)
+		{
+			splash_anim++;
+		}
+		if (--death_wait < 0)
+		{
+			underwater_flg = false;
+			splash_anim = 0;
+			life = life - 1;
+			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		}
 	}
 }
 
@@ -464,34 +496,37 @@ void Player::Draw()const
 		switch (player_state)
 		{
 		case IDOL_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
 			break;
 		case IDOL_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
 			break;
 		case WALK_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
 			break;
 		case TURN_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
 			break;
 		case WALK_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
 			break;
 		case TURN_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
 			break;
 		case FLY_LEFT:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
 			break;
 		case FLY_RIGHT:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
 			break;
 		case DEATH:
-			DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 3)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 3)], TRUE);
 			break;
 		case INVINCIBLE:
-			DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[2 + (player_anim % 2)], TRUE);
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[2 + (player_anim % 2)], TRUE);
+			break;
+		case SUBMERGED:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y-45, splash_image[0 + splash_anim], TRUE);
 			break;
 		}
 	}
@@ -675,6 +710,7 @@ void Player::OnFloor()
 
 void Player::ReflectionMX()
 {
+	last_input *= -1;
 	land_acs_right = 0;
 	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
@@ -682,6 +718,7 @@ void Player::ReflectionMX()
 
 void Player::ReflectionPX()
 {
+	last_input *= -1;
 	land_acs_left = 0;
 	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
@@ -709,7 +746,8 @@ void Player::PlayerRespawn(float x, float y)
 	balloon = 2;
 	death_flg = false;
 	death_acs = -120;
-	respawn = 60;
+	death_wait = 120;
+	respawn = 600;
 	show_flg=true;
 }
 
@@ -717,6 +755,6 @@ void Player::BalloonDec()
 {
 	if (--balloon <= 0)
 	{
-		death_flg = TRUE;
+		death_flg = true;
 	}
 }

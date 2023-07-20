@@ -10,6 +10,7 @@ GameMain::GameMain()
 	for (int i = 0; i < 3; i++)
 	{
 		enemy[i] = new Enemy(220+i*80, 210, i+1);
+		enemy_ai[i] = new ENEMY_AI;
 	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
@@ -19,6 +20,9 @@ GameMain::GameMain()
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	Pouse = false;
+
+	px, py, ex, ey = 0;
+	score = 0;
 }
 
 GameMain::~GameMain()
@@ -48,7 +52,7 @@ AbstractScene* GameMain::Update()
 			if (player->GetPlayerDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
-				player->HitStageCollision(stagefloor);
+				player->HitStageCollision(stagefloor);				
 			}
 
 			//プレイヤーがどのオブジェクトとも着地していない場合
@@ -64,8 +68,32 @@ AbstractScene* GameMain::Update()
 				{
 					//各オブジェクトとの当たり判定処理
 					enemy[i]->HitStageCollision(stagefloor);
+					//敵のAI取得
+					switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
+						enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+					{
+					case 0:
+						enemy[i]->EnemyMoveLeft();
+						enemy[i]->EnemyJump();
+						break;
+					case 1:
+						enemy[i]->EnemyMoveRight();
+						enemy[i]->EnemyJump();
+						break;
+					case 2:
+						enemy[i]->EnemyMoveLeft();
+						enemy[i]->EnemyJumpStop();
+						break;
+					case 3:
+						enemy[i]->EnemyMoveRight();
+						enemy[i]->EnemyJumpStop();
+						break;
+					case 4:
+						break;
+					default:
+						break;
+					}
 				}
-
 
 				//敵がどのオブジェクトとも着地していない場合
 				if (enemy[i]->IsOnFloor(stagefloor) != true) {
@@ -82,6 +110,7 @@ AbstractScene* GameMain::Update()
 			//onshare_flgをtrueにする
 			player->SetOnShareFlg(true);
 		}
+		//敵の数だけ繰り返す
 		for (int i = 0; i < 3; i++)
 		{
 			//敵が各オブジェクトのいずれかに着地している場合
@@ -95,6 +124,11 @@ AbstractScene* GameMain::Update()
 			enemy[i]->Update();
 
 		}
+
+		//実験用ダメージ処理
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_SHOULDER))score += enemy[0]->ApplyDamege();
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER))score += enemy[1]->ApplyDamege();
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_THUMB))score += enemy[2]->ApplyDamege();
 
 		player->Update();
 		fish->Update();
@@ -135,7 +169,7 @@ AbstractScene* GameMain::Update()
 			player->SetShowFlg(true);
    			player->SetPlayerLife(-1);
 			player->SetIsDie(false);
-			player->PlayerRespawn(300, 350);
+			player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 			fish->SetRespawnFlg(false);
 		}
 
@@ -149,13 +183,6 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	if (Pouse == false) {
-		player->Draw();
-		for (int i = 0; i < 3; i++)
-		{
-			enemy[i]->Draw();
-		}
-	}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
@@ -164,8 +191,21 @@ void GameMain::Draw()const
 	{
 		stagefloor->Draw();
 	}
-	DrawString(0, 0, "ゲームメイン", 0xff0000);
+	if (Pouse == false) {
+		player->Draw();
+		for (int i = 0; i < 3; i++)
+		{
+			enemy[i]->Draw();
+		}
+	}
+	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
 
-	DrawGraph(159, 444, seaImage, TRUE);
+
+	//スコア表示（仮）
+	DrawFormatString(600, 0, 0x00ffff, "%d",score);
+	DrawString(0, 0, "LBボタン：敵１にダメージ", 0xff0000);
+	DrawString(0, 20, "RBボタン：敵２にダメージ", 0xff0000);
+	DrawString(0, 40, "左スティック押し込み：敵３にダメージ", 0xff0000);
+	DrawString(0, 60, "右スティック押し込み：プレイヤーにダメージ", 0xff0000);
 }
