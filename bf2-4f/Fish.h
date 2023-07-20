@@ -29,7 +29,7 @@ private:
     int frame_count;                    //フレーム計測用
     int player_flying_on_sea_timer;     //プレイヤーが海面を飛んでいる時の計測用
 
-    float speed;                        //速さ
+    const float speed = 1.2f;           //速さ
     
     bool is_rising;                     //さかなが海から飛び上がっているか？
     bool is_falling;                    //さかなが海に落ちているか？
@@ -37,6 +37,7 @@ private:
     bool is_preying_on_enemy;           //捕食しているのは敵か？
     bool reversal_flg;                  //画像は反転するか？
     bool respawn_flg;                   //プレイヤーをリスポーンさせるか？
+    bool bubble_spawn_flg;
 
 public:
     //コンストラクタ
@@ -46,18 +47,26 @@ public:
     ~Fish();
 
     //描画以外の更新を実装
-    void Update(BoxCollider* boxcollider);
+    void Update();
 
     //描画に関することを実装
     void Draw()const;
 
+    void TargetPrey(BoxCollider* boxcollider);
+
+    bool CheckSeaSurface(BoxCollider* boxcollider);
+
     //is_preyed_on_playerの値を取得する
     bool GetIsPreyedOnPlayer() { return is_preying_on_player; }
+
+    bool GetIsPreyedOnEnemyr() { return is_preying_on_enemy; }
 
     //respawn_flgの値を取得する
     bool GetRespawnFlg() { return respawn_flg; }
 
     //respawn_flgの値を引数に設定する
     void SetRespawnFlg(const bool flg) { respawn_flg = flg; }
+
+    void NotAtSeaSurface();
 };
 

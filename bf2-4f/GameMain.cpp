@@ -94,20 +94,47 @@ AbstractScene* GameMain::Update()
 			}
 			enemy[i]->Update();
 
-
-			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
 
 		player->Update();
-		fish->Update(player);
-		if (fish->GetIsPreyedOnPlayer() == true)
+		fish->Update();
+		if (fish->CheckSeaSurface(player) == true)
 		{
-     		player->SetShowFlg(false);
-		}	
+			fish->TargetPrey(player);
+			if (fish->GetIsPreyedOnPlayer() == true)
+			{
+     			player->SetShowFlg(false);
+				player->SetIsDie(true);
+			}
+		}
+		else
+		{
+			fish->NotAtSeaSurface();
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			if (fish->CheckSeaSurface(enemy[i]) == true)
+			{
+				fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
+
+				fish->TargetPrey(enemy[i]);
+
+				if (fish->GetIsPreyedOnEnemyr() == true)
+				{
+					enemy[i]->SetShowFlg(false);
+				}
+				if (enemy[i]->GetShowFlg() == false)
+				{
+					enemy[i]->SetIsDie(true);
+				}
+			}
+		}
+
 		if (fish->GetRespawnFlg() == true)
 		{
 			player->SetShowFlg(true);
    			player->SetPlayerLife(-1);
+			player->SetIsDie(false);
 			player->PlayerRespawn(300, 350);
 			fish->SetRespawnFlg(false);
 		}
@@ -139,6 +166,6 @@ void GameMain::Draw()const
 	}
 	DrawString(0, 0, "ƒQ[ƒ€ƒƒCƒ“", 0xff0000);
 	fish->Draw();
+
 	DrawGraph(159, 444, seaImage, TRUE);
-	fish->Draw();
 }
