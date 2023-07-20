@@ -2,6 +2,7 @@
 #include "AbstractScene.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Enemy_AI.h"
 #include"StageFloor.h"
 #include"StageWall.h"
 #include"Fish.h"
@@ -12,12 +13,15 @@ class GameMain :
 private:
     Player* player;
     Enemy* enemy[3];
+    ENEMY_AI* enemy_ai[3];
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
 
     int seaImage;
     bool Pouse;
+
+    int px, py, ex, ey;
 
 public:
 

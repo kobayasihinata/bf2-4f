@@ -150,4 +150,7 @@ public:
 
     //“G‚ª¶‚«‚Ä‚¢‚é‚©æ“¾
     int GetFlg() { return flg; }
+
+    //“G‚ÌˆÊ’u‚ğæ“¾
+    Location GetEnemyLocation() { return location; }
 };
