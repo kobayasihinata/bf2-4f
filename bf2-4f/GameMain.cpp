@@ -155,13 +155,6 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	if (Pouse == false) {
-		player->Draw();
-		for (int i = 0; i < 3; i++)
-		{
-			enemy[i]->Draw();
-		}
-	}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
@@ -170,7 +163,13 @@ void GameMain::Draw()const
 	{
 		stagefloor->Draw();
 	}
-	fish->Draw();
+	if (Pouse == false) {
+		player->Draw();
+		for (int i = 0; i < 3; i++)
+		{
+			enemy[i]->Draw();
+		}
+	}
 	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
 
