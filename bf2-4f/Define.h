@@ -11,7 +11,7 @@
 #define PLAYER_BALLOON_HEIGHT  25	//プレイヤーの風船の高さ
 
 #define PLAYER_RESPAWN_POS_X 100	//プレイヤーのリスポーン位置(X)
-#define PLAYER_RESPAWN_POS_Y 369	//プレイヤーのリスポーン位置(Y)
+#define PLAYER_RESPAWN_POS_Y 370	//プレイヤーのリスポーン位置(Y)
 
 #define MAX_SPEED 250		//最高速度と最低速度の差を調整する用
 #define MAX_SPEED_LAND 100	//最高速度と最低速度の差を調整する用（地面）

@@ -23,9 +23,10 @@ Player::Player()
 	frame = 0;
 	balloon = 2;
 	life = 2;
-	respawn = 15;
+	respawn = 600;
 	death_flg = false;
 	death_acs = -120;
+	death_wait = 120;
 	show_flg = true;
 	is_player = true;
 	onfloor_flg = false;
@@ -63,11 +64,11 @@ void Player::Update()
 				//落下(床と触れていない事を検知する)
 				if (onfloor_flg != true)
 				{
-					if (last_move_x <= 0) 
+					if (last_input < 0) 
 					{
 						player_state = FLY_LEFT;
 					}
-					else
+					else if(last_input > 0)
 					{
 						player_state = FLY_RIGHT; 
 					}
@@ -146,7 +147,7 @@ void Player::Update()
 					if (onfloor_flg != true)
 					{
 						player_state = FLY_LEFT;
-						last_input = 0;
+						last_input = -1;
 						if (acs_left < MAX_SPEED)
 						{
 							acs_left += 2;
@@ -400,7 +401,11 @@ void Player::Update()
 			//リスポーン後の無敵状態なら
 			else
 			{
-				anim_boost = 10;
+			if (PAD_INPUT::GetLStick().ThumbX > 10000 || PAD_INPUT::GetLStick().ThumbX < -10000 || PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnButton(XINPUT_BUTTON_B))
+			{
+				respawn = 0;
+			}
+				anim_boost = 15;
 				player_state = INVINCIBLE;
 			}
 
@@ -442,8 +447,11 @@ void Player::Update()
 	//プレイヤーが海面より下へ行くと残機 -1
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
-		life = life - 1;
-		PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		if (--death_wait < 0)
+		{
+			life = life - 1;
+			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		}
 	}
 }
 
@@ -675,6 +683,7 @@ void Player::OnFloor()
 
 void Player::ReflectionMX()
 {
+	last_input *= -1;
 	land_acs_right = 0;
 	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
@@ -682,6 +691,7 @@ void Player::ReflectionMX()
 
 void Player::ReflectionPX()
 {
+	last_input *= -1;
 	land_acs_left = 0;
 	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
@@ -709,7 +719,8 @@ void Player::PlayerRespawn(float x, float y)
 	balloon = 2;
 	death_flg = false;
 	death_acs = -120;
-	respawn = 60;
+	death_wait = 120;
+	respawn = 600;
 	show_flg=true;
 }
 

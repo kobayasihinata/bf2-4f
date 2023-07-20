@@ -68,7 +68,6 @@ AbstractScene* GameMain::Update()
 					enemy[i]->HitStageCollision(stagefloor);
 				}
 
-
 				//敵がどのオブジェクトとも着地していない場合
 				if (enemy[i]->IsOnFloor(stagefloor) != true) {
 					//onshare_flgをfalseにする
@@ -100,9 +99,12 @@ AbstractScene* GameMain::Update()
 
 			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
+
+		//実験用ダメージ処理
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_SHOULDER))score += enemy[0]->ApplyDamege();
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER))score += enemy[1]->ApplyDamege();
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_THUMB))score += enemy[2]->ApplyDamege();
+
 		player->Update();
 		fish->Update(player);
 		if (fish->GetIsPreyedOnPlayer() == true)
