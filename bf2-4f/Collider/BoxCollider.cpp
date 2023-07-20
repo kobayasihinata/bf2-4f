@@ -11,7 +11,9 @@ BoxCollider::BoxCollider(Location location, Area area)
 {
 	colliderType = E_Collider::Box;
 	this->area = area;
-
+	show_flg = true;
+	is_player = false;
+	sava_enemy_level = 0;
 }
 
 //-----------------------------------

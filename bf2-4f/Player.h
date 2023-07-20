@@ -16,7 +16,8 @@ enum PLAYER_STATE
      FLY_LEFT,
      FLY_RIGHT,
      DEATH,
-     THUNDER_DEATH
+     THUNDER_DEATH,
+     INVINCIBLE
 };
 class Player :public BoxCollider
 {
@@ -33,25 +34,26 @@ private:
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
     int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
+    bool jump_flg;      //ジャンプ中か判断
 
     int frame;      //フレーム計測用
 
     int balloon;        //残り風船
     int life;            //残機
     bool death_flg;      //死亡しているか判断
-    bool respawn_flg;   //リスポーン後の無敵中か判断
-    float ref_y;      //反発用変数（ｙ）
+    int  death_acs;      //死亡中の落ち方制御
+    int respawn;   //リスポーン後の無敵中か判断
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
-    bool ref_once1;
-    bool ref_once2;
+    bool ref_once_left;
+    bool ref_once_right;
 
     int player_image[30];   //プレイヤー画像
     int player_anim;    //プレイヤーアニメーション用
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
-    bool last_input;    //移動方向保存用(0=左　1=右)
+    bool last_input;    //入力方向保存用(0=左　1=右)
 
 public:
 
@@ -88,11 +90,17 @@ public:
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
 
+    //プレイヤーの残機を設定する
+    void SetPlayerLife(const int life) { this->life = this->life + life; }
+
+    //プレイヤーが無敵中か取得する
+    int GetPlayerRespawn() { return respawn; }
+
     //プレイヤーが死んでいる途中かを取得する
     int GetPlayerDeathFlg() { return death_flg; }
 
     //プレイヤーリスポーン
-    void PlayerRespawn(int x,int y);
+    void PlayerRespawn(float x, float y);
 
     //プレイヤーの風船を減らす
     void BalloonDec();
