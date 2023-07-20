@@ -2,24 +2,23 @@
 #include "UI.h"
 #include "GameMain.h"
 
-void UI::Init() {
-	gScore = 0;
-}
+  UI::UI() 
+ {
+	UI_image1 = LoadGraph("images/UI/UI_HiScore.png");
+	UI_image2 = LoadGraph("images/UI/UI_Score.png");
+	//UI_image3 = LoadDivGraph("images/UI/UI_NumAnimation.png", 20, 8, 4, 64, 64, UI_image);
+	Score_image = LoadGraph("images/Score/GetScore_500.png");
 
-int UI::Score() {
-//	LoadDivGraph("images/Score/", 40, 8, 4, 64, 64, );
-	return 0;
 }
+  
+  void UI::Draw()const
+  {
+	  DrawGraph(300, 5, UI_image1, TRUE);
+	  DrawGraph(170, 5, UI_image2, TRUE);
+	  DrawGraph(170, 5, UI_image3, TRUE);
+  }
 
-int UI::LoadImages() {
-	LoadDivGraph("images/UI/UI_HiScore.png", 40, 8, 4, 64, 64, UI_image);
-	return 0;
-}
-
-//void UI::DrawScore()
-//{
-//	//スコアの表示
-//	SetFontSize(50);
-//	DrawFormatString(990, 290, 0xffffff, "%d", gScore);
-//	DrawString(990, 230, "Score", 0xffffff);
-//}
+ int UI::Score()
+ {
+	 return 0;
+ }

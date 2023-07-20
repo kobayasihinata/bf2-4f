@@ -5,6 +5,7 @@
 #include"StageFloor.h"
 #include"StageWall.h"
 #include"Fish.h"
+#include"UI.h"
 
 class GameMain :
     public AbstractScene
@@ -15,6 +16,7 @@ private:
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
+    UI* ui;
 
     int seaImage;
     bool Pouse;

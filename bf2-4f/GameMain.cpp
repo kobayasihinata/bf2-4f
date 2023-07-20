@@ -15,7 +15,7 @@ GameMain::GameMain()
 	staegwall = new StageWall();
 	fish = new Fish();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
-
+	ui = new UI();
 	Pouse = false;
 }
 
@@ -27,6 +27,7 @@ GameMain::~GameMain()
 	delete stagefloor[0];
 	delete stagefloor[1];
 	delete stagefloor[2];
+	delete ui;
 	DeleteGraph(seaImage);
 }
 
@@ -119,4 +120,5 @@ void GameMain::Draw()const
 	DrawString(0, 0, "ƒQ[ƒ€ƒƒCƒ“", 0xff0000);
 	fish->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
+	ui->Draw();
 }
