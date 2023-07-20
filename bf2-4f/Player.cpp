@@ -389,8 +389,9 @@ void Player::Update()
 				if (underwater_flg == false)
 				{
 					location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+					location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 				}
-				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
+
 
 				//画面端に行くとテレポート
 				if (location.x < 0 - PLAYER_WIDTH)
@@ -471,7 +472,6 @@ void Player::Update()
 		}
 		if (--death_wait < 0)
 		{
-			underwater_flg = false;
 			splash_anim = 0;
 			life = life - 1;
 			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
