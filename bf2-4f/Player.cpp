@@ -471,7 +471,6 @@ void Player::Update()
 		}
 		if (--death_wait < 0)
 		{
-			underwater_flg = false;
 			splash_anim = 0;
 			life = life - 1;
 			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
