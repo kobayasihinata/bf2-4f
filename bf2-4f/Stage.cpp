@@ -46,10 +46,10 @@ AbstractScene* Stage::Update()
 void Stage::Draw() const
 {
 	//ステージ１
-	/*DrawGraph(0,416,landleft, TRUE);
+	DrawGraph(0,416,landleft, TRUE);
 	DrawGraph(479,416,landright, TRUE);
 	DrawGraph(159,444,sea, TRUE);
-	DrawGraph(180,290,footing1, TRUE);*/
+	DrawGraph(180,290,footing1, TRUE);
 	//ステージ２
 	//DrawGraph(0,416,landleft, TRUE);
 	//DrawGraph(479,416,landright, TRUE);
@@ -66,10 +66,23 @@ void Stage::Draw() const
 	//DrawGraph(310, 200, footing4, TRUE); //	真ん中
 	//DrawGraph(490, 100, footing4, TRUE); //	右
 	//DrawGraph(200, 100, footing5, TRUE);
-	//ステージ５
-	DrawGraph(0, 416, landleft2, TRUE);
+	//ステージ４
+	/*DrawGraph(0, 416, landleft2, TRUE);
 	DrawGraph(479, 416, landright2, TRUE);
 	DrawGraph(159, 444, sea, TRUE);
 	DrawGraph(350, 370, footing6, TRUE);
-	DrawGraph(390, 320, footing6, TRUE);
+	DrawGraph(455, 270, footing6, TRUE);
+	DrawGraph(230, 290, footing6, TRUE);
+	DrawGraph(120, 250, footing6, TRUE);
+	DrawGraph(310, 180, footing6, TRUE);*/
+	//ステージ５
+	/*DrawGraph(0, 416, landleft2, TRUE);
+	DrawGraph(479, 416, landright2, TRUE);
+	DrawGraph(159, 444, sea, TRUE);
+	DrawGraph(200, 325, footing6, TRUE);
+	DrawGraph(370, 325, footing6, TRUE);
+	DrawGraph(220, 80, footing6, TRUE);
+	DrawGraph(100, 200, footing7, TRUE);
+	DrawGraph(260, 170, footing7, TRUE);
+	DrawGraph(500, 160, footing8, TRUE);*/
 }
