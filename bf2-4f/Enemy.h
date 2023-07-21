@@ -61,7 +61,7 @@ private:
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
-    bool last_input;    //入力方向保存用(0=右　1=左)
+    int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
     int test_score; //点数加算確認用
 
@@ -150,4 +150,7 @@ public:
 
     //敵が生きているか取得
     int GetFlg() { return flg; }
+
+    //敵の位置を取得
+    Location GetEnemyLocation() { return location; }
 };

@@ -76,6 +76,8 @@ void Enemy::Update()
 	{
 		if (death_flg == false)
 		{
+
+
 			//ダメージ実験
 			//if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
 			//{
@@ -85,11 +87,11 @@ void Enemy::Update()
 			//パラシュート着地後の待機時間処理
 			if (--wait_time >= 0)
 			{
-				if (last_input == 0)
+				if (last_input == -1)
 				{
 					enemy_state = E_IDOL_LEFT;
 				}
-				else
+				else if(last_input == 1)
 				{
 					enemy_state = E_IDOL_RIGHT;
 				}
@@ -98,11 +100,11 @@ void Enemy::Update()
 			else if (charge < 6)
 			{
 				anim_boost = 0;
-				if (last_input == 0)
+				if (last_input == -1)
 				{
 					enemy_state = CHARGE_LEFT;
 				}
-				else
+				else if(last_input == 1)
 				{
 					enemy_state = CHARGE_RIGHT;
 				}
@@ -141,11 +143,11 @@ void Enemy::Update()
 				//落下(床と触れていない事を検知する)
 				if (onshare_flg == false)
 				{
-					if (last_move_x < 0)
+					if (last_input < 0)
 					{
 						enemy_state = E_FLY_LEFT;
 					}
-					else
+					else if(last_input > 0)
 					{
 						enemy_state = E_FLY_RIGHT;
 					}
@@ -160,11 +162,11 @@ void Enemy::Update()
 				//床に触れているときの処理
 				else
 				{
-					if (last_input == 0)
+					if (last_input == -1)
 					{
 						enemy_state = E_FLY_LEFT;
 					}
-					else
+					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
 					}
@@ -177,10 +179,9 @@ void Enemy::Update()
 				}
 
 				//右入力されている時の処理
-				if (move_right_flg == true)
+				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
-					enemy_state = E_FLY_RIGHT;
-					last_input = 0;
+					last_input = 1;
 					if (acs_right < MAX_SPEED)
 					{
 						acs_right += 2;
@@ -203,10 +204,9 @@ void Enemy::Update()
 				}
 
 				//左入力されている時の処理
-				if (move_left_flg == true)
+				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
-					enemy_state = E_FLY_LEFT;
-					last_input = 1;
+					last_input = -1;
 					if (acs_left < MAX_SPEED)
 					{
 						acs_left += 2;
@@ -229,9 +229,9 @@ void Enemy::Update()
 				}
 
 				//ジャンプ入力されている時の処理
-				if (jump_flg == true && para_flg == false)
+				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
-					if (move_left_flg == true)
+					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < MAX_SPEED)
 						{
@@ -243,7 +243,7 @@ void Enemy::Update()
 							acs_right--;
 						}
 					}
-					if (move_right_flg == true)
+					if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_right_flg == true)
 					{
 						if (acs_right < MAX_SPEED)
 						{
@@ -348,11 +348,11 @@ void Enemy::Update()
 					if (++damage < 10)
 					{
 						anim_boost = 15;
-						if (last_input == 0)
+						if (last_input == 1)
 						{
 							enemy_state = DEATH_RIGHT;
 						}
-						else
+						else if (last_input == -1)
 						{
 							enemy_state = DEATH_LEFT;
 						}
@@ -623,12 +623,14 @@ void Enemy::OnFloor()
 }
 void Enemy::ReflectionMX()
 {
+	last_input *= -1;
 	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
 }
 
 void Enemy::ReflectionPX()
 {
+	last_input *= -1;
 	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
 }
@@ -662,10 +664,7 @@ int Enemy::ApplyDamege()
 			}
 		}
 	}
-	else
-	{
-		return 0;
-	}
+	return 0;
 }
 
 void Enemy::BalloonDec()
