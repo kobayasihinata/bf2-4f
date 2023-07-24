@@ -55,7 +55,7 @@ private:
     int player_anim;    //プレイヤーアニメーション用
     int splash_anim;    //水没アニメーション用
     int anim_boost;     //アニメーション加速用
-
+    int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;    //移動方向保存用
     int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
 

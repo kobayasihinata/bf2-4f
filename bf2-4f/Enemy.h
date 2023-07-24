@@ -45,7 +45,8 @@ private:
     int  death_acs;      //死亡中の落ち方制御
     int damage;         //やられモーション中待機
     int protect;        //復活後一瞬だけ無敵(バグ解消のため)
-    int wait_time;           //風船を膨らませる前か判断
+    int wait_time;           //風船を膨らませる前の待機時間
+    int wait_flg;           //風船を膨らませる前か判断
     bool onfloor_flg;        //StageFloorの上かどうか
     bool onshare_flg;       //StageFloorの上ということを共有するかどうか
     bool move_right_flg;    //右移動中か判断
@@ -156,6 +157,9 @@ public:
 
     //敵が生きているか取得
     int GetFlg() { return flg; }
+
+    //敵が風船を膨らませる前か取得
+    int GetWaitFlg() { return wait_flg; }
 
     //敵の位置を取得
     Location GetEnemyLocation() { return location; }

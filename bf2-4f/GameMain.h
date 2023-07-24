@@ -38,5 +38,7 @@ public:
     //描画に関することを実装
     void Draw() const override;
 
+    //敵とプレイヤーが接触した時のダメージ処理
+    void Damege(int i);
 };
 

@@ -20,6 +20,7 @@ Enemy::Enemy(int x,int y,int level)
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
+	wait_flg = true;
 	charge = 0;
 	enemy_level = level;
 	first_flg = true;
@@ -79,6 +80,7 @@ void Enemy::Update()
 			//パラシュート着地後の待機時間処理
 			if (--wait_time >= 0)
 			{
+				wait_flg = true;
 				if (last_input == -1)
 				{
 					enemy_state = E_IDOL_LEFT;
@@ -119,6 +121,7 @@ void Enemy::Update()
 						protect = 4;
 						EnemyLevelUp();
 						levelup_once = true;
+						wait_flg = false;
 					}
 				}
 				else
@@ -129,6 +132,7 @@ void Enemy::Update()
 						protect = 4;
 						first_flg = false;
 						levelup_once = true;
+						wait_flg = false;
 					}
 				}
 

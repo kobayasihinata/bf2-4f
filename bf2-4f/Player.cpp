@@ -41,6 +41,7 @@ Player::Player()
 	player_anim = 0;
 	splash_anim = 0;
 	anim_boost = 0;
+	jump_anim_boost = 0;
 
 	last_move_x = 1;
 	last_input = 1;
@@ -299,6 +300,7 @@ void Player::Update()
 						}
 					}
 
+					jump_anim_boost = 4;
 					if (jump_int == 0)
 					{
 						jump_int = JUMP_INTERVAL - 3;
@@ -366,7 +368,16 @@ void Player::Update()
 						acs_up--;
 					}
 				}
-
+				//ジャンプ連打時アニメーション処理
+				if (jump_anim_boost > 0 && frame % 5 == 0)
+				{
+					player_anim++;
+					jump_anim_boost--;
+					if (player_anim > 3)
+					{
+						player_anim = 0;
+					}
+				}
 				//ジャンプ連打数を減らす
 				if (jump_combo > 0)
 				{
