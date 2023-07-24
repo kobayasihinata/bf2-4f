@@ -21,6 +21,7 @@ Fish::Fish()
 	reversal_flg = false;
 	respawn_flg = false;
 	bubble_spawn_flg = true;
+	target_flg = false;
 }
 
 Fish::~Fish()
@@ -52,7 +53,7 @@ void Fish::Update()
 	}
 
 	//泳いでいるなら
-	if (is_rising == false && is_falling == false && is_preying_on_player == false)
+	if (is_rising == false && is_falling == false && is_preying_on_player == false && is_preying_on_enemy)
 	{
 		//乱数を取得
 		probability = GetRand(99);
@@ -95,6 +96,8 @@ void Fish::Update()
 		}
 		reversal_flg = false;
 		fish_state = Rising_Fish_1;
+		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
+		target_flg = false;
 	}
 
 	if (respawn_flg == true)
@@ -105,13 +108,14 @@ void Fish::Update()
 	if (bubble_spawn_flg == false)
 	{
 		is_preying_on_enemy = false;
+		//bubble_spawn_flg = true;
 	}
 }
 
 void Fish::Draw()const
 {
 	//BoxCollider::Draw();
-	DrawFormatString(0, 100, 0xff00ff, "%d", is_rising);
+	//DrawFormatString(0, 100, 0xff00ff, "%d", player_flying_on_sea_timer);
 	if (reversal_flg == false)
 	{
 		DrawGraphF(location.x, location.y - IMAGE_SHIFT, fish_image[fish_state], TRUE);
@@ -126,30 +130,26 @@ void Fish::Draw()const
 void Fish::TargetPrey(BoxCollider* boxcollider)
 {
 
-	//プレイヤーが海面にいるとき
-	//プレイヤーが海面＋プレイヤーの高さ分より低く飛んでいるとき
 	//さかなが何も捕食していないとき
-	if (boxcollider->GetMin().x >= SEASURFACE_START_X && boxcollider->GetMax().x <= SEASURFACE_END_X &&
-		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_HEIGHT &&
-		is_preying_on_player == false && is_preying_on_enemy == false &&
-		boxcollider->GetIsDie() == false)
+	if (is_preying_on_player == false && is_preying_on_enemy == false &&
+		boxcollider->GetIsDie() == false && target_flg == false)
 	{
+		player_flying_on_sea_timer--;
 		//3秒以上かつ確率で
-		if (--player_flying_on_sea_timer < 0 && probability < 10)
+		if (player_flying_on_sea_timer < 0 && probability < 80)
 		{
 			//海面まで上がる処理
 			if (GetMax().y >= SEA_SURFACE)
 			{
-				is_rising = true;
-				location.x = boxcollider->GetCenter().x - area.width / 2;
-				//location.y -= speed;
-
-				//プレイヤーがさかなの中心より右にいるなら
-				if (this->GetCenter().x < boxcollider->GetMin().x)
+				//対象がさかなの中心より右にいるなら
+				if (this->GetCenter().x <= boxcollider->GetMin().x)
 				{
 					//画像を反転させる
-   					reversal_flg = !reversal_flg;
+					reversal_flg = true; 
 				}
+				is_rising = true;
+				location.x = boxcollider->GetCenter().x - area.width / 2;
+				//location.y -= speed;				
 				
 				if (GetCenter().y < SEA_SURFACE)
 				{
@@ -159,16 +159,21 @@ void Fish::TargetPrey(BoxCollider* boxcollider)
 						fish_state = Rising_Fish_3;
 					}
 				}
-
-				if (boxcollider->GetMax().y > GetMax().y)
+			}
+			else
+			{
+				if (boxcollider->GetMin().x < this->GetMax().x && boxcollider->GetMax().x > this->GetMin().x &&
+					this->GetMin().y <= boxcollider->GetMax().y)
 				{
-					is_rising = false;
 					if (boxcollider->GetIsPlayer() == true)
 					{
+						is_preying_on_player = true;
 						fish_state = PreyingOn_Player;
+						target_flg = true;
 					}
 					else
 					{
+						is_preying_on_enemy = true;
 						if (GetSaveEnemyLevel() == 1)
 						{
 							fish_state = PreyingOn_Enemy_1;
@@ -181,32 +186,16 @@ void Fish::TargetPrey(BoxCollider* boxcollider)
 						{
 							fish_state = PreyingOn_Enemy_3;
 						}
+						target_flg = true;
 					}
 				}
-			}
-			else
-			{
 				is_rising = false;
 				is_falling = true;
-				if (boxcollider->GetIsPlayer() == true)
-				{
-					is_preying_on_player = true;
-				}
-				else
-				{
-					is_preying_on_enemy = true;
-				}
 			}
 		}
 	}
-	else
-	{
-		is_falling = true;
-		is_rising = false;
-		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
-	}
 	
-	if (is_falling == true)
+	if (boxcollider->GetIsDie() == true)
 	{
 		location.y = location.y + speed;
 		if (GetMax().y > SEA_SURFACE)
@@ -222,25 +211,6 @@ void Fish::TargetPrey(BoxCollider* boxcollider)
 			fish_state = Falling_Fish_3;
 		}
 	}
-
-	if (location.y > UNDER_WATER)
-	{
-		is_falling = false;
-		location.y = UNDER_WATER;
-		is_rising = false;
-		is_preying_on_enemy = false;
-		if (is_preying_on_player == true)
-		{
-			respawn_flg = true;
-		}
-		reversal_flg = false;
-		fish_state = Rising_Fish_1;
-	}
-
-	if (respawn_flg == true)
-	{
-		is_preying_on_player = false;
-	}
 }
 
 
@@ -250,7 +220,7 @@ bool Fish::CheckSeaSurface(BoxCollider* boxcollider)
 
 	if (boxcollider->GetMin().x >= SEASURFACE_START_X && boxcollider->GetMax().x <= SEASURFACE_END_X &&
 		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_HEIGHT &&
-		is_preying_on_player == false && is_preying_on_enemy == false)
+		boxcollider->GetIsDie() == false && target_flg == false)
 	{
 		ret = true;
 	}
@@ -262,5 +232,4 @@ void Fish::NotAtSeaSurface()
 {
 	is_falling = true;
 	is_rising = false;
-	player_flying_on_sea_timer = SECOND_TO_FRAME(3);
 }

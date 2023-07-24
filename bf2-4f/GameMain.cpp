@@ -132,36 +132,49 @@ AbstractScene* GameMain::Update()
 
 		player->Update();
 		fish->Update();
+		if (player->GetIsDie() == true)
+		{
+			fish->NotAtSeaSurface();
+		}
+
 		if (fish->CheckSeaSurface(player) == true)
 		{
 			fish->TargetPrey(player);
 			if (fish->GetIsPreyedOnPlayer() == true)
 			{
-     			player->SetShowFlg(false);
+				player->SetShowFlg(false);
 				player->SetIsDie(true);
 			}
 		}
 		else
 		{
-			fish->NotAtSeaSurface();
-		}
-		for (int i = 0; i < 3; i++)
-		{
-			if (fish->CheckSeaSurface(enemy[i]) == true)
+			for (int i = 0; i < 3; i++)
 			{
-				fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
-
-				fish->TargetPrey(enemy[i]);
-
-				if (fish->GetIsPreyedOnEnemyr() == true)
+				if (fish->CheckSeaSurface(enemy[i]) == true)
 				{
-					enemy[i]->SetShowFlg(false);
-				}
-				if (enemy[i]->GetShowFlg() == false)
-				{
-					enemy[i]->SetIsDie(true);
+					fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
+
+					fish->TargetPrey(enemy[i]);
+
+					if (fish->GetIsPreyedOnEnemyr() == true)
+					{
+						enemy[i]->SetShowFlg(false);
+					}
+					if (enemy[i]->GetShowFlg() == false)	//念のため
+					{
+						enemy[i]->SetIsDie(true);
+					}
 				}
 			}
+
+		}
+
+		if (fish->CheckSeaSurface(player) == false &&
+			fish->CheckSeaSurface(enemy[0]) == false &&
+			fish->CheckSeaSurface(enemy[1]) == false &&
+			fish->CheckSeaSurface(enemy[2]) == false)
+		{
+			fish->NotAtSeaSurface();
 		}
 
 		if (fish->GetRespawnFlg() == true)
@@ -198,9 +211,8 @@ void GameMain::Draw()const
 			enemy[i]->Draw();
 		}
 	}
-	DrawGraph(159, 444, seaImage, TRUE);
 	fish->Draw();
-
+	DrawGraph(159, 444, seaImage, TRUE);
 
 	//スコア表示（仮）
 	DrawFormatString(600, 0, 0x00ffff, "%d",score);

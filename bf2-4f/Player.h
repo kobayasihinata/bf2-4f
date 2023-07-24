@@ -120,4 +120,6 @@ public:
         }
     }
     Location GetPlayerLocation() { return location; }
+
+    int GetPlayerState() { return player_state; }
 };
