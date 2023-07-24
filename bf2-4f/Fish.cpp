@@ -219,7 +219,7 @@ bool Fish::CheckSeaSurface(BoxCollider* boxcollider)
 	bool ret = false;
 
 	if (boxcollider->GetMin().x >= SEASURFACE_START_X && boxcollider->GetMax().x <= SEASURFACE_END_X &&
-		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_HEIGHT &&
+		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_ENEMY_HEIGHT &&
 		boxcollider->GetIsDie() == false && target_flg == false)
 	{
 		ret = true;
