@@ -8,8 +8,8 @@ Enemy::Enemy(int x,int y,int level)
 	flg = true;
 	location.x = x;
 	location.y = y;
-	area.height = PLAYER_HEIGHT;
-	area.width = PLAYER_WIDTH;
+	area.height = PLAYER_ENEMY_HEIGHT;
+	area.width = PLAYER_ENEMY_WIDTH;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -76,14 +76,6 @@ void Enemy::Update()
 	{
 		if (death_flg == false)
 		{
-
-
-			//ダメージ実験
-			//if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
-			//{
-			//	test_score += ApplyDamege();
-			//}
-
 			//パラシュート着地後の待機時間処理
 			if (--wait_time >= 0)
 			{
@@ -235,7 +227,7 @@ void Enemy::Update()
 					{
 						if (acs_left < MAX_SPEED)
 						{
-							acs_left += 4;
+							acs_left += 3;
 							acs_up -= 3;
 						}
 						if (acs_right > 0)
@@ -247,7 +239,7 @@ void Enemy::Update()
 					{
 						if (acs_right < MAX_SPEED)
 						{
-							acs_right += 4;
+							acs_right += 3;
 							acs_up -= 3;
 						}
 						if (acs_left > 0)
@@ -280,7 +272,10 @@ void Enemy::Update()
 							}
 							jump_combo += 2;
 						}
-						acs_up += jump_combo * 3 + balloon;
+						if (acs_up < MAX_SPEED / 3)
+						{
+							acs_up += jump_combo * 3 + balloon;
+						}
 					}
 				}
 				//ジャンプ入力されていない時の処理
@@ -326,13 +321,13 @@ void Enemy::Update()
 				}
 
 				//画面端に行くとテレポート
-				if (location.x < 0 - PLAYER_WIDTH)
+				if (location.x < 0 - PLAYER_ENEMY_WIDTH)
 				{
 					location.x = SCREEN_WIDTH;
 				}
 				if (location.x > SCREEN_WIDTH)
 				{
-					location.x = 0 - PLAYER_WIDTH + 2;
+					location.x = 0 - PLAYER_ENEMY_WIDTH + 2;
 				}
 
 				//画面上に当たると跳ね返る
@@ -579,6 +574,68 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 	}
 }
 
+int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
+{
+	//自分の当たり判定の範囲
+	float my_x[2]{ 0,0 };
+	float my_y[2]{ 0,0 };
+
+	//相手の当たり判定の範囲
+	float sub_x[2]{ 0,0 };
+	float sub_y[2]{ 0,0 };
+
+	//自分の当たり判定の範囲の計算
+	my_x[0] = location.x;
+	my_y[0] = location.y;
+	my_x[1] = my_x[0] + area.width;
+	my_y[1] = my_y[0] + area.height;
+
+	//相手の当たり判定の範囲の計算
+	sub_x[0] = box_collider->GetLocation().x;
+	sub_y[0] = box_collider->GetLocation().y;
+	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
+	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
+
+	//StageFloorの横の範囲内
+	if (my_x[0] < sub_x[1] - 5 &&
+		sub_x[0] + 5 < my_x[1])
+	{
+		//PlayerがStageFloorより下へ行こうとした場合
+		if (my_y[1] > sub_y[0] &&
+			my_y[0] < sub_y[0])
+		{
+			return 4;
+		}
+
+		//PlayerがStageFloorより上へ行こうとした場合
+		if (my_y[0] < sub_y[1] &&
+			my_y[1] > sub_y[1])
+		{
+			return 3;
+		}
+	}
+
+	//StaegFloorの縦の範囲内
+	if (my_y[0] < sub_y[1] - 5 &&
+		sub_y[0] + 5 < my_y[1])
+	{
+		//PlayerがStageFloorより右へ行こうとした場合
+		if (my_x[1] > sub_x[0] &&
+			my_x[0] < sub_x[0])
+		{
+			return 1;
+		}
+
+		//PlayerがStageFloorより左へ行こうとした場合
+		if (my_x[0] < sub_x[1] &&
+			my_x[1]>sub_x[1])
+		{
+			return 2;
+		}
+	}
+	return 0;
+}
+
 bool Enemy::IsOnFloor(const BoxCollider* box_collider)const
 {
 	bool ret = false;
@@ -639,6 +696,12 @@ void Enemy::ReflectionPY()
 {
 	acs_down = fabsf(acs_up - acs_down) * 1.8f;
 	acs_up = 0;
+}
+
+void Enemy::ReflectionMY()
+{
+	acs_up = fabsf(acs_up - acs_down) * 0.8f + 0.1f;
+	acs_down = 0;
 }
 
 int Enemy::ApplyDamege()

@@ -62,7 +62,7 @@ void Fish::Update(BoxCollider* boxcollider)
 	//プレイヤーが海面＋プレイヤーの高さ分より低く飛んでいるとき
 	//さかなが何も捕食していないとき
 	if (boxcollider->GetMin().x >= SEASURFACE_START_X && boxcollider->GetMax().x <= SEASURFACE_END_X &&
-		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_HEIGHT &&
+		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_ENEMY_HEIGHT &&
 		is_preying_on_player == false && is_preying_on_enemy == false)
 	{
 		//3秒以上かつ確率で

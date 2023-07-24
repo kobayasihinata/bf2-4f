@@ -6,10 +6,11 @@
 
 GameMain::GameMain()
 {
+	max_enemy = 3;
 	player = new Player();
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < max_enemy; i++)
 	{
-		enemy[i] = new Enemy(220+i*80, 210, i+1);
+		enemy[i] = new Enemy(220+i*80, 210, 1);
 		enemy_ai[i] = new ENEMY_AI;
 	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
@@ -28,7 +29,7 @@ GameMain::GameMain()
 GameMain::~GameMain()
 {
 	delete player;
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < max_enemy; i++)
 	{
 		delete enemy[i];
 	}
@@ -61,7 +62,7 @@ AbstractScene* GameMain::Update()
 				player->SetOnShareFlg(false);
 			}
 
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < max_enemy; i++)
 			{
 				//“G‚ª€–S’†‚Å‚È‚¢‚È‚ç
 				if (enemy[i]->GetEnemyDeathFlg() == false)
@@ -111,7 +112,7 @@ AbstractScene* GameMain::Update()
 			player->SetOnShareFlg(true);
 		}
 		//“G‚Ì”‚¾‚¯ŒJ‚è•Ô‚·
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < max_enemy; i++)
 		{
 			//“G‚ªŠeƒIƒuƒWƒFƒNƒg‚Ì‚¢‚¸‚ê‚©‚É’…’n‚µ‚Ä‚¢‚éê‡
 			if (enemy[i]->IsOnFloor(stagefloor[0]) == true ||
@@ -120,6 +121,54 @@ AbstractScene* GameMain::Update()
 			{
 				//onshare_flg‚ğtrue‚É‚·‚é
 				enemy[i]->SetOnShareFlg(true);
+			}
+			//ƒvƒŒƒCƒ„[‚Æ“G‚Ì“–‚½‚è”»’è
+			switch (player->HitEnemyCollision(enemy[i]))
+			{
+			case 1:
+				player->ReflectionMX();
+				enemy[i]->ReflectionPX();
+				break;
+			case 2:
+				player->ReflectionPX();
+				enemy[i]->ReflectionMX();
+				break;
+			case 3:
+				player->ReflectionPY();
+				enemy[i]->ReflectionMY();
+				break;
+			case 4:
+				enemy[i]->ReflectionPY();
+				player->ReflectionMY();
+				break;
+			default:
+				break;
+			}
+
+			//“G‚Æ“G‚Ì“–‚½‚è”»’è
+			for (int j = i+1; j < max_enemy; j++)
+			{
+				switch (enemy[j]->HitEnemyCollision(enemy[i]))
+				{
+				case 1:
+					enemy[j]->ReflectionMX();
+					enemy[i]->ReflectionPX();
+					break;
+				case 2:
+					enemy[j]->ReflectionPX();
+					enemy[i]->ReflectionMX();
+					break;
+				case 3:
+					enemy[j]->ReflectionPY();
+					enemy[i]->ReflectionMY();
+					break;
+				case 4:
+					enemy[j]->ReflectionMY();
+					enemy[i]->ReflectionPY();
+					break;
+				default:
+					break;
+				}
 			}
 			enemy[i]->Update();
 
@@ -165,7 +214,7 @@ void GameMain::Draw()const
 	}
 	if (Pouse == false) {
 		player->Draw();
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy[i]->Draw();
 		}

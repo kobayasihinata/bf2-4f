@@ -12,8 +12,8 @@ class GameMain :
 {
 private:
     Player* player;
-    Enemy* enemy[3];
-    ENEMY_AI* enemy_ai[3];
+    Enemy* enemy[4];
+    ENEMY_AI* enemy_ai[4];
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
@@ -22,6 +22,7 @@ private:
     bool Pouse;
     int px, py, ex, ey;
     int score;  //‰¼‚ÌƒXƒRƒAŠi”[êŠ
+    int max_enemy;      //“G‚Ì”
 
 public:
 
