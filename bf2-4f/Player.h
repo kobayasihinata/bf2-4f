@@ -55,7 +55,7 @@ private:
     int player_anim;    //プレイヤーアニメーション用
     int splash_anim;    //水没アニメーション用
     int anim_boost;     //アニメーション加速用
-
+    int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;    //移動方向保存用
     int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
@@ -76,6 +76,9 @@ public:
     //ステージのオブジェクトとの当たり判定処理
     void HitStageCollision(const BoxCollider* box_collider);
 
+    //敵との当たり判定処理 (1=敵が右に、プレイヤーが左方向に反射　2=敵が左に、プレイヤーが右方向に反射　3=敵が上に、プレイヤーが下方向に反射　4=敵が下に、プレイヤーが上方向に反射)
+    int HitEnemyCollision(const BoxCollider* box_collider);
+
     //床の上かどうか判定
     bool IsOnFloor(const BoxCollider* box_collider)const;
 
@@ -90,6 +93,9 @@ public:
 
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
+
+    //Y方向に移動しているときに-Y方向に反射する
+    void ReflectionMY();
 
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
@@ -119,6 +125,8 @@ public:
             onfloor_flg = true;
         }
     }
+
+
     Location GetPlayerLocation() { return location; }
 
     int GetPlayerState() { return player_state; }

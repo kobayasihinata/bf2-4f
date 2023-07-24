@@ -45,7 +45,8 @@ private:
     int  death_acs;      //死亡中の落ち方制御
     int damage;         //やられモーション中待機
     int protect;        //復活後一瞬だけ無敵(バグ解消のため)
-    int wait_time;           //風船を膨らませる前か判断
+    int wait_time;           //風船を膨らませる前の待機時間
+    int wait_flg;           //風船を膨らませる前か判断
     bool onfloor_flg;        //StageFloorの上かどうか
     bool onshare_flg;       //StageFloorの上ということを共有するかどうか
     bool move_right_flg;    //右移動中か判断
@@ -82,6 +83,9 @@ public:
     //ステージのオブジェクトとの当たり判定処理
     void HitStageCollision(const BoxCollider* box_collider);
 
+    //敵との当たり判定処理
+    int HitEnemyCollision(const BoxCollider* box_collider);
+
     //床の上かどうか判定
     bool IsOnFloor(const BoxCollider* box_collider)const;
 
@@ -96,6 +100,9 @@ public:
 
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
+
+    //Y方向に移動しているときに-Y方向に反射する
+    void ReflectionMY();
 
     //ダメージを与えて敵の状態に対応した処理を行い、対応したスコアを返す
     int ApplyDamege();
@@ -150,6 +157,9 @@ public:
 
     //敵が生きているか取得
     int GetFlg() { return flg; }
+
+    //敵が風船を膨らませる前か取得
+    int GetWaitFlg() { return wait_flg; }
 
     //敵の位置を取得
     Location GetEnemyLocation() { return location; }

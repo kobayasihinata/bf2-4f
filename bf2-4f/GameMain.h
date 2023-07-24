@@ -12,8 +12,8 @@ class GameMain :
 {
 private:
     Player* player;
-    Enemy* enemy[3];
-    ENEMY_AI* enemy_ai[3];
+    Enemy* enemy[4];
+    ENEMY_AI* enemy_ai[4];
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
@@ -22,6 +22,7 @@ private:
     bool Pouse;
     int px, py, ex, ey;
     int score;  //仮のスコア格納場所
+    int max_enemy;      //敵の数
 
 public:
 
@@ -37,5 +38,7 @@ public:
     //描画に関することを実装
     void Draw() const override;
 
+    //敵とプレイヤーが接触した時のダメージ処理
+    void Damege(int i);
 };
 

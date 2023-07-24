@@ -6,10 +6,11 @@
 
 GameMain::GameMain()
 {
+	max_enemy = 3;
 	player = new Player();
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < max_enemy; i++)
 	{
-		enemy[i] = new Enemy(220+i*80, 210, i+1);
+		enemy[i] = new Enemy(220+i*80, 210, 1);
 		enemy_ai[i] = new ENEMY_AI;
 	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
@@ -28,7 +29,7 @@ GameMain::GameMain()
 GameMain::~GameMain()
 {
 	delete player;
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < max_enemy; i++)
 	{
 		delete enemy[i];
 	}
@@ -61,7 +62,7 @@ AbstractScene* GameMain::Update()
 				player->SetOnShareFlg(false);
 			}
 
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < max_enemy; i++)
 			{
 				//敵が死亡中でないなら
 				if (enemy[i]->GetEnemyDeathFlg() == false)
@@ -100,6 +101,63 @@ AbstractScene* GameMain::Update()
 					//onshare_flgをfalseにする
 					enemy[i]->SetOnShareFlg(false);
 				}
+
+				//敵が死亡モーション中で無ければ
+				if (enemy[i]->GetEnemyDeathFlg() == false)
+				{
+					//プレイヤーと敵の当たり判定
+					switch (player->HitEnemyCollision(enemy[i]))
+					{
+					case 1:
+						player->ReflectionMX();
+						enemy[i]->ReflectionPX();
+						Damege(i);
+						break;
+					case 2:
+						player->ReflectionPX();
+						enemy[i]->ReflectionMX();
+						Damege(i);
+						break;
+					case 3:
+						player->ReflectionPY();
+						enemy[i]->ReflectionMY();
+						Damege(i);
+						break;
+					case 4:
+						enemy[i]->ReflectionPY();
+						player->ReflectionMY();
+						Damege(i);
+						break;
+					default:
+						break;
+					}
+
+					//敵と敵の当たり判定
+					for (int j = i + 1; j < max_enemy; j++)
+					{
+						switch (enemy[j]->HitEnemyCollision(enemy[i]))
+						{
+						case 1:
+							enemy[j]->ReflectionMX();
+							enemy[i]->ReflectionPX();
+							break;
+						case 2:
+							enemy[j]->ReflectionPX();
+							enemy[i]->ReflectionMX();
+							break;
+						case 3:
+							enemy[j]->ReflectionPY();
+							enemy[i]->ReflectionMY();
+							break;
+						case 4:
+							enemy[j]->ReflectionMY();
+							enemy[i]->ReflectionPY();
+							break;
+						default:
+							break;
+						}
+					}
+				}
 			}
 		}
 		//プレイヤーが各オブジェクトのいずれかに着地している場合
@@ -111,7 +169,7 @@ AbstractScene* GameMain::Update()
 			player->SetOnShareFlg(true);
 		}
 		//敵の数だけ繰り返す
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < max_enemy; i++)
 		{
 			//敵が各オブジェクトのいずれかに着地している場合
 			if (enemy[i]->IsOnFloor(stagefloor[0]) == true ||
@@ -124,11 +182,6 @@ AbstractScene* GameMain::Update()
 			enemy[i]->Update();
 
 		}
-
-		//実験用ダメージ処理
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_SHOULDER))score += enemy[0]->ApplyDamege();
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER))score += enemy[1]->ApplyDamege();
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_LEFT_THUMB))score += enemy[2]->ApplyDamege();
 
 		player->Update();
 		fish->Update();
@@ -206,7 +259,7 @@ void GameMain::Draw()const
 	}
 	if (Pouse == false) {
 		player->Draw();
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy[i]->Draw();
 		}
@@ -220,4 +273,25 @@ void GameMain::Draw()const
 	DrawString(0, 20, "RBボタン：敵２にダメージ", 0xff0000);
 	DrawString(0, 40, "左スティック押し込み：敵３にダメージ", 0xff0000);
 	DrawString(0, 60, "右スティック押し込み：プレイヤーにダメージ", 0xff0000);
+}
+
+void GameMain::Damege(int i)
+{
+	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
+	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y)
+	{
+		player->BalloonDec();
+	}
+
+	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす
+	if (enemy[i]->GetLocation().y > player->GetLocation().y + BALLOON_HEIGHT)
+	{
+		score += enemy[i]->ApplyDamege();
+	}
+
+	//敵が風船を膨らませる前なら胴体に接触してもダメージが入る
+	if (enemy[i]->GetWaitFlg() == true)
+	{
+		score += enemy[i]->ApplyDamege();
+	}
 }

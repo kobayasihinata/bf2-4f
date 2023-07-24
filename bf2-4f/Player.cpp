@@ -8,8 +8,8 @@ Player::Player()
 	player_state = IDOL_RIGHT;
 	location.x = PLAYER_RESPAWN_POS_X;
 	location.y = PLAYER_RESPAWN_POS_Y;
-	area.height = PLAYER_HEIGHT;
-	area.width = PLAYER_WIDTH;
+	area.height = PLAYER_ENEMY_HEIGHT;
+	area.width = PLAYER_ENEMY_WIDTH;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -41,6 +41,7 @@ Player::Player()
 	player_anim = 0;
 	splash_anim = 0;
 	anim_boost = 0;
+	jump_anim_boost = 0;
 
 	last_move_x = 1;
 	last_input = 1;
@@ -258,7 +259,7 @@ void Player::Update()
 							}
 							jump_combo += 2;
 						}
-						if (acs_up < MAX_SPEED)
+						if (acs_up < MAX_SPEED / 2)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
@@ -267,17 +268,15 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
-					//ジャンプ中のアニメーション
-					player_anim++;
-					if (player_anim > 3)
-					{
-						player_anim = 0;
-					}
 					if (PAD_INPUT::GetLStick().ThumbX < -10000)
 					{
 						if (acs_left < MAX_SPEED)
 						{
-							acs_left += 1;
+							acs_left += 2;
+							if (acs_up > 0)
+							{
+								acs_up -= 2;
+							}
 						}
 						if (acs_right > 0)
 						{
@@ -289,7 +288,11 @@ void Player::Update()
 					{
 						if (acs_right < MAX_SPEED)
 						{
-							acs_right += 1;
+							acs_right += 2;
+							if (acs_up > 0)
+							{
+								acs_up -= 2;
+							}
 						}
 						if (acs_left > 0)
 						{
@@ -297,9 +300,10 @@ void Player::Update()
 						}
 					}
 
+					jump_anim_boost = 4;
 					if (jump_int == 0)
 					{
-						jump_int = JUMP_INTERVAL;
+						jump_int = JUMP_INTERVAL - 3;
 						jump_cd = 5;
 						//Aを押せば押すほど上加速度が上がる
 						if (jump_combo < MAX_JUMP)
@@ -316,6 +320,7 @@ void Player::Update()
 				//連打中に上昇値が減らないようにする
 				else if (PAD_INPUT::OnPressed(XINPUT_BUTTON_A))
 				{
+
 					jump_flg = true;
 					if (--jump_cd < 0)
 					{
@@ -363,7 +368,16 @@ void Player::Update()
 						acs_up--;
 					}
 				}
-
+				//ジャンプ連打時アニメーション処理
+				if (jump_anim_boost > 0 && frame % 5 == 0)
+				{
+					player_anim++;
+					jump_anim_boost--;
+					if (player_anim > 3)
+					{
+						player_anim = 0;
+					}
+				}
 				//ジャンプ連打数を減らす
 				if (jump_combo > 0)
 				{
@@ -389,17 +403,18 @@ void Player::Update()
 				if (underwater_flg == false)
 				{
 					location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+					location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 				}
-				location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
+
 
 				//画面端に行くとテレポート
-				if (location.x < 0 - PLAYER_WIDTH)
+				if (location.x < 0 - PLAYER_ENEMY_WIDTH)
 				{
 					location.x = SCREEN_WIDTH - 2;
 				}
 				if (location.x > SCREEN_WIDTH - 1)
 				{
-					location.x = 0 - PLAYER_WIDTH + 2;
+					location.x = 0 - PLAYER_ENEMY_WIDTH + 2;
 				}
 
 				//画面上に当たると跳ね返る
@@ -414,7 +429,7 @@ void Player::Update()
 			//リスポーン後の無敵状態なら
 			else
 			{
-				if (PAD_INPUT::GetLStick().ThumbX > 10000 || PAD_INPUT::GetLStick().ThumbX < -10000 || PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnButton(XINPUT_BUTTON_B))
+				if (PAD_INPUT::GetLStick().ThumbX > 10000 || PAD_INPUT::GetLStick().ThumbX < -10000 || PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnButton(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_A))
 			{
 				respawn = 0;
 			}
@@ -637,6 +652,72 @@ void Player::HitStageCollision(const BoxCollider* box_collider)
 	}
 }
 
+int Player::HitEnemyCollision(const BoxCollider* box_collider)
+{
+	//自分の当たり判定の範囲
+	float my_x[2]{ 0,0 };
+	float my_y[2]{ 0,0 };
+
+	//相手の当たり判定の範囲
+	float sub_x[2]{ 0,0 };
+	float sub_y[2]{ 0,0 };
+
+	//自分の当たり判定の範囲の計算
+	my_x[0] = location.x;
+	my_y[0] = location.y;
+	my_x[1] = my_x[0] + area.width;
+	my_y[1] = my_y[0] + area.height;
+
+	//相手の当たり判定の範囲の計算
+	sub_x[0] = box_collider->GetLocation().x;
+	sub_y[0] = box_collider->GetLocation().y;
+	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
+	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
+
+	//StageFloorの横の範囲内
+	if (my_x[0] < sub_x[1] - 5 &&
+		sub_x[0] + 5 < my_x[1])
+	{
+		//PlayerがStageFloorより下へ行こうとした場合
+		if (my_y[1] > sub_y[0] &&
+			my_y[0] < sub_y[0])
+		{
+			return 4;
+		}
+
+		//PlayerがStageFloorより上へ行こうとした場合
+		if (my_y[0] < sub_y[1] &&
+			my_y[1] > sub_y[1])
+		{
+			return 3;
+		}
+	}
+
+	//StaegFloorの縦の範囲内
+	if (my_y[0] < sub_y[1] - 5 &&
+		sub_y[0] + 5 < my_y[1])
+	{
+		//PlayerがStageFloorより右へ行こうとした場合
+		if (my_x[1] > sub_x[0] &&
+			my_x[0] < sub_x[0])
+		{
+			//StageFloorより右には行けないようにする
+			location.x = sub_x[0] - area.width - 1;
+			return 1;
+		}
+
+		//PlayerがStageFloorより左へ行こうとした場合
+		if (my_x[0] < sub_x[1] &&
+			my_x[1]>sub_x[1])
+		{
+			//StageFloorより左には行けないようにする
+			location.x = sub_x[1] + 1;
+			return 2;
+		}
+	}
+	return 0;
+}
+
 bool Player::IsOnFloor(const BoxCollider* box_collider)const
 {
 	bool ret = false;
@@ -732,6 +813,12 @@ void Player::ReflectionPY()
 	acs_up = 0;
 }
 
+void Player::ReflectionMY()
+{
+	acs_up = fabsf(acs_up - acs_down) * 0.8f;
+	acs_down = 0;
+}
+
 void Player::PlayerRespawn(float x, float y)
 {
 	player_state = IDOL_RIGHT;
@@ -751,6 +838,7 @@ void Player::PlayerRespawn(float x, float y)
 	death_wait = 120;
 	respawn = 600;
 	show_flg=true;
+	underwater_flg=false;
 }
 
 void Player::BalloonDec()
