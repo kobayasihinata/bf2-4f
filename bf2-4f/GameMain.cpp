@@ -12,6 +12,7 @@ GameMain::GameMain()
 	{
 		enemy[i] = new Enemy(220+i*80, 210, 1);
 		enemy_ai[i] = new ENEMY_AI;
+		soapbubble[i] = new SoapBubble();
 	}
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
@@ -32,6 +33,7 @@ GameMain::~GameMain()
 	for (int i = 0; i < max_enemy; i++)
 	{
 		delete enemy[i];
+		delete soapbubble[i];
 	}
 	delete staegwall;
 	delete stagefloor[0];
@@ -180,6 +182,7 @@ AbstractScene* GameMain::Update()
 				enemy[i]->SetOnShareFlg(true);
 			}
 			enemy[i]->Update();
+			soapbubble[i]->Update();
 
 			fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 		}
@@ -221,6 +224,7 @@ void GameMain::Draw()const
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy[i]->Draw();
+			soapbubble[i]->Draw();
 		}
 	}
 	fish->Draw();
@@ -253,5 +257,6 @@ void GameMain::Damege(int i)
 	if (enemy[i]->GetWaitFlg() == true)
 	{
 		score += enemy[i]->ApplyDamege();
+		soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetEnemyLocation().x);
 	}
 }
