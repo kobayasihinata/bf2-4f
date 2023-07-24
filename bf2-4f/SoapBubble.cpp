@@ -25,12 +25,23 @@ void SoapBubble::Update()
 {
 	if (flg == true)
 	{
-		bubble_anim++;
-		if (bubble_anim > 2)
+		if (frame % 20 == 0)
 		{
-			bubble_anim = 0;
+			bubble_anim++;
+			if (bubble_anim > 2)
+			{
+				bubble_anim = 0;
+			}
 		}
-		location.y--;
+		if (--location.y < 0)
+		{
+			flg = false;
+		}
+		//600フレームごとにフレーム測定リセット
+		if (++frame > 600)
+		{
+			frame = 0;
+		}
 	}
 }
 
