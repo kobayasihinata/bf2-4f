@@ -1,5 +1,5 @@
 #pragma once
-#include "collider/BoxCollider.h"
+#include "Collider/BoxCollider.h"
 
 #define SECOND_TO_FRAME(sec) ((sec)*60)
 #define IMAGE_SHIFT 10       //‰æ‘œ’²®—p

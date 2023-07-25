@@ -18,6 +18,7 @@ GameMain::GameMain()
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
 	staegwall = new StageWall();
 	fish = new Fish();
+	thunder = new Thunder();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	Pouse = false;
@@ -37,6 +38,7 @@ GameMain::~GameMain()
 	delete stagefloor[0];
 	delete stagefloor[1];
 	delete stagefloor[2];
+	delete thunder;
 	DeleteGraph(seaImage);
 }
 
@@ -184,15 +186,22 @@ AbstractScene* GameMain::Update()
 		}
 
 		player->Update();
+		thunder->Update();
 		fish->Update();
+
+		//プレイヤーが死んでいる場合海に戻る
 		if (player->GetIsDie() == true)
 		{
 			fish->NotAtSeaSurface();
 		}
 
+		//海面にプレイヤーがいる場合
 		if (fish->CheckSeaSurface(player) == true)
 		{
+			//捕食処理：ターゲットはプレイヤー
 			fish->TargetPrey(player);
+			//プレイヤーが捕食された場合
+			//画像を非表示にして死んでいる判定にする
 			if (fish->GetIsPreyedOnPlayer() == true)
 			{
 				player->SetShowFlg(false);
@@ -203,17 +212,24 @@ AbstractScene* GameMain::Update()
 		{
 			for (int i = 0; i < 3; i++)
 			{
+				//海面に敵のいずれかがいる場合
 				if (fish->CheckSeaSurface(enemy[i]) == true)
 				{
+					//敵のレベルを取得する
 					fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
 
+					//捕食処理：ターゲットは敵
 					fish->TargetPrey(enemy[i]);
 
+					//敵が捕食された場合
+					//画像を非表示にしてenemyのflgをfalseにする
 					if (fish->GetIsPreyedOnEnemyr() == true)
 					{
 						enemy[i]->SetShowFlg(false);
+						enemy[i]->SetFlg(false);
 					}
-					if (enemy[i]->GetShowFlg() == false)	//念のため
+					//念のため死んでいる判定にする
+					if (enemy[i]->GetShowFlg() == false)	
 					{
 						enemy[i]->SetIsDie(true);
 					}
@@ -222,6 +238,7 @@ AbstractScene* GameMain::Update()
 
 		}
 
+		//プレイヤーか敵のいずれも海面にいない場合海に戻る
 		if (fish->CheckSeaSurface(player) == false &&
 			fish->CheckSeaSurface(enemy[0]) == false &&
 			fish->CheckSeaSurface(enemy[1]) == false &&
@@ -230,6 +247,7 @@ AbstractScene* GameMain::Update()
 			fish->NotAtSeaSurface();
 		}
 
+		//さかな側でプレイヤーのスポーンフラグがたったら
 		if (fish->GetRespawnFlg() == true)
 		{
 			player->SetShowFlg(true);
@@ -240,7 +258,8 @@ AbstractScene* GameMain::Update()
 		}
 
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
-		if (player->GetPlayerLife() < 0) {
+		if (player->GetPlayerLife() < 0) 
+		{
 			return new Title();
 		}
 	}
@@ -252,6 +271,7 @@ void GameMain::Draw()const
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
+	thunder->Draw();
 	//デバッグ用　当たり判定表示
 	for (BoxCollider* stagefloor : stagefloor)
 	{

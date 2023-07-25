@@ -166,6 +166,7 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StageFloor.cpp" />
     <ClCompile Include="StageWall.cpp" />
+    <ClCompile Include="Thunder.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
@@ -188,6 +189,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StageFloor.h" />
     <ClInclude Include="StageWall.h" />
+    <ClInclude Include="Thunder.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
