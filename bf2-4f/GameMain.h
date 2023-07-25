@@ -6,6 +6,7 @@
 #include"StageFloor.h"
 #include"StageWall.h"
 #include"Fish.h"
+#include"SoapBubble.h"
 #include"Thunder.h"
 
 class GameMain :
@@ -19,12 +20,14 @@ private:
     StageWall* staegwall;
     Fish* fish;
     Thunder* thunder;
+    SoapBubble* soapbubble[4];
 
     int seaImage;
     bool Pouse;
-    int px, py, ex, ey;
     int score;  //‰¼‚ÌƒXƒRƒAŠi”[êŠ
     int max_enemy;      //“G‚Ì”
+    const int Enemy_Move_Cool[3]{ 1500,1000,500 };
+    int move_cooltime;
 
 public:
 

@@ -423,8 +423,6 @@ void Player::Update()
 					location.y = 0;
 					ReflectionPY();
 				}
-
-				if (PAD_INPUT::OnButton(XINPUT_BUTTON_RIGHT_THUMB))BalloonDec();
 			}
 			//ÉäÉXÉ|Å[Éìå„ÇÃñ≥ìGèÛë‘Ç»ÇÁ
 			else

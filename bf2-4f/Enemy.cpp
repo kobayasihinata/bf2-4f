@@ -1,5 +1,6 @@
 #include "Dxlib.h"
 #include <math.h>
+#include <time.h>
 #include "Enemy.h"
 #include "PadInput.h"
 
@@ -17,6 +18,34 @@ Enemy::Enemy(int x,int y,int level)
 	jump_int = 0;
 	jump_combo = 0;
 	jump_cd = 0;
+	for (int i = 0; i < 5; i++)
+	{
+		getscore_anim[i] = 0;
+		is_getscore[i] = false;
+		switch (i)
+		{
+		case 0:
+			getscore[i] = 500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_500.png");
+			break;
+		case 1:
+			getscore[i] = 750;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_750.png");
+			break;
+		case 2:
+			getscore[i] = 1000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1000.png");
+			break;
+		case 3:
+			getscore[i] = 1500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1500.png");
+			break;
+		case 4:
+			getscore[i] = 2000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_2000.png");
+			break;
+		}
+	}
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
@@ -28,6 +57,8 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
+	death_wait = 120;      //死亡後の待ち時間
+	underwater_flg = false;      //水没中か判断
 	damage = 0;
 	protect = -1;
 	show_flg = true;
@@ -52,8 +83,10 @@ Enemy::Enemy(int x,int y,int level)
 		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
 		break;
 	}
+	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
 	enemy_anim = 0;
 	para_anim = 0;
+	splash_anim = 0;
 	anim_boost = 0;
 
 	last_move_x = 1;
@@ -149,7 +182,7 @@ void Enemy::Update()
 					}
 
 					//落下し続ける程下に加速
-					if (acs_down < MAX_SPEED)
+					if (acs_down < E_Max_Speed[enemy_level - 1])
 					{
 						acs_down += 1;
 					}
@@ -161,10 +194,16 @@ void Enemy::Update()
 					if (last_input == -1)
 					{
 						enemy_state = E_FLY_LEFT;
+						EnemyMoveLeft();
+						EnemyJump();
+						SetNot_AI(50);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
+						EnemyMoveRight();
+						EnemyJump();
+						SetNot_AI(50);
 					}
 					onfloor_flg = true;
 					OnFloor();
@@ -178,7 +217,7 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
 					last_input = 1;
-					if (acs_right < MAX_SPEED)
+					if (acs_right < E_Max_Speed[enemy_level - 1])
 					{
 						acs_right += 2;
 					}
@@ -203,7 +242,7 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
 					last_input = -1;
-					if (acs_left < MAX_SPEED)
+					if (acs_left < E_Max_Speed[enemy_level - 1])
 					{
 						acs_left += 2;
 					}
@@ -229,10 +268,10 @@ void Enemy::Update()
 				{
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
-						if (acs_left < MAX_SPEED)
+						if (acs_left < E_Max_Speed[enemy_level - 1])
 						{
 							acs_left += 3;
-							acs_up -= 3;
+							acs_up -= 2;
 						}
 						if (acs_right > 0)
 						{
@@ -241,10 +280,10 @@ void Enemy::Update()
 					}
 					if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_right_flg == true)
 					{
-						if (acs_right < MAX_SPEED)
+						if (acs_right < E_Max_Speed[enemy_level - 1])
 						{
 							acs_right += 3;
-							acs_up -= 3;
+							acs_up -= 2;
 						}
 						if (acs_left > 0)
 						{
@@ -276,7 +315,7 @@ void Enemy::Update()
 							}
 							jump_combo += 2;
 						}
-						if (acs_up < MAX_SPEED / 3)
+						if (acs_up < E_Max_Speed[enemy_level - 1] / 2)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
@@ -314,14 +353,17 @@ void Enemy::Update()
 				}
 
 				//移動
-				location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
-				if (para_flg == false)
+				if (underwater_flg == false)
 				{
-					location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
-				}
-				else
-				{
-					location.y += 0.8f;
+					location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
+					if (para_flg == false)
+					{
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
+					}
+					else
+					{
+						location.y += 0.8f;
+					}
 				}
 
 				//画面端に行くとテレポート
@@ -382,6 +424,19 @@ void Enemy::Update()
 
 		location.y += death_acs * FALL_SPPED;
 		}
+		//スコア取得時演出用
+		for (int i = 0; i < 3; i++)
+		{
+			if (is_getscore[i] == true)
+			{
+				if (++getscore_anim[i] > 180)
+				{
+					is_getscore[i] = false;
+					getscore_anim[i] = 0;
+				}
+
+			}
+		}
 	}
 
 	//フレームを計測する(10秒ごとにリセット)
@@ -418,8 +473,22 @@ void Enemy::Update()
 	//敵が海面より下へ行くと死亡
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
-		flg = false;
-		show_flg = false;
+		underwater_flg = true;
+		is_die = true;
+		enemy_state = E_SUBMERGED;
+		location.y = 470;
+		if (frame % 10 == 0)
+		{
+			splash_anim++;
+		}
+		if (--death_wait < 0)
+		{
+			underwater_flg = false;
+			is_die = false;
+			splash_anim = 0;
+			flg = false;
+			show_flg = false;
+		}
 	}
 }
 
@@ -442,35 +511,45 @@ void Enemy::Draw()const
 			switch (enemy_state)
 			{
 			case E_IDOL_RIGHT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
 				break;
 			case E_IDOL_LEFT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
 				break;
 			case CHARGE_RIGHT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
 				break;
 			case CHARGE_LEFT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
 				break;
 			case E_FLY_RIGHT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 				break;
 			case E_FLY_LEFT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 				break;
 			case PARACHUTE_RIGHT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
 				break;
 			case PARACHUTE_LEFT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
 				break;
 			case DEATH_RIGHT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 				break;
 			case DEATH_LEFT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 				break;
+			case E_SUBMERGED:
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y - 45, splash_image[0 + splash_anim], TRUE);
+				break;
+			}
+			for (int i = 0; i < 5; i++)
+			{
+				if (is_getscore[i] == true)
+				{
+					DrawGraph(getscore_x[i], getscore_y[i], getscore_image[i], TRUE);
+				}
 			}
 		}
 	}
@@ -628,6 +707,8 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		if (my_x[1] > sub_x[0] &&
 			my_x[0] < sub_x[0])
 		{
+			//StageFloorより右には行けないようにする
+			location.x = sub_x[0] - area.width - 1;
 			return 1;
 		}
 
@@ -635,6 +716,8 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		if (my_x[0] < sub_x[1] &&
 			my_x[1]>sub_x[1])
 		{
+			//StageFloorより左には行けないようにする
+			location.x = sub_x[1] + 1;
 			return 2;
 		}
 	}
@@ -683,6 +766,7 @@ void Enemy::OnFloor()
 {
 	acs_down = 0;
 }
+
 void Enemy::ReflectionMX()
 {
 	last_input *= -1;
@@ -716,19 +800,22 @@ int Enemy::ApplyDamege()
 		if (balloon > 0)
 		{
 			BalloonDec();
-			return 500;
+			GetScoreStart(0);
+			return getscore[0+enemy_level-1];
 		}
 		else
 		{
 			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
 			{
 				EnemyDeath();
-				return 1000;
+				GetScoreStart(2);
+				return getscore[2 + enemy_level-1];
 			}
 			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
 			{
 				EnemyDeath();
-				return 750;
+				GetScoreStart(1);
+				return getscore[1 + enemy_level - 1];
 			}
 		}
 	}
@@ -784,6 +871,8 @@ void Enemy::EnemyReset()
 	jump_cd = 0;
 	wait_time = (GetRand(100) + 300) - (enemy_level * 30);
 	para_flg = false;
+	death_acs = -120;
+	death_wait = 120;
 	charge = 0;
 	damage = 0;
 	move_right_flg = false;
@@ -812,4 +901,29 @@ void Enemy::EnemyLevelUp()
 		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
 		break;
 	}
+}
+
+void Enemy::SetNot_AI(int No_time)
+{
+	srand(time(NULL));
+	int percent = (rand() % 100 + 51);
+	no_ai_time = ( No_time * percent / 100);
+}
+
+int Enemy::No_AI_Flg() {
+	if (--no_ai_time > 0) {
+		return true;
+	}
+	else
+	{
+		no_ai_time = 0;
+		return false;
+	}
+}
+
+void Enemy::GetScoreStart(int i)
+{
+	is_getscore[i + enemy_level - 1] = true;
+	getscore_x[i + enemy_level - 1] = location.x;
+	getscore_y[i + enemy_level - 1] = location.y;
 }

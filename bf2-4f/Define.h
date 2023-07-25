@@ -19,8 +19,10 @@
 #define JUMP_INTERVAL 10	//ジャンプボタン連打間隔
 #define FALL_SPPED 0.02f	//最高落下速度
 #define MOVE_SPPED 0.015f	//最高移動速度
-#define RISE_SPPED 0.04f	//最高上昇速度
+#define RISE_SPPED 0.035f	//最高上昇速度
 #define LAND_SPEED 0.03f	//最高移動速度（地面）
 
 #define SEA_SURFACE 445		//海面
 #define UNDER_WATER 470		//海のなか
+
+#define SOAPBUBBLE_GETPOINT 500			//シャボン玉の点数

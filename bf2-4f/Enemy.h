@@ -16,7 +16,8 @@ enum ENEMY_STATE
     PARACHUTE_RIGHT,
     PARACHUTE_LEFT,
     DEATH_RIGHT,
-    DEATH_LEFT
+    DEATH_LEFT,
+    E_SUBMERGED
 };
 class Enemy :public BoxCollider
 {
@@ -29,11 +30,13 @@ private:
     float acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
+    const int E_Max_Speed[3]{ 50,150,250 };
 
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
     int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
 
+    int getscore[5];   //獲得点数配列
     int frame;      //フレーム計測用
 
     int charge;     //風船を膨らませる時間
@@ -43,6 +46,8 @@ private:
     int balloon;        //残り風船
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
+    int  death_wait;      //死亡後の待ち時間
+    bool  underwater_flg;      //水没中か判断
     int damage;         //やられモーション中待機
     int protect;        //復活後一瞬だけ無敵(バグ解消のため)
     int wait_time;           //風船を膨らませる前の待機時間
@@ -52,13 +57,21 @@ private:
     bool move_right_flg;    //右移動中か判断
     bool move_left_flg;     //左移動中か判断
     bool jump_flg;          //ジャンプ中か判断
+    int no_ai_time;         //AI無効化時間
     bool para_flg;          //パラシュート状態か判断
     bool ref_once_left;     //反射制御用
     bool ref_once_right;    //反射制御用
 
     int enemy_image[20];   //敵画像
+    int splash_image[3];   //敵画像
+    int getscore_image[5];   //スコア獲得演出画像
     int enemy_anim;    //敵アニメーション用
     int para_anim;    //敵アニメーション用
+    int splash_anim;    //敵アニメーション用
+    int getscore_anim[5];    //スコア獲得演出画像表示用
+    int getscore_x[5];         //スコア獲得演出用X座標
+    int getscore_y[5];         //スコア獲得演出用Y座標
+    bool is_getscore[5];    //スコア獲得時演出用
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
@@ -155,18 +168,33 @@ public:
     //レベルアップ
     void EnemyLevelUp();
 
+    //AI無効(時間)
+    void SetNot_AI(int time);
+    int No_AI_Flg();
+
     //enemy_levelを取得
     int GetEnemyLevel()const { return enemy_level; }
+
+    //敵の進行方向を取得
+    int GetEnemyMove() { return move_left_flg; }
 
     //敵が死亡モーション中か取得
     int GetEnemyDeathFlg() { return death_flg; }
 
+    //敵が水没中か取得
+    int GetEnemyUnderWaterFlg() { return underwater_flg; }
+
     //敵が生きているか取得
     int GetFlg() { return flg; }
 
+    //敵の生きているかの判定を設定
+    void SetFlg(bool getflg) { flg = getflg; }
+
     //敵が風船を膨らませる前か取得
     int GetWaitFlg() { return wait_flg; }
-
     //敵の位置を取得
     Location GetEnemyLocation() { return location; }
+
+    //スコア獲得演出開始
+    void GetScoreStart(int i);
 };
