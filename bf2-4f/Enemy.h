@@ -62,13 +62,13 @@ private:
 
     int enemy_image[20];   //敵画像
     int splash_image[3];   //敵画像
-    int getscore_image[5];   //敵画像
+    int getscore_image[5];   //スコア獲得演出画像
     int enemy_anim;    //敵アニメーション用
     int para_anim;    //敵アニメーション用
     int splash_anim;    //敵アニメーション用
-    int getscore_anim[5];    //スコア獲得演出画像用
+    int getscore_anim[5];    //スコア獲得演出画像表示用
     int getscore_x[5];         //スコア獲得演出用X座標
-    int getscore_y[5];         //スコア獲得演出用X座標
+    int getscore_y[5];         //スコア獲得演出用Y座標
     bool is_getscore[5];    //スコア獲得時演出用
     int anim_boost;     //アニメーション加速用
 

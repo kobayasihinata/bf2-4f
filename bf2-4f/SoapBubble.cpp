@@ -9,6 +9,11 @@ SoapBubble::SoapBubble()
 	area.width = 32;
 	area.height = 32;
 	LoadDivGraph("images/Stage/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, bubble_image);
+	getscore_image = LoadGraph("images/Score/GetScore_500.png");
+	getscore_anim = 0;
+	getscore_x = 0;
+	getscore_y = 0;
+	is_getscore = false;
 	bubble_anim = 0;
 	bubble_get_anim = 3;
 	frame = 0;
@@ -73,6 +78,14 @@ void SoapBubble::Update()
 			bubble_get_anim =4;
 		}
 	}
+	if (is_getscore == true)
+	{
+		if (++getscore_anim > 180)
+		{
+			is_getscore = false;
+			getscore_anim = 0;
+		}
+	}
 }
 
 void SoapBubble::Draw() const
@@ -85,6 +98,10 @@ void SoapBubble::Draw() const
 	if (bubble_get_anim < 3)
 	{
 		DrawGraph(location.x - 16, location.y - 16, bubble_image[3], TRUE);
+	}
+	if (is_getscore == true)
+	{
+		DrawGraph(getscore_x, getscore_y, getscore_image, TRUE);
 	}
 }
 int SoapBubble::HitPlayerCollision(const BoxCollider* box_collider)
@@ -111,6 +128,9 @@ int SoapBubble::HitPlayerCollision(const BoxCollider* box_collider)
 
 	if (my_x[0] < sub_x[1] && my_x[1]>sub_x[0] && my_y[0]<sub_y[1] && my_y[1]>sub_y[0] && flg == true)
 	{
+		is_getscore = true;
+		getscore_x = sub_x[0];
+		getscore_y = sub_y[0];
 		flg = false;
 		bubble_get_anim = 0;
 		return SOAPBUBBLE_GETPOINT;

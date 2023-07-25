@@ -110,29 +110,41 @@ AbstractScene* GameMain::Update()
 					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
 						//プレイヤーが無敵状態でないなら
-						if (player->GetPlayerRespawn() <= 0)
+						if (player->GetPlayerRespawn() <= 0 )
 						{
 							//プレイヤーと敵の当たり判定
 							switch (player->HitEnemyCollision(enemy[i]))
 							{
 							case 1:
-								player->ReflectionMX();
-								enemy[i]->ReflectionPX();
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionMX();
+									enemy[i]->ReflectionPX();
+								}
 								Damege(i);
 								break;
 							case 2:
-								player->ReflectionPX();
-								enemy[i]->ReflectionMX();
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionPX();
+									enemy[i]->ReflectionMX();
+								}
 								Damege(i);
 								break;
 							case 3:
-								player->ReflectionPY();
-								enemy[i]->ReflectionMY();
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionPY();
+									enemy[i]->ReflectionMY();
+								}
 								Damege(i);
 								break;
 							case 4:
-								enemy[i]->ReflectionPY();
-								player->ReflectionMY();
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									enemy[i]->ReflectionPY();
+									player->ReflectionMY();
+								}
 								Damege(i);
 								break;
 							default:

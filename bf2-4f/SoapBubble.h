@@ -9,6 +9,11 @@ class SoapBubble :public BoxCollider
 private:
     int flg;
     int bubble_image[4];    //画像用変数
+    int getscore_image;     //スコア獲得画像
+    int getscore_anim;    //スコア獲得演出画像表示用
+    int getscore_x;         //スコア獲得演出用X座標
+    int getscore_y;         //スコア獲得演出用Y座標
+    bool is_getscore;    //スコア獲得時演出用
     int frame;              //フレーム数
     int bubble_anim;        //アニメーション用変数
     int acs_left;           //加速度左
