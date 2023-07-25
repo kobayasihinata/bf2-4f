@@ -232,6 +232,7 @@ AbstractScene* GameMain::Update()
 					if (enemy[i]->GetShowFlg() == false)	//”O‚Ì‚½‚ß
 					{
 						enemy[i]->SetIsDie(true);
+						enemy[i]->SetFlg(false);
 					}
 				}
 			}

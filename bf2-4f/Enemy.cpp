@@ -652,6 +652,8 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		if (my_x[1] > sub_x[0] &&
 			my_x[0] < sub_x[0])
 		{
+			//StageFloorÇÊÇËâEÇ…ÇÕçsÇØÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
+			location.x = sub_x[0] - area.width - 1;
 			return 1;
 		}
 
@@ -659,6 +661,8 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		if (my_x[0] < sub_x[1] &&
 			my_x[1]>sub_x[1])
 		{
+			//StageFloorÇÊÇËç∂Ç…ÇÕçsÇØÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
+			location.x = sub_x[1] + 1;
 			return 2;
 		}
 	}

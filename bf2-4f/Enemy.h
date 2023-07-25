@@ -166,6 +166,9 @@ public:
     //“G‚ª¶‚«‚Ä‚¢‚é‚©æ“¾
     int GetFlg() { return flg; }
 
+    //“G‚Ì¶‚«‚Ä‚¢‚é‚©‚Ì”»’è‚ğİ’è
+    void SetFlg(bool getflg) { flg = getflg; }
+
     //“G‚ª•—‘D‚ğ–c‚ç‚Ü‚¹‚é‘O‚©æ“¾
     int GetWaitFlg() { return wait_flg; }
 
