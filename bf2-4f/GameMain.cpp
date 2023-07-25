@@ -23,8 +23,8 @@ GameMain::GameMain()
 
 	Pouse = false;
 
-	px, py, ex, ey = 0;
 	score = 0;
+	move_cooltime = Enemy_Move_Cool[1];
 }
 
 GameMain::~GameMain()
@@ -55,7 +55,7 @@ AbstractScene* GameMain::Update()
 			if (player->GetPlayerDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
-				player->HitStageCollision(stagefloor);				
+				player->HitStageCollision(stagefloor);
 			}
 
 			//プレイヤーがどのオブジェクトとも着地していない場合
@@ -71,122 +71,133 @@ AbstractScene* GameMain::Update()
 					//敵が死亡中でないなら
 					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
+
 						//各オブジェクトとの当たり判定処理
 						enemy[i]->HitStageCollision(stagefloor);
 						//敵のAI取得
-						switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
-							enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+
+						if (++move_cooltime >= Enemy_Move_Cool[enemy[i]->GetEnemyLevel() - 1] && enemy[i]->No_AI_Flg() == 0)
 						{
-						case 0:
-							enemy[i]->EnemyMoveLeft();
-							enemy[i]->EnemyJump();
-							break;
+							switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
+								enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+							{
+							case 0:
+								enemy[i]->EnemyMoveLeft();
+								enemy[i]->EnemyJump();
+								break;
+							case 1:
+								enemy[i]->EnemyMoveRight();
+								enemy[i]->EnemyJump();
+								break;
+							case 2:
+								enemy[i]->EnemyMoveLeft();
+								enemy[i]->EnemyJumpStop();
+								break;
+							case 3:
+								enemy[i]->EnemyMoveRight();
+								enemy[i]->EnemyJumpStop();
+								break;
+							case 4:
+								enemy[i]->SetNot_AI(300);
+								if (enemy[i]->GetEnemyLocation().y + 10 > player->GetPlayerLocation().y) {
+									enemy[i]->EnemyJumpStop();
+								}
+								break;
+							default:
+								break;
+							}
+						}
+					}
+				}
+
+
+				//敵がどのオブジェクトとも着地していない場合
+				if (enemy[i]->IsOnFloor(stagefloor) != true) {
+					//onshare_flgをfalseにする
+					enemy[i]->SetOnShareFlg(false);
+				}
+
+				//敵が死亡モーション中で無ければ
+				if (enemy[i]->GetEnemyDeathFlg() == false)
+				{
+					//プレイヤーが無敵状態でないなら
+					if (player->GetPlayerRespawn() <= 0)
+					{
+						//プレイヤーと敵の当たり判定
+						switch (player->HitEnemyCollision(enemy[i]))
+						{
 						case 1:
-							enemy[i]->EnemyMoveRight();
-							enemy[i]->EnemyJump();
+							if (enemy[i]->GetWaitFlg() == false)
+							{
+								player->ReflectionMX();
+								enemy[i]->ReflectionPX();
+							}
+							Damege(i);
 							break;
 						case 2:
-							enemy[i]->EnemyMoveLeft();
-							enemy[i]->EnemyJumpStop();
+							if (enemy[i]->GetWaitFlg() == false)
+							{
+								player->ReflectionPX();
+								enemy[i]->ReflectionMX();
+							}
+							Damege(i);
 							break;
 						case 3:
-							enemy[i]->EnemyMoveRight();
-							enemy[i]->EnemyJumpStop();
+							if (enemy[i]->GetWaitFlg() == false)
+							{
+								player->ReflectionPY();
+								enemy[i]->ReflectionMY();
+							}
+							Damege(i);
 							break;
 						case 4:
+							if (enemy[i]->GetWaitFlg() == false)
+							{
+								enemy[i]->ReflectionPY();
+								player->ReflectionMY();
+							}
+							Damege(i);
 							break;
 						default:
 							break;
 						}
 					}
 
-					//敵がどのオブジェクトとも着地していない場合
-					if (enemy[i]->IsOnFloor(stagefloor) != true) {
-						//onshare_flgをfalseにする
-						enemy[i]->SetOnShareFlg(false);
-					}
-
-					//敵が死亡モーション中で無ければ
-					if (enemy[i]->GetEnemyDeathFlg() == false)
+					//敵と敵の当たり判定
+					for (int j = i + 1; j < max_enemy; j++)
 					{
-						//プレイヤーが無敵状態でないなら
-						if (player->GetPlayerRespawn() <= 0 )
+						switch (enemy[j]->HitEnemyCollision(enemy[i]))
 						{
-							//プレイヤーと敵の当たり判定
-							switch (player->HitEnemyCollision(enemy[i]))
-							{
-							case 1:
-								if (enemy[i]->GetWaitFlg() == false)
-								{
-									player->ReflectionMX();
-									enemy[i]->ReflectionPX();
-								}
-								Damege(i);
-								break;
-							case 2:
-								if (enemy[i]->GetWaitFlg() == false)
-								{
-									player->ReflectionPX();
-									enemy[i]->ReflectionMX();
-								}
-								Damege(i);
-								break;
-							case 3:
-								if (enemy[i]->GetWaitFlg() == false)
-								{
-									player->ReflectionPY();
-									enemy[i]->ReflectionMY();
-								}
-								Damege(i);
-								break;
-							case 4:
-								if (enemy[i]->GetWaitFlg() == false)
-								{
-									enemy[i]->ReflectionPY();
-									player->ReflectionMY();
-								}
-								Damege(i);
-								break;
-							default:
-								break;
-							}
-						}
-
-						//敵と敵の当たり判定
-						for (int j = i + 1; j < max_enemy; j++)
-						{
-							switch (enemy[j]->HitEnemyCollision(enemy[i]))
-							{
-							case 1:
-								enemy[j]->ReflectionMX();
-								enemy[i]->ReflectionPX();
-								break;
-							case 2:
-								enemy[j]->ReflectionPX();
-								enemy[i]->ReflectionMX();
-								break;
-							case 3:
-								enemy[j]->ReflectionPY();
-								enemy[i]->ReflectionMY();
-								break;
-							case 4:
-								enemy[j]->ReflectionMY();
-								enemy[i]->ReflectionPY();
-								break;
-							default:
-								break;
-							}
+						case 1:
+							enemy[j]->ReflectionMX();
+							enemy[i]->ReflectionPX();
+							break;
+						case 2:
+							enemy[j]->ReflectionPX();
+							enemy[i]->ReflectionMX();
+							break;
+						case 3:
+							enemy[j]->ReflectionPY();
+							enemy[i]->ReflectionMY();
+							break;
+						case 4:
+							enemy[j]->ReflectionMY();
+							enemy[i]->ReflectionPY();
+							break;
+						default:
+							break;
 						}
 					}
+				}
 
-					//敵が水没中なら
-					if (enemy[i]->GetEnemyUnderWaterFlg() == true)
-					{
-						soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
-					}
+				//敵が水没中なら
+				if (enemy[i]->GetEnemyUnderWaterFlg() == true)
+				{
+					soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
 				}
 			}
 		}
+	
 		//プレイヤーが各オブジェクトのいずれかに着地している場合
 		if (player->IsOnFloor(stagefloor[0]) == true ||
 			player->IsOnFloor(stagefloor[1]) == true ||
@@ -271,7 +282,7 @@ AbstractScene* GameMain::Update()
 		if (player->GetPlayerLife() < 0) {
 			return new Title();
 		}
-	}
+	
 	return this;
 }
 

@@ -22,9 +22,10 @@ private:
 
     int seaImage;
     bool Pouse;
-    int px, py, ex, ey;
     int score;  //‰¼‚ÌƒXƒRƒAŠi”[êŠ
     int max_enemy;      //“G‚Ì”
+    const int Enemy_Move_Cool[3]{ 1500,1000,500 };
+    int move_cooltime;
 
 public:
 

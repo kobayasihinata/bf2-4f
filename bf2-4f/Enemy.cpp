@@ -1,5 +1,6 @@
 #include "Dxlib.h"
 #include <math.h>
+#include <time.h>
 #include "Enemy.h"
 #include "PadInput.h"
 
@@ -181,7 +182,7 @@ void Enemy::Update()
 					}
 
 					//—Ž‰º‚µ‘±‚¯‚é’ö‰º‚É‰Á‘¬
-					if (acs_down < MAX_SPEED)
+					if (acs_down < E_Max_Speed[enemy_level - 1])
 					{
 						acs_down += 1;
 					}
@@ -193,10 +194,16 @@ void Enemy::Update()
 					if (last_input == -1)
 					{
 						enemy_state = E_FLY_LEFT;
+						EnemyMoveLeft();
+						EnemyJump();
+						SetNot_AI(50);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
+						EnemyMoveRight();
+						EnemyJump();
+						SetNot_AI(50);
 					}
 					onfloor_flg = true;
 					OnFloor();
@@ -210,7 +217,7 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
 					last_input = 1;
-					if (acs_right < MAX_SPEED)
+					if (acs_right < E_Max_Speed[enemy_level - 1])
 					{
 						acs_right += 2;
 					}
@@ -235,7 +242,7 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
 					last_input = -1;
-					if (acs_left < MAX_SPEED)
+					if (acs_left < E_Max_Speed[enemy_level - 1])
 					{
 						acs_left += 2;
 					}
@@ -261,7 +268,7 @@ void Enemy::Update()
 				{
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
-						if (acs_left < MAX_SPEED)
+						if (acs_left < E_Max_Speed[enemy_level - 1])
 						{
 							acs_left += 3;
 							acs_up -= 2;
@@ -273,7 +280,7 @@ void Enemy::Update()
 					}
 					if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_right_flg == true)
 					{
-						if (acs_right < MAX_SPEED)
+						if (acs_right < E_Max_Speed[enemy_level - 1])
 						{
 							acs_right += 3;
 							acs_up -= 2;
@@ -308,7 +315,7 @@ void Enemy::Update()
 							}
 							jump_combo += 2;
 						}
-						if (acs_up < MAX_SPEED)
+						if (acs_up < E_Max_Speed[enemy_level - 1] / 2)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
@@ -895,6 +902,25 @@ void Enemy::EnemyLevelUp()
 		break;
 	}
 }
+
+void Enemy::SetNot_AI(int No_time)
+{
+	srand(time(NULL));
+	int percent = (rand() % 100 + 51);
+	no_ai_time = ( No_time * percent / 100);
+}
+
+int Enemy::No_AI_Flg() {
+	if (--no_ai_time > 0) {
+		return true;
+	}
+	else
+	{
+		no_ai_time = 0;
+		return false;
+	}
+}
+
 void Enemy::GetScoreStart(int i)
 {
 	is_getscore[i + enemy_level - 1] = true;
