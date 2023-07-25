@@ -11,7 +11,6 @@ Fish::Fish()
 	area.height = 55;
 	area.width = 60;
 	probability = 0;
-	speed = 1.2f;
 	frame_count = 0;
 	player_flying_on_sea_timer = SECOND_TO_FRAME(3);
 	fish_state = Rising_Fish_1;
@@ -21,6 +20,8 @@ Fish::Fish()
 	is_preying_on_enemy = false;
 	reversal_flg = false;
 	respawn_flg = false;
+	bubble_spawn_flg = true;
+	target_flg = false;
 }
 
 Fish::~Fish()
@@ -28,13 +29,13 @@ Fish::~Fish()
 
 }
 
-void Fish::Update(BoxCollider* boxcollider)
+void Fish::Update()
 {
 	//‚³‚©‚È‚ªŠC–Ê‚Ì”ÍˆÍ“à‚É‚¢‚é‚È‚ç
 	if (GetMax().x <= SEASURFACE_END_X)
 	{
 		//‰j‚¢‚Å‚¢‚é‚È‚ç
-		if (is_rising == false && is_falling == false && is_preying_on_player == false)
+		if (is_rising == false && is_falling == false && is_preying_on_player == false && is_preying_on_enemy == false)
 		{
 			//‰E•ûŒü‚ÖˆÚ“®
 			location.x++;
@@ -44,7 +45,7 @@ void Fish::Update(BoxCollider* boxcollider)
 	else
 	{
 		//‰j‚¢‚Å‚¢‚é‚È‚ç
-		if (is_rising == false && is_falling == false && is_preying_on_player == false)
+		if (is_rising == false && is_falling == false && is_preying_on_player == false && is_preying_on_enemy == false) 
 		{
 			//ŠC–Ê‚Ì”ÍˆÍ“à‚Ö–ß‚·
 			location.x = SEASURFACE_START_X;
@@ -52,85 +53,18 @@ void Fish::Update(BoxCollider* boxcollider)
 	}
 
 	//‰j‚¢‚Å‚¢‚é‚È‚ç
-	if (is_rising == false && is_falling == false && is_preying_on_player == false)
+	if (is_rising == false && is_falling == false && is_preying_on_player == false && is_preying_on_enemy)
 	{
 		//—”‚ğæ“¾
 		probability = GetRand(99);
 	}
 
-	//ƒvƒŒƒCƒ„[‚ªŠC–Ê‚É‚¢‚é‚Æ‚«
-	//ƒvƒŒƒCƒ„[‚ªŠC–Ê{ƒvƒŒƒCƒ„[‚Ì‚‚³•ª‚æ‚è’á‚­”ò‚ñ‚Å‚¢‚é‚Æ‚«
-	//‚³‚©‚È‚ª‰½‚à•ßH‚µ‚Ä‚¢‚È‚¢‚Æ‚«
-	if (boxcollider->GetMin().x >= SEASURFACE_START_X && boxcollider->GetMax().x <= SEASURFACE_END_X &&
-		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_ENEMY_HEIGHT &&
-		is_preying_on_player == false && is_preying_on_enemy == false)
+	if (is_rising == true)
 	{
-		//3•bˆÈã‚©‚ÂŠm—¦‚Å
-		if (--player_flying_on_sea_timer < 0 && probability < 10)
-		{
-			//ŠC–Ê‚Ü‚Åã‚ª‚éˆ—
-			if (GetMax().y >= SEA_SURFACE)
-			{
-				is_rising = true;
-				location.x = boxcollider->GetCenter().x - area.width / 2;
-				location.y -= speed;
-
-				//ƒvƒŒƒCƒ„[‚ª‚³‚©‚È‚Ì’†S‚æ‚è‰E‚É‚¢‚é‚È‚ç
-				if (this->GetCenter().x < boxcollider->GetMin().x)
-				{
-					//‰æ‘œ‚ğ”½“]‚³‚¹‚é
-   					reversal_flg = !reversal_flg;
-				}
-				
-				if (GetCenter().y < SEA_SURFACE)
-				{
-					fish_state = Rising_Fish_2;
-					if ((GetCenter().y + area.height / 4)< SEA_SURFACE)
-					{
-						fish_state = Rising_Fish_3;
-					}
-				}
-
-				if (boxcollider->GetMax().y > GetMax().y)
-				{
-					/*“G‚ª‚Å‚«Ÿ‘æ‚±‚±‚ÉƒvƒŒƒCƒ„[‚©”Û‚©‚Ì”»’è‚ğ‚©‚­*/
-					if (boxcollider->GetIsPlayer() == true)
-					{
-						fish_state = PreyingOn_Player;
-					}
-					else
-					{
-						if (GetSaveEnemyLevel() == 1)
-						{
-							fish_state = PreyingOn_Enemy_1;
-						}
-						else if (GetSaveEnemyLevel() == 2)
-						{
-							fish_state = PreyingOn_Enemy_2;
-						}
-						else
-						{
-							fish_state = PreyingOn_Enemy_3;
-						}
-					}
-					boxcollider->SetShowFlg(false);
-				}
-			}
-			else
-			{
-				is_rising = false;
-				is_preying_on_player = true;
-			}
-		}
+		location.y -= speed;
 	}
-	else
-	{
-		is_falling = true;
-		is_rising = false;
-		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
-	}
-	
-	if (is_preying_on_player == true || is_falling == true)
+
+	if (is_falling == true)
 	{
 		location.y += speed;
 		if (GetMax().y > SEA_SURFACE)
@@ -151,24 +85,37 @@ void Fish::Update(BoxCollider* boxcollider)
 	{
 		location.y = UNDER_WATER;
 		is_falling = false;
+		is_preying_on_enemy = false;
 		if (is_preying_on_player == true)
 		{
 			respawn_flg = true;
 		}
+		if (is_preying_on_enemy == true)
+		{
+			bubble_spawn_flg = false;
+		}
 		reversal_flg = false;
 		fish_state = Rising_Fish_1;
+		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
+		target_flg = false;
 	}
 
 	if (respawn_flg == true)
 	{
 		is_preying_on_player = false;
 	}
+
+	if (bubble_spawn_flg == false)
+	{
+		is_preying_on_enemy = false;
+		//bubble_spawn_flg = true;
+	}
 }
 
 void Fish::Draw()const
 {
 	//BoxCollider::Draw();
-	//DrawFormatString(0, 100, 0xff00ff, "%d", fish_state);
+	//DrawFormatString(0, 100, 0xff00ff, "%d", player_flying_on_sea_timer);
 	if (reversal_flg == false)
 	{
 		DrawGraphF(location.x, location.y - IMAGE_SHIFT, fish_image[fish_state], TRUE);
@@ -178,4 +125,111 @@ void Fish::Draw()const
 		DrawTurnGraphF(location.x, location.y - IMAGE_SHIFT, fish_image[fish_state], TRUE);
 	}
 	//DrawBox(SEASURFACE_START_X, SEA_SURFACE - PLAYER_HEIGHT, SEASURFACE_END_X, SCREEN_HEIGHT, 0xff0000, FALSE);
+}
+
+void Fish::TargetPrey(BoxCollider* boxcollider)
+{
+
+	//‚³‚©‚È‚ª‰½‚à•ßH‚µ‚Ä‚¢‚È‚¢‚Æ‚«
+	if (is_preying_on_player == false && is_preying_on_enemy == false &&
+		boxcollider->GetIsDie() == false && target_flg == false)
+	{
+		player_flying_on_sea_timer--;
+		//3•bˆÈã‚©‚ÂŠm—¦‚Å
+		if (player_flying_on_sea_timer < 0 && probability < 80)
+		{
+			//ŠC–Ê‚Ü‚Åã‚ª‚éˆ—
+			if (GetMax().y >= SEA_SURFACE)
+			{
+				//‘ÎÛ‚ª‚³‚©‚È‚Ì’†S‚æ‚è‰E‚É‚¢‚é‚È‚ç
+				if (this->GetCenter().x <= boxcollider->GetMin().x)
+				{
+					//‰æ‘œ‚ğ”½“]‚³‚¹‚é
+					reversal_flg = true; 
+				}
+				is_rising = true;
+				location.x = boxcollider->GetCenter().x - area.width / 2;
+				//location.y -= speed;				
+				
+				if (GetCenter().y < SEA_SURFACE)
+				{
+					fish_state = Rising_Fish_2;
+					if ((GetCenter().y + area.height / 4)< SEA_SURFACE)
+					{
+						fish_state = Rising_Fish_3;
+					}
+				}
+			}
+			else
+			{
+				if (boxcollider->GetMin().x < this->GetMax().x && boxcollider->GetMax().x > this->GetMin().x &&
+					this->GetMin().y <= boxcollider->GetMax().y)
+				{
+					if (boxcollider->GetIsPlayer() == true)
+					{
+						is_preying_on_player = true;
+						fish_state = PreyingOn_Player;
+						target_flg = true;
+					}
+					else
+					{
+						is_preying_on_enemy = true;
+						if (GetSaveEnemyLevel() == 1)
+						{
+							fish_state = PreyingOn_Enemy_1;
+						}
+						else if (GetSaveEnemyLevel() == 2)
+						{
+							fish_state = PreyingOn_Enemy_2;
+						}
+						else
+						{
+							fish_state = PreyingOn_Enemy_3;
+						}
+						target_flg = true;
+					}
+				}
+				is_rising = false;
+				is_falling = true;
+			}
+		}
+	}
+	
+	if (boxcollider->GetIsDie() == true)
+	{
+		location.y = location.y + speed;
+		if (GetMax().y > SEA_SURFACE)
+		{
+			fish_state = Falling_Fish_1;
+		}
+		if (GetMax().y - area.height / 4 > SEA_SURFACE)
+		{
+			fish_state = Falling_Fish_2;
+		}
+		if (GetMax().y - area.height / 6 > SEA_SURFACE)
+		{
+			fish_state = Falling_Fish_3;
+		}
+	}
+}
+
+
+bool Fish::CheckSeaSurface(BoxCollider* boxcollider)
+{
+	bool ret = false;
+
+	if (boxcollider->GetMin().x >= SEASURFACE_START_X && boxcollider->GetMax().x <= SEASURFACE_END_X &&
+		boxcollider->GetMax().y > SEA_SURFACE - PLAYER_ENEMY_HEIGHT &&
+		boxcollider->GetIsDie() == false && target_flg == false)
+	{
+		ret = true;
+	}
+
+	return ret;
+}
+
+void Fish::NotAtSeaSurface()
+{
+	is_falling = true;
+	is_rising = false;
 }

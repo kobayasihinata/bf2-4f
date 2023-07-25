@@ -419,6 +419,7 @@ void Enemy::Update()
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
 		flg = false;
+		show_flg = false;
 	}
 }
 
