@@ -24,7 +24,7 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 	pattern = 0;
 
     // プレイヤーがどの方向にいるか(x座標)
-	if (E_x > P_x) {
+	if (E_x > P_x != E_x - P_x >= SCREEN_WIDTH / 2) {
 		pattern += 0;
 	}
 	else
@@ -33,7 +33,7 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 	}
 
 	// プレイヤーがどの方向にいるか(y座標)
-	if (E_y >= P_y) {
+	if (E_y >= P_y - 50) {
 		pattern += 0;
 	}
 	else
@@ -42,7 +42,7 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 	}
 
 	// プレイヤーが真下にいるなら回避行動をとる
-	if (E_x >= P_x - 30 && E_x <= P_x + 30 && E_y >= P_y && E_y <= P_y + 50)
+	if (E_x >= P_x - 30 && E_x <= P_x + 30 && E_y >= P_y)
 	{
 		pattern = 4;
 	}

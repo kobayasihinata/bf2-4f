@@ -22,8 +22,8 @@ GameMain::GameMain()
 
 	Pouse = false;
 
-	px, py, ex, ey = 0;
 	score = 0;
+	move_cooltime = Enemy_Move_Cool[1];
 }
 
 GameMain::~GameMain()
@@ -70,29 +70,37 @@ AbstractScene* GameMain::Update()
 					//各オブジェクトとの当たり判定処理
 					enemy[i]->HitStageCollision(stagefloor);
 					//敵のAI取得
-					switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
-						enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+
+					if (++move_cooltime >= Enemy_Move_Cool[enemy[i]->GetEnemyLevel() - 1] && enemy[i]->No_AI_Flg() == 0)
 					{
-					case 0:
-						enemy[i]->EnemyMoveLeft();
-						enemy[i]->EnemyJump();
-						break;
-					case 1:
-						enemy[i]->EnemyMoveRight();
-						enemy[i]->EnemyJump();
-						break;
-					case 2:
-						enemy[i]->EnemyMoveLeft();
-						enemy[i]->EnemyJumpStop();
-						break;
-					case 3:
-						enemy[i]->EnemyMoveRight();
-						enemy[i]->EnemyJumpStop();
-						break;
-					case 4:
-						break;
-					default:
-						break;
+						switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
+							enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+						{
+						case 0:
+							enemy[i]->EnemyMoveLeft();
+							enemy[i]->EnemyJump();
+							break;
+						case 1:
+							enemy[i]->EnemyMoveRight();
+							enemy[i]->EnemyJump();
+							break;
+						case 2:
+							enemy[i]->EnemyMoveLeft();
+							enemy[i]->EnemyJumpStop();
+							break;
+						case 3:
+							enemy[i]->EnemyMoveRight();
+							enemy[i]->EnemyJumpStop();
+							break;
+						case 4:
+							enemy[i]->SetNot_AI(300);
+							if (enemy[i]->GetEnemyLocation().y + 10 > player->GetPlayerLocation().y) {
+								enemy[i]->EnemyJumpStop();
+							}
+							break;
+						default:
+							break;
+						}
 					}
 				}
 

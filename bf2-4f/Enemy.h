@@ -29,6 +29,7 @@ private:
     float acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
+    const int E_Max_Speed[3]{ 50,150,250 };
 
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
@@ -52,6 +53,7 @@ private:
     bool move_right_flg;    //右移動中か判断
     bool move_left_flg;     //左移動中か判断
     bool jump_flg;          //ジャンプ中か判断
+    int no_ai_time;         //AI無効化時間
     bool para_flg;          //パラシュート状態か判断
     bool ref_once_left;     //反射制御用
     bool ref_once_right;    //反射制御用
@@ -149,8 +151,15 @@ public:
     //レベルアップ
     void EnemyLevelUp();
 
+    //AI無効(時間)
+    void SetNot_AI(int time);
+    int No_AI_Flg();
+
     //enemy_levelを取得
     int GetEnemyLevel()const { return enemy_level; }
+
+    //敵の進行方向を取得
+    int GetEnemyMove() { return move_left_flg; }
 
     //敵が死亡モーション中か取得
     int GetEnemyDeathFlg() { return death_flg; }
@@ -160,7 +169,6 @@ public:
 
     //敵が風船を膨らませる前か取得
     int GetWaitFlg() { return wait_flg; }
-
     //敵の位置を取得
     Location GetEnemyLocation() { return location; }
 };
