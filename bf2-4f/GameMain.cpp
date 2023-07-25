@@ -285,7 +285,6 @@ void GameMain::Draw()const
 	DrawGraph(159, 444, seaImage, TRUE);
 
 	//スコア表示（仮）
-	DrawFormatString(600, 0, 0x00ffff, "%d",score);
 	DrawNumber(0, 0, score);
 }
 

@@ -25,7 +25,4 @@
 #define SEA_SURFACE 445		//海面
 #define UNDER_WATER 470		//海のなか
 
-#define BREAK_BALLOON_GETPOINT 500		//敵の風船を割った時の点数
-#define ONFLOOR_KILLPOINT 750			//地面に立っている敵を倒した時の点数
-#define PARA_KILLPOINT 1000				//パラシュート降下中の敵を倒した時の点数
 #define SOAPBUBBLE_GETPOINT 500			//シャボン玉の点数

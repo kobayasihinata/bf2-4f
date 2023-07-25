@@ -17,7 +17,7 @@ public:
 	//•`‰æ‚ÌXV
 	virtual void Draw() const = 0;
 
-	//”š‚Ì•`‰æ(UI.h‚Æcpp‚É‘‚­‚Ì‚à—L‚è)
+	//”š‚Ì•`‰æ(UI.h‚Æcpp‚É‘‚­‚Ì‚à‚ ‚è)
 	void DrawNumber(int x, int y, int score)const;
 };
 

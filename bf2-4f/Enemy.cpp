@@ -17,6 +17,34 @@ Enemy::Enemy(int x,int y,int level)
 	jump_int = 0;
 	jump_combo = 0;
 	jump_cd = 0;
+	for (int i = 0; i < 5; i++)
+	{
+		getscore_anim[i] = 0;
+		is_getscore[i] = false;
+		switch (i)
+		{
+		case 0:
+			getscore[i] = 500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_500.png");
+			break;
+		case 1:
+			getscore[i] = 750;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_750.png");
+			break;
+		case 2:
+			getscore[i] = 1000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1000.png");
+			break;
+		case 3:
+			getscore[i] = 1500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1500.png");
+			break;
+		case 4:
+			getscore[i] = 2000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_2000.png");
+			break;
+		}
+	}
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
@@ -389,6 +417,19 @@ void Enemy::Update()
 
 		location.y += death_acs * FALL_SPPED;
 		}
+		//スコア取得時演出用
+		for (int i = 0; i < 3; i++)
+		{
+			if (is_getscore[i] == true)
+			{
+				if (++getscore_anim[i] > 180)
+				{
+					is_getscore[i] = false;
+					getscore_anim[i] = 0;
+				}
+
+			}
+		}
 	}
 
 	//フレームを計測する(10秒ごとにリセット)
@@ -463,38 +504,45 @@ void Enemy::Draw()const
 			switch (enemy_state)
 			{
 			case E_IDOL_RIGHT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
 				break;
 			case E_IDOL_LEFT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0], TRUE);
 				break;
 			case CHARGE_RIGHT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
 				break;
 			case CHARGE_LEFT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[0 + (enemy_anim % 2) + charge], TRUE);
 				break;
 			case E_FLY_RIGHT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 				break;
 			case E_FLY_LEFT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 				break;
 			case PARACHUTE_RIGHT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
 				break;
 			case PARACHUTE_LEFT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
 				break;
 			case DEATH_RIGHT:
-				DrawTurnGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 				break;
 			case DEATH_LEFT:
-				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 				break;
 			case E_SUBMERGED:
 				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y - 45, splash_image[0 + splash_anim], TRUE);
 				break;
+			}
+			for (int i = 0; i < 5; i++)
+			{
+				if (is_getscore[i] == true)
+				{
+					DrawGraph(getscore_x[i], getscore_y[i], getscore_image[i], TRUE);
+				}
 			}
 		}
 	}
@@ -711,6 +759,7 @@ void Enemy::OnFloor()
 {
 	acs_down = 0;
 }
+
 void Enemy::ReflectionMX()
 {
 	last_input *= -1;
@@ -744,19 +793,22 @@ int Enemy::ApplyDamege()
 		if (balloon > 0)
 		{
 			BalloonDec();
-			return BREAK_BALLOON_GETPOINT;
+			GetScoreStart(0);
+			return getscore[0+enemy_level-1];
 		}
 		else
 		{
 			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
 			{
 				EnemyDeath();
-				return PARA_KILLPOINT;
+				GetScoreStart(2);
+				return getscore[2 + enemy_level-1];
 			}
 			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
 			{
 				EnemyDeath();
-				return ONFLOOR_KILLPOINT;
+				GetScoreStart(1);
+				return getscore[1 + enemy_level - 1];
 			}
 		}
 	}
@@ -842,4 +894,10 @@ void Enemy::EnemyLevelUp()
 		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
 		break;
 	}
+}
+void Enemy::GetScoreStart(int i)
+{
+	is_getscore[i + enemy_level - 1] = true;
+	getscore_x[i + enemy_level - 1] = location.x;
+	getscore_y[i + enemy_level - 1] = location.y;
 }
