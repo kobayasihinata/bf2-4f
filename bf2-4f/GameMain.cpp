@@ -197,7 +197,7 @@ AbstractScene* GameMain::Update()
 				}
 			}
 		}
-	
+
 		//プレイヤーが各オブジェクトのいずれかに着地している場合
 		if (player->IsOnFloor(stagefloor[0]) == true ||
 			player->IsOnFloor(stagefloor[1]) == true ||
@@ -273,7 +273,7 @@ AbstractScene* GameMain::Update()
 		if (fish->GetRespawnFlg() == true)
 		{
 			player->SetShowFlg(true);
-   			player->SetPlayerLife(-1);
+			player->SetPlayerLife(-1);
 			player->SetIsDie(false);
 			player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 			fish->SetRespawnFlg(false);
@@ -282,8 +282,9 @@ AbstractScene* GameMain::Update()
 		if (player->GetPlayerLife() < 0) {
 			return new Title();
 		}
-	
-	return this;
+
+		return this;
+	}
 }
 
 void GameMain::Draw()const
