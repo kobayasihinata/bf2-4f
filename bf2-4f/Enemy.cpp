@@ -28,6 +28,8 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
+	death_wait = 120;      //éÄñSå„ÇÃë“Çøéûä‘
+	underwater_flg = false;      //êÖñvíÜÇ©îªíf
 	damage = 0;
 	protect = -1;
 	show_flg = true;
@@ -52,8 +54,10 @@ Enemy::Enemy(int x,int y,int level)
 		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
 		break;
 	}
+	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
 	enemy_anim = 0;
 	para_anim = 0;
+	splash_anim = 0;
 	anim_boost = 0;
 
 	last_move_x = 1;
@@ -232,7 +236,7 @@ void Enemy::Update()
 						if (acs_left < MAX_SPEED)
 						{
 							acs_left += 3;
-							acs_up -= 3;
+							acs_up -= 2;
 						}
 						if (acs_right > 0)
 						{
@@ -244,7 +248,7 @@ void Enemy::Update()
 						if (acs_right < MAX_SPEED)
 						{
 							acs_right += 3;
-							acs_up -= 3;
+							acs_up -= 2;
 						}
 						if (acs_left > 0)
 						{
@@ -276,7 +280,7 @@ void Enemy::Update()
 							}
 							jump_combo += 2;
 						}
-						if (acs_up < MAX_SPEED / 3)
+						if (acs_up < MAX_SPEED)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
@@ -314,14 +318,17 @@ void Enemy::Update()
 				}
 
 				//à⁄ìÆ
-				location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
-				if (para_flg == false)
+				if (underwater_flg == false)
 				{
-					location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
-				}
-				else
-				{
-					location.y += 0.8f;
+					location.x = location.x - (acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED);
+					if (para_flg == false)
+					{
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
+					}
+					else
+					{
+						location.y += 0.8f;
+					}
 				}
 
 				//âÊñ í[Ç…çsÇ≠Ç∆ÉeÉåÉ|Å[Ég
@@ -418,8 +425,22 @@ void Enemy::Update()
 	//ìGÇ™äCñ ÇÊÇËâ∫Ç÷çsÇ≠Ç∆éÄñS
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
-		flg = false;
-		show_flg = false;
+		underwater_flg = true;
+		is_die = true;
+		enemy_state = E_SUBMERGED;
+		location.y = 470;
+		if (frame % 10 == 0)
+		{
+			splash_anim++;
+		}
+		if (--death_wait < 0)
+		{
+			underwater_flg = false;
+			is_die = false;
+			splash_anim = 0;
+			flg = false;
+			show_flg = false;
+		}
 	}
 }
 
@@ -470,6 +491,9 @@ void Enemy::Draw()const
 				break;
 			case DEATH_LEFT:
 				DrawGraph(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
+				break;
+			case E_SUBMERGED:
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y - 45, splash_image[0 + splash_anim], TRUE);
 				break;
 			}
 		}
@@ -716,19 +740,19 @@ int Enemy::ApplyDamege()
 		if (balloon > 0)
 		{
 			BalloonDec();
-			return 500;
+			return BREAK_BALLOON_GETPOINT;
 		}
 		else
 		{
 			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
 			{
 				EnemyDeath();
-				return 1000;
+				return PARA_KILLPOINT;
 			}
 			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
 			{
 				EnemyDeath();
-				return 750;
+				return ONFLOOR_KILLPOINT;
 			}
 		}
 	}
@@ -784,6 +808,8 @@ void Enemy::EnemyReset()
 	jump_cd = 0;
 	wait_time = (GetRand(100) + 300) - (enemy_level * 30);
 	para_flg = false;
+	death_acs = -120;
+	death_wait = 120;
 	charge = 0;
 	damage = 0;
 	move_right_flg = false;

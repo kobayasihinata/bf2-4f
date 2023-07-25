@@ -66,98 +66,111 @@ AbstractScene* GameMain::Update()
 
 			for (int i = 0; i < max_enemy; i++)
 			{
-				//敵が死亡中でないなら
-				if (enemy[i]->GetEnemyDeathFlg() == false)
+				if (enemy[i]->GetFlg() == true)
 				{
-					//各オブジェクトとの当たり判定処理
-					enemy[i]->HitStageCollision(stagefloor);
-					//敵のAI取得
-					switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
-						enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+					//敵が死亡中でないなら
+					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
-					case 0:
-						enemy[i]->EnemyMoveLeft();
-						enemy[i]->EnemyJump();
-						break;
-					case 1:
-						enemy[i]->EnemyMoveRight();
-						enemy[i]->EnemyJump();
-						break;
-					case 2:
-						enemy[i]->EnemyMoveLeft();
-						enemy[i]->EnemyJumpStop();
-						break;
-					case 3:
-						enemy[i]->EnemyMoveRight();
-						enemy[i]->EnemyJumpStop();
-						break;
-					case 4:
-						break;
-					default:
-						break;
-					}
-				}
-
-				//敵がどのオブジェクトとも着地していない場合
-				if (enemy[i]->IsOnFloor(stagefloor) != true) {
-					//onshare_flgをfalseにする
-					enemy[i]->SetOnShareFlg(false);
-				}
-
-				//敵が死亡モーション中で無ければ
-				if (enemy[i]->GetEnemyDeathFlg() == false)
-				{
-					//プレイヤーと敵の当たり判定
-					switch (player->HitEnemyCollision(enemy[i]))
-					{
-					case 1:
-						player->ReflectionMX();
-						enemy[i]->ReflectionPX();
-						Damege(i);
-						break;
-					case 2:
-						player->ReflectionPX();
-						enemy[i]->ReflectionMX();
-						Damege(i);
-						break;
-					case 3:
-						player->ReflectionPY();
-						enemy[i]->ReflectionMY();
-						Damege(i);
-						break;
-					case 4:
-						enemy[i]->ReflectionPY();
-						player->ReflectionMY();
-						Damege(i);
-						break;
-					default:
-						break;
-					}
-
-					//敵と敵の当たり判定
-					for (int j = i + 1; j < max_enemy; j++)
-					{
-						switch (enemy[j]->HitEnemyCollision(enemy[i]))
+						//各オブジェクトとの当たり判定処理
+						enemy[i]->HitStageCollision(stagefloor);
+						//敵のAI取得
+						switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
+							enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
 						{
+						case 0:
+							enemy[i]->EnemyMoveLeft();
+							enemy[i]->EnemyJump();
+							break;
 						case 1:
-							enemy[j]->ReflectionMX();
-							enemy[i]->ReflectionPX();
+							enemy[i]->EnemyMoveRight();
+							enemy[i]->EnemyJump();
 							break;
 						case 2:
-							enemy[j]->ReflectionPX();
-							enemy[i]->ReflectionMX();
+							enemy[i]->EnemyMoveLeft();
+							enemy[i]->EnemyJumpStop();
 							break;
 						case 3:
-							enemy[j]->ReflectionPY();
-							enemy[i]->ReflectionMY();
+							enemy[i]->EnemyMoveRight();
+							enemy[i]->EnemyJumpStop();
 							break;
 						case 4:
-							enemy[j]->ReflectionMY();
-							enemy[i]->ReflectionPY();
 							break;
 						default:
 							break;
 						}
+					}
+
+					//敵がどのオブジェクトとも着地していない場合
+					if (enemy[i]->IsOnFloor(stagefloor) != true) {
+						//onshare_flgをfalseにする
+						enemy[i]->SetOnShareFlg(false);
+					}
+
+					//敵が死亡モーション中で無ければ
+					if (enemy[i]->GetEnemyDeathFlg() == false)
+					{
+						//プレイヤーが無敵状態でないなら
+						if (player->GetPlayerRespawn() <= 0)
+						{
+							//プレイヤーと敵の当たり判定
+							switch (player->HitEnemyCollision(enemy[i]))
+							{
+							case 1:
+								player->ReflectionMX();
+								enemy[i]->ReflectionPX();
+								Damege(i);
+								break;
+							case 2:
+								player->ReflectionPX();
+								enemy[i]->ReflectionMX();
+								Damege(i);
+								break;
+							case 3:
+								player->ReflectionPY();
+								enemy[i]->ReflectionMY();
+								Damege(i);
+								break;
+							case 4:
+								enemy[i]->ReflectionPY();
+								player->ReflectionMY();
+								Damege(i);
+								break;
+							default:
+								break;
+							}
+						}
+
+						//敵と敵の当たり判定
+						for (int j = i + 1; j < max_enemy; j++)
+						{
+							switch (enemy[j]->HitEnemyCollision(enemy[i]))
+							{
+							case 1:
+								enemy[j]->ReflectionMX();
+								enemy[i]->ReflectionPX();
+								break;
+							case 2:
+								enemy[j]->ReflectionPX();
+								enemy[i]->ReflectionMX();
+								break;
+							case 3:
+								enemy[j]->ReflectionPY();
+								enemy[i]->ReflectionMY();
+								break;
+							case 4:
+								enemy[j]->ReflectionMY();
+								enemy[i]->ReflectionPY();
+								break;
+							default:
+								break;
+							}
+						}
+					}
+
+					//敵が水没中なら
+					if (enemy[i]->GetEnemyUnderWaterFlg() == true)
+					{
+						soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
 					}
 				}
 			}
@@ -183,7 +196,7 @@ AbstractScene* GameMain::Update()
 			}
 			enemy[i]->Update();
 			soapbubble[i]->Update();
-
+			score += soapbubble[i]->HitPlayerCollision(player);
 		}
 
 		player->Update();
@@ -273,10 +286,6 @@ void GameMain::Draw()const
 
 	//スコア表示（仮）
 	DrawFormatString(600, 0, 0x00ffff, "%d",score);
-	DrawString(0, 0, "LBボタン：敵１にダメージ", 0xff0000);
-	DrawString(0, 20, "RBボタン：敵２にダメージ", 0xff0000);
-	DrawString(0, 40, "左スティック押し込み：敵３にダメージ", 0xff0000);
-	DrawString(0, 60, "右スティック押し込み：プレイヤーにダメージ", 0xff0000);
 }
 
 void GameMain::Damege(int i)
@@ -297,6 +306,5 @@ void GameMain::Damege(int i)
 	if (enemy[i]->GetWaitFlg() == true)
 	{
 		score += enemy[i]->ApplyDamege();
-		soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetEnemyLocation().x);
 	}
 }

@@ -16,7 +16,8 @@ enum ENEMY_STATE
     PARACHUTE_RIGHT,
     PARACHUTE_LEFT,
     DEATH_RIGHT,
-    DEATH_LEFT
+    DEATH_LEFT,
+    E_SUBMERGED
 };
 class Enemy :public BoxCollider
 {
@@ -43,6 +44,8 @@ private:
     int balloon;        //残り風船
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
+    int  death_wait;      //死亡後の待ち時間
+    bool  underwater_flg;      //水没中か判断
     int damage;         //やられモーション中待機
     int protect;        //復活後一瞬だけ無敵(バグ解消のため)
     int wait_time;           //風船を膨らませる前の待機時間
@@ -57,8 +60,10 @@ private:
     bool ref_once_right;    //反射制御用
 
     int enemy_image[20];   //敵画像
+    int splash_image[3];   //敵画像
     int enemy_anim;    //敵アニメーション用
     int para_anim;    //敵アニメーション用
+    int splash_anim;    //敵アニメーション用
     int anim_boost;     //アニメーション加速用
 
     float last_move_x;    //移動方向保存用
@@ -154,6 +159,9 @@ public:
 
     //敵が死亡モーション中か取得
     int GetEnemyDeathFlg() { return death_flg; }
+
+    //敵が水没中か取得
+    int GetEnemyUnderWaterFlg() { return underwater_flg; }
 
     //敵が生きているか取得
     int GetFlg() { return flg; }
