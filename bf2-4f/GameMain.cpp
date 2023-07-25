@@ -255,7 +255,6 @@ AbstractScene* GameMain::Update()
 			player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 			fish->SetRespawnFlg(false);
 		}
-
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
 		if (player->GetPlayerLife() < 0) {
 			return new Title();
@@ -287,6 +286,7 @@ void GameMain::Draw()const
 
 	//スコア表示（仮）
 	DrawFormatString(600, 0, 0x00ffff, "%d",score);
+	DrawNumber(0, 0, score);
 }
 
 void GameMain::Damege(int i)
