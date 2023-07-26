@@ -492,6 +492,17 @@ void Player::Update()
 			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 		}
 	}
+
+	if (is_die) {
+		if (--death_wait < 0)
+		{
+			underwater_flg = false;
+			is_die = false;
+			splash_anim = 0;
+			life = life - 1;
+			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		}
+	}
 }
 
 void Player::Draw()const
