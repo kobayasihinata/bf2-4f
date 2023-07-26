@@ -3,11 +3,11 @@
 
 ENEMY_AI::ENEMY_AI()
 {
-	P_x = 100;
-	P_y = 100;
-	E_x = 200;
-	E_y = 200;
-	// パターンのリセット
+	P_x = 0;
+	P_y = 0;
+	E_x = 0;
+	E_y = 0;
+	
 	pattern = 0;
 }
 ENEMY_AI::~ENEMY_AI()
@@ -21,6 +21,7 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 	E_x = ex;
 	E_y = ey;
 
+	// パターンのリセット
 	pattern = 0;
 
     // プレイヤーがどの方向にいるか(x座標)

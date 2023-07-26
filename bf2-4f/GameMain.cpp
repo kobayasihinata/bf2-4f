@@ -61,6 +61,9 @@ AbstractScene* GameMain::Update()
 			{
 				//各オブジェクトとの当たり判定処理
 				player->HitStageCollision(stagefloor);
+				//現在位置取得
+				P_x = player->GetPlayerLocation().x;
+				P_y = player->GetPlayerLocation().y;
 			}
 
 			//プレイヤーがどのオブジェクトとも着地していない場合
@@ -73,6 +76,8 @@ AbstractScene* GameMain::Update()
 			{
 				if (enemy[i]->GetFlg() == true)
 				{
+					int E_x = enemy[i]->GetEnemyLocation().x;
+					int E_y = enemy[i]->GetEnemyLocation().y;
 					//敵が死亡中でないなら
 					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
@@ -83,8 +88,7 @@ AbstractScene* GameMain::Update()
 
 						if (++move_cooltime >= Enemy_Move_Cool[enemy[i]->GetEnemyLevel() - 1] && enemy[i]->No_AI_Flg() == 0)
 						{
-							switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
-								enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+							switch (enemy_ai[i]->Update(P_x, P_y, E_x, E_y))
 							{
 							case 0:
 								enemy[i]->EnemyMoveLeft();
@@ -103,14 +107,17 @@ AbstractScene* GameMain::Update()
 								enemy[i]->EnemyJumpStop();
 								break;
 							case 4:
-								enemy[i]->SetNot_AI(300);
-								if (enemy[i]->GetEnemyLocation().y + 10 > player->GetPlayerLocation().y) {
-									enemy[i]->EnemyJumpStop();
-								}
+								
 								break;
 							default:
 								break;
 							}
+							move_cooltime = 0;
+						}
+						if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y - 80 < P_y)
+						{
+							enemy[i]->SetNot_AI(300);
+							//enemy[i]->EnemyJumpStop();
 						}
 					}
 				}
@@ -298,6 +305,7 @@ AbstractScene* GameMain::Update()
 			player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 			fish->SetRespawnFlg(false);
 		}
+
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
 		if (player->GetPlayerLife() < 0) 
 		{
