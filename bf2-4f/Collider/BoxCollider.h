@@ -6,12 +6,13 @@ class BoxCollider :
     public ColliderBase
 {
 private:
-	int sava_enemy_level;
+	int sava_enemy_level;	//敵のレベル保存用（余裕があれば修正）
 
 protected:
     Area area;
 	bool show_flg;		//表示用フラグ
-	bool is_player;		//プレイヤーか？
+	bool is_player;		//プレイヤー？
+	bool is_die;		//死んでいる？
 
 public:
 	BoxCollider(Location location = Location{}, Area area = Area{ 100,100 });
@@ -43,6 +44,8 @@ public:
 	{
 		return Location{ location.x + area.width / 2,location.y + area.height / 2 };
 	}
+	//show_flgを取得
+	int GetShowFlg() { return show_flg; }
 
 	//show_flgを設定
 	void SetShowFlg(const bool flg) { show_flg = flg; }
@@ -50,9 +53,16 @@ public:
 	//is_playerを取得
 	bool GetIsPlayer() { return is_player; }
 
-	//save_enemy_levelを設定
-	void SetSaveEnemyLevel(int level) { sava_enemy_level = level; }
+	//is_dieを取得
+	bool GetIsDie() { return is_die; }
+
+	//is_dieを設定
+	void SetIsDie(const bool flg) { is_die = flg; }
+
 	//save_enemy_levelを取得
 	int GetSaveEnemyLevel()const { return sava_enemy_level; }
+
+	//save_enemy_levelを設定
+	void SetSaveEnemyLevel(int level) { sava_enemy_level = level; }
 };
 

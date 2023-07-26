@@ -63,6 +63,15 @@
     <ClCompile Include="Fish.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SoapBubble.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Thunder.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h">
@@ -122,31 +131,14 @@
     <ClInclude Include="Fish.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="images\stages\stage1.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\stages\stage2.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\stages\stage3.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\stages\stage4.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\stages\stage5.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\Title\Title_Credit.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\Title\Title_Logo.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="images\Title\Title_ModeSelect.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
+    <ClInclude Include="UI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SoapBubble.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Thunder.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
