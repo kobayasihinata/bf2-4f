@@ -82,6 +82,9 @@ public:
     //床に着地する
     void OnFloor();
 
+    //敵に当たった時（プレイヤーが上）
+    void OnHitEnemy();
+
     //X方向に移動しているときに-X方向に反射する
     void ReflectionMX();
 

@@ -475,13 +475,13 @@ void Player::Update()
 void Player::Draw()const
 {
 	////プレイヤーの当たり判定の描画
-	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
-	////プレイヤーの風船当たり判定の描画(仮)
-	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
-	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
-	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
-	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
-	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
+	DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
+	//プレイヤーの風船当たり判定の描画(仮)
+	DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
+	DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
+	DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
+	DrawFormatString(0, 60, 0x00ff00, "%d", life);
+	DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 	
 	if (show_flg == true)
 	{
@@ -750,4 +750,9 @@ void Player::BalloonDec()
 	{
 		death_flg = true;
 	}
+}
+
+void Player::OnHitEnemy() {
+
+
 }
