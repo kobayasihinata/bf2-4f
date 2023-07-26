@@ -50,9 +50,12 @@ AbstractScene* GameMain::Update()
 		Pouse = !Pouse;
 	}
 	if (Pouse == false) {
+		thunder->Update();
+		thunder->HitPlayer(player);
 		//stagefloorの範囲だけループする
 		for (BoxCollider* stagefloor : stagefloor)
 		{
+			thunder->Reflection(stagefloor);
 			//プレイヤーが死亡中でないなら
 			if (player->GetPlayerDeathFlg() == false)
 			{
@@ -225,7 +228,6 @@ AbstractScene* GameMain::Update()
 		}
 
 		player->Update();
-		thunder->Update();
 		fish->Update();
 
 		//プレイヤーが死んでいる場合海に戻る

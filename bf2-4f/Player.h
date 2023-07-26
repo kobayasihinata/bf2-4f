@@ -130,4 +130,6 @@ public:
     Location GetPlayerLocation() { return location; }
 
     int GetPlayerState() { return player_state; }
+
+    void SetPlayerState(const PLAYER_STATE state) { player_state = state; }
 };

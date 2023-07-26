@@ -17,32 +17,32 @@ class Thunder :
     public BoxCollider
 {
 private:
-    int cloud_image[3];
-    int thunder_image[6];
-    int thunder_ball_image[3];
+    int cloud_image[3];                 //雲の画像
+    int thunder_image[6];               //雷の画像
+    int thunder_ball_image[3];          //雷の玉の画像
 
-    int cloud_anim;
-    int thunder_anim;
-    int thunder_ball_anim;
+    int cloud_anim;                     //雲のアニメーション
+    int thunder_anim;                   //雷のアニメーション
+    int thunder_ball_anim;              //雷の玉のアニメーション
 
-    int anim_frame;
-    int fire_timer;
+    int anim_frame;                     //アニメーションを調整するフレーム
+    int fire_timer;                     //雷を発射するまでの時間
     int preliminary_action_time;        //予備動作の時間
 
-    float speed;
-    float angle;
-    float move_x;
-    float move_y;
+    float speed;                        //速さ
+    float angle;                        //角度
+    float move_x;                       //xの移動量
+    float move_y;                       //yの移動量
 
-    float cloud_x;
-    float cloud_y;
-    int thunder_state;
-    int thunder_ball_state;
+    float cloud_x;                      //雲のx座標
+    float cloud_y;                      //雲のy座標
+    int thunder_direction;              //雷の方向
+    int thunder_ball_state;             //雷の玉の状態
 
-    bool fire_flg;
-    bool thunder_ball_flg;
-    bool is_fire_ready;
-    bool thunder_state_flg;
+    bool fire_flg;                      //雷を発射してる？
+    bool thunder_ball_flg;              //雷の玉を発射する?
+    bool is_fire_ready;                 //雷の準備はいい？
+    bool thunder_direction_flg;         //雷の方向は決まってる？
 
 public:
     //コンストラクタ
@@ -60,5 +60,6 @@ public:
     void ChangeAngle();
 
     void Reflection(const BoxCollider* boxcollider);
-};
 
+    void HitPlayer(class Player* player);
+};
