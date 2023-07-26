@@ -2,24 +2,32 @@
 #include "AbstractScene.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Enemy_AI.h"
 #include"StageFloor.h"
 #include"StageWall.h"
 #include"Fish.h"
-#include"UI.h"
+#include"SoapBubble.h"
+#include"Thunder.h"
 
 class GameMain :
     public AbstractScene
 {
 private:
     Player* player;
-    Enemy* enemy;
+    Enemy* enemy[4];
+    ENEMY_AI* enemy_ai[4];
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
-    UI* ui;
+    Thunder* thunder;
+    SoapBubble* soapbubble[4];
 
     int seaImage;
     bool Pouse;
+    int score;  //‰¼‚ÌƒXƒRƒAŠi”[êŠ
+    int max_enemy;      //“G‚Ì”
+    const int Enemy_Move_Cool[3]{ 1500,1000,500 };
+    int move_cooltime;
 
 public:
 
@@ -34,5 +42,8 @@ public:
 
     //•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ğÀ‘•
     void Draw() const override;
+
+    //“G‚ÆƒvƒŒƒCƒ„[‚ªÚG‚µ‚½‚Ìƒ_ƒ[ƒWˆ—
+    void Damege(int i);
 };
 

@@ -7,17 +7,18 @@
 
 enum PLAYER_STATE
 {
-     IDOL_RIGHT = 0,
-     IDOL_LEFT,
-     WALK_LEFT,
-     TURN_LEFT,
-     WALK_RIGHT,
-     TURN_RIGHT,
-     FLY_LEFT,
-     FLY_RIGHT,
-     DEATH,
-     THUNDER_DEATH,
-     INVINCIBLE
+    IDOL_RIGHT = 0,
+    IDOL_LEFT,
+    WALK_LEFT,
+    TURN_LEFT,
+    WALK_RIGHT,
+    TURN_RIGHT,
+    FLY_LEFT,
+    FLY_RIGHT,
+    DEATH,
+    THUNDER_DEATH,
+    INVINCIBLE,
+    SUBMERGED
 };
 class Player :public BoxCollider
 {
@@ -34,26 +35,29 @@ private:
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
     int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
+    bool jump_flg;      //ジャンプ中か判断
 
     int frame;      //フレーム計測用
-
     int balloon;        //残り風船
     int life;            //残機
     bool death_flg;      //死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
+    int  death_wait;      //死亡後の待ち時間
+    bool  underwater_flg;      //水没中か判断
     int respawn;   //リスポーン後の無敵中か判断
-    float ref_y;      //反発用変数（ｙ）
     bool onfloor_flg;   //StageFloorの上かどうか
     bool onshare_flg;   //StageFloorの上ということを共有するかどうか
     bool ref_once_left;
     bool ref_once_right;
 
     int player_image[30];   //プレイヤー画像
+    int splash_image[3];   //プレイヤー画像
     int player_anim;    //プレイヤーアニメーション用
+    int splash_anim;    //水没アニメーション用
     int anim_boost;     //アニメーション加速用
-
+    int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;    //移動方向保存用
-    bool last_input;    //入力方向保存用(0=左　1=右)
+    int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
 public:
 
@@ -72,6 +76,9 @@ public:
     //ステージのオブジェクトとの当たり判定処理
     void HitStageCollision(const BoxCollider* box_collider);
 
+    //敵との当たり判定処理 (1=敵が右に、プレイヤーが左方向に反射　2=敵が左に、プレイヤーが右方向に反射　3=敵が上に、プレイヤーが下方向に反射　4=敵が下に、プレイヤーが上方向に反射)
+    int HitEnemyCollision(const BoxCollider* box_collider);
+
     //床の上かどうか判定
     bool IsOnFloor(const BoxCollider* box_collider)const;
 
@@ -86,6 +93,9 @@ public:
 
     //-Y方向に移動しているときにY方向に反射する
     void ReflectionPY();
+
+    //Y方向に移動しているときに-Y方向に反射する
+    void ReflectionMY();
 
     //プレイヤーの残機を取得する
     int GetPlayerLife() { return life; }
@@ -115,4 +125,9 @@ public:
             onfloor_flg = true;
         }
     }
+
+
+    Location GetPlayerLocation() { return location; }
+
+    int GetPlayerState() { return player_state; }
 };
