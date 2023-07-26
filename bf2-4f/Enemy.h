@@ -30,7 +30,7 @@ private:
     float acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
-    const int E_Max_Speed[3]{ 50,150,250 };
+    const int E_Max_Speed[3]{ 50,100,150 };
 
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
