@@ -475,9 +475,8 @@ void Enemy::Update()
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
 		underwater_flg = true;
-		is_die = true;
 		enemy_state = E_SUBMERGED;
-		location.y = 470;
+		location.y = 471;
 		if (frame % 10 == 0)
 		{
 			splash_anim++;
@@ -495,6 +494,7 @@ void Enemy::Update()
 
 void Enemy::Draw()const
 {
+<<<<<<< HEAD
 	////“G‚Ì“–‚½‚è”»’è‚Ì•`‰æ
 	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
 	////“G‚Ì•—‘D“–‚½‚è”»’è‚Ì•`‰æ(‰¼)
@@ -504,6 +504,8 @@ void Enemy::Draw()const
 	//DrawFormatString(0, 60, 0x00ff00, "%d", balloon);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 	DrawFormatString(0, 80, 0xffff00, "%d", no_ai_time);
+=======
+>>>>>>> kobayashi
 	if (show_flg == true)
 	{
 		if (flg == true)

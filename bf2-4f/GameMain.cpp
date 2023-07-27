@@ -265,7 +265,7 @@ AbstractScene* GameMain::Update()
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//äCñ Ç…ìGÇÃÇ¢Ç∏ÇÍÇ©Ç™Ç¢ÇÈèÍçá
-				if (fish->CheckSeaSurface(enemy[i]) == true)
+				if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyUnderWaterFlg() == true)
 				{
 					//ìGÇÃÉåÉxÉãÇéÊìæÇ∑ÇÈ
 					fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
@@ -277,7 +277,10 @@ AbstractScene* GameMain::Update()
 					//âÊëúÇîÒï\é¶Ç…ÇµÇƒenemyÇÃflgÇfalseÇ…Ç∑ÇÈ
 					if (fish->GetIsPreyedOnEnemyr() == true)
 					{
+						enemy[i]->SetEnemyUnderWaterFlg(false);
+						enemy[i]->SetShowFlg(false);
 						enemy[i]->SetFlg(false);
+						enemy[i]->SetIsDie(true);
 					}
 					//îOÇÃÇΩÇﬂéÄÇÒÇ≈Ç¢ÇÈîªíËÇ…Ç∑ÇÈ
 					if (enemy[i]->GetShowFlg() == false)	
@@ -341,7 +344,7 @@ void GameMain::Draw()const
 	DrawGraph(159, 444, seaImage, TRUE);
 
 	//ÉXÉRÉAï\é¶ÅiâºÅj
-	//DrawNumber(0, 0, score);
+	DrawNumber(0, 0, score);
 }
 
 void GameMain::Damage(int i)

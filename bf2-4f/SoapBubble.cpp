@@ -19,6 +19,7 @@ SoapBubble::SoapBubble()
 	frame = 0;
 	acs_left = 0;
 	acs_right = 0;
+	get_once = false;
 }
 
 //デストラクタ
@@ -90,7 +91,7 @@ void SoapBubble::Update()
 
 void SoapBubble::Draw() const
 {
-	if (flg == true)
+	if (flg == true && get_once == false)
 	{
 		DrawGraph(location.x-16, location.y-16, bubble_image[bubble_anim], TRUE);
 		DrawBox(location.x, location.y, location.x + area.width, location.y + area.height, 0x00ff00, false);
@@ -126,13 +127,14 @@ int SoapBubble::HitPlayerCollision(const BoxCollider* box_collider)
 	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
 	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
 
-	if (my_x[0] < sub_x[1] && my_x[1]>sub_x[0] && my_y[0]<sub_y[1] && my_y[1]>sub_y[0] && flg == true)
+	if (my_x[0] < sub_x[1] && my_x[1]>sub_x[0] && my_y[0]<sub_y[1] && my_y[1]>sub_y[0] && flg == true && get_once == false)
 	{
 		is_getscore = true;
 		getscore_x = sub_x[0];
 		getscore_y = sub_y[0];
 		flg = false;
 		bubble_get_anim = 0;
+		get_once = true;
 		return SOAPBUBBLE_GETPOINT;
 	}
 	return 0;
