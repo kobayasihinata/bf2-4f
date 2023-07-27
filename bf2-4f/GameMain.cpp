@@ -25,7 +25,7 @@ GameMain::GameMain()
 	Pouse = false;
 
 	score = 0;
-	move_cooltime = Enemy_Move_Cool[1];
+	move_cooltime = Enemy_Move_Cool[0];
 }
 
 GameMain::~GameMain()
@@ -53,14 +53,18 @@ AbstractScene* GameMain::Update()
 		thunder->Update();
 		if (thunder->HitPlayer(player) == true)
 		{
-			player->SetPlayerState(THUNDER_DEATH);
+			player->SetThunderDeath(true);
+		}
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
+		{
+			player->SetThunderDeath(true);
 		}
 		//stagefloorの範囲だけループする
 		for (BoxCollider* stagefloor : stagefloor)
 		{
 			thunder->Reflection(stagefloor);
 			//プレイヤーが死亡中でないなら
-			if (player->GetPlayerDeathFlg() == false)
+			if (player->GetPlayerDeathFlg() == false && player->GetThunderDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
 				player->HitStageCollision(stagefloor);
@@ -109,9 +113,6 @@ AbstractScene* GameMain::Update()
 								enemy[i]->EnemyMoveRight();
 								enemy[i]->EnemyJumpStop();
 								break;
-							case 4:
-								
-								break;
 							default:
 								break;
 							}
@@ -132,8 +133,8 @@ AbstractScene* GameMain::Update()
 					enemy[i]->SetOnShareFlg(false);
 				}
 
-				//敵が死亡モーション中で無ければ
-				if (enemy[i]->GetEnemyDeathFlg() == false)
+				//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
+				if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
 				{
 					//プレイヤーが無敵状態でないなら
 					if (player->GetPlayerRespawn() <= 0)
@@ -147,7 +148,7 @@ AbstractScene* GameMain::Update()
 								player->ReflectionMX();
 								enemy[i]->ReflectionPX();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						case 2:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -155,7 +156,7 @@ AbstractScene* GameMain::Update()
 								player->ReflectionPX();
 								enemy[i]->ReflectionMX();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						case 3:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -163,7 +164,7 @@ AbstractScene* GameMain::Update()
 								player->ReflectionPY();
 								enemy[i]->ReflectionMY();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						case 4:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -171,7 +172,7 @@ AbstractScene* GameMain::Update()
 								enemy[i]->ReflectionPY();
 								player->ReflectionMY();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						default:
 							break;
@@ -264,7 +265,7 @@ AbstractScene* GameMain::Update()
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//海面に敵のいずれかがいる場合
-				if (fish->CheckSeaSurface(enemy[i]) == true)
+				if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyUnderWaterFlg() == true)
 				{
 					//敵のレベルを取得する
 					fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
@@ -276,8 +277,10 @@ AbstractScene* GameMain::Update()
 					//画像を非表示にしてenemyのflgをfalseにする
 					if (fish->GetIsPreyedOnEnemyr() == true)
 					{
+						enemy[i]->SetEnemyUnderWaterFlg(false);
 						enemy[i]->SetShowFlg(false);
 						enemy[i]->SetFlg(false);
+						enemy[i]->SetIsDie(true);
 					}
 					//念のため死んでいる判定にする
 					if (enemy[i]->GetShowFlg() == false)	
@@ -314,9 +317,8 @@ AbstractScene* GameMain::Update()
 		{
 			return new Title();
 		}
-
-		return this;
 	}
+	return this;
 }
 
 void GameMain::Draw()const
@@ -345,7 +347,7 @@ void GameMain::Draw()const
 	DrawNumber(0, 0, score);
 }
 
-void GameMain::Damege(int i)
+void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
 	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false)

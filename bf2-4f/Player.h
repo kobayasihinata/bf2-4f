@@ -41,8 +41,10 @@ private:
     int balloon;        //残り風船
     int life;            //残機
     bool death_flg;      //死亡しているか判断
+    bool thunder_death_flg; //雷で死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
     int  death_wait;      //死亡後の待ち時間
+    int  thunder_death_wait;      //死亡後の待ち時間
     bool  underwater_flg;      //水没中か判断
     int respawn;   //リスポーン後の無敵中か判断
     bool onfloor_flg;   //StageFloorの上かどうか
@@ -117,6 +119,12 @@ public:
 
     //プレイヤーの風船を減らす
     void BalloonDec();
+
+    //プレイヤーが雷死状態か取得する
+    bool GetThunderDeathFlg() { return thunder_death_flg; }
+
+    //プレイヤーを雷死状態に設定する
+    void SetThunderDeath(bool flg) { thunder_death_flg = flg; }
 
     //onshare_flgの値を設定する
     void SetOnShareFlg(const bool flg) 

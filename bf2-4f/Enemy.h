@@ -30,7 +30,7 @@ private:
     float acs_right;  //‰E‰Á‘¬“x
     int acs_up;     //ã‰Á‘¬“x
     int acs_down;   //‰º‰Á‘¬“x
-    const int E_Max_Speed[3]{ 50,100,150 };
+    const int E_Max_Speed[3]{ 50,150,250 };
 
     int jump_int;   //ã¸ƒ{ƒ^ƒ“ŠÔŠu
     int jump_combo;  //˜A‘Å”
@@ -181,6 +181,8 @@ public:
     //“G‚ª…–v’†‚©æ“¾
     int GetEnemyUnderWaterFlg() { return underwater_flg; }
 
+    //“G‚ª…–v’†‚©İ’è
+    void SetEnemyUnderWaterFlg(int flg) { underwater_flg = flg; }
     //“G‚ª¶‚«‚Ä‚¢‚é‚©æ“¾
     int GetFlg() { return flg; }
 

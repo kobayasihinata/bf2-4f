@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "Enemy_AI.h"
+
 
 ENEMY_AI::ENEMY_AI()
 {
@@ -25,7 +28,7 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 	pattern = 0;
 
     // プレイヤーがどの方向にいるか(x座標)
-	if (E_x > P_x != E_x - P_x >= SCREEN_WIDTH / 2) {
+	if (E_x > P_x) {
 		pattern += 0;
 	}
 	else
@@ -33,8 +36,20 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 		pattern += 1;
 	}
 
+	// 距離が画面の半分以上離れていたら方向反転
+	if (abs(E_x - P_x) > SCREEN_WIDTH / 2) {
+		Reverse();
+	}
+
+	// 3割の確率で移動方向反転
+	srand(time(NULL));
+	if (rand() % 100 < 3) {
+		Reverse();
+	}
+
+
 	// プレイヤーがどの方向にいるか(y座標)
-	if (E_y >= P_y - 50) {
+	if (E_y >= P_y - 25) {
 		pattern += 0;
 	}
 	else
@@ -42,12 +57,16 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 		pattern += 2;
 	}
 
-	// プレイヤーが真下にいるなら回避行動をとる
-	if (E_x >= P_x - 30 && E_x <= P_x + 30 && E_y >= P_y)
-	{
-		pattern = 4;
-	}
+
 
 	//パターンを返す
 	return pattern;
+}
+
+void ENEMY_AI::Reverse(){
+	if (pattern % 2 == 0) {
+		pattern++;
+	}else{
+		pattern--;
+	}
 }
