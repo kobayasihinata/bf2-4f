@@ -50,14 +50,23 @@ AbstractScene* GameMain::Update()
 		Pouse = !Pouse;
 	}
 	if (Pouse == false) {
+		thunder->Update();
+		if (thunder->HitPlayer(player) == true)
+		{
+			player->SetPlayerState(THUNDER_DEATH);
+		}
 		//stagefloorの範囲だけループする
 		for (BoxCollider* stagefloor : stagefloor)
 		{
+			thunder->Reflection(stagefloor);
 			//プレイヤーが死亡中でないなら
 			if (player->GetPlayerDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
 				player->HitStageCollision(stagefloor);
+				//現在位置取得
+				P_x = player->GetPlayerLocation().x;
+				P_y = player->GetPlayerLocation().y;
 			}
 
 			//プレイヤーがどのオブジェクトとも着地していない場合
@@ -70,6 +79,8 @@ AbstractScene* GameMain::Update()
 			{
 				if (enemy[i]->GetFlg() == true)
 				{
+					int E_x = enemy[i]->GetEnemyLocation().x;
+					int E_y = enemy[i]->GetEnemyLocation().y;
 					//敵が死亡中でないなら
 					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
@@ -80,8 +91,7 @@ AbstractScene* GameMain::Update()
 
 						if (++move_cooltime >= Enemy_Move_Cool[enemy[i]->GetEnemyLevel() - 1] && enemy[i]->No_AI_Flg() == 0)
 						{
-							switch (enemy_ai[i]->Update(player->GetPlayerLocation().x, player->GetPlayerLocation().y,
-								enemy[i]->GetEnemyLocation().x, enemy[i]->GetEnemyLocation().y))
+							switch (enemy_ai[i]->Update(P_x, P_y, E_x, E_y))
 							{
 							case 0:
 								enemy[i]->EnemyMoveLeft();
@@ -100,14 +110,17 @@ AbstractScene* GameMain::Update()
 								enemy[i]->EnemyJumpStop();
 								break;
 							case 4:
-								enemy[i]->SetNot_AI(300);
-								if (enemy[i]->GetEnemyLocation().y + 10 > player->GetPlayerLocation().y) {
-									enemy[i]->EnemyJumpStop();
-								}
+								
 								break;
 							default:
 								break;
 							}
+							move_cooltime = 0;
+						}
+						if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y - 80 < P_y)
+						{
+							enemy[i]->SetNot_AI(300);
+							//enemy[i]->EnemyJumpStop();
 						}
 					}
 				}
@@ -225,7 +238,6 @@ AbstractScene* GameMain::Update()
 		}
 
 		player->Update();
-		thunder->Update();
 		fish->Update();
 
 		//プレイヤーが死んでいる場合海に戻る
@@ -249,7 +261,7 @@ AbstractScene* GameMain::Update()
 		}
 		else
 		{
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < max_enemy; i++)
 			{
 				//海面に敵のいずれかがいる場合
 				if (fish->CheckSeaSurface(enemy[i]) == true)
@@ -296,6 +308,7 @@ AbstractScene* GameMain::Update()
 			player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 			fish->SetRespawnFlg(false);
 		}
+
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
 		if (player->GetPlayerLife() < 0) 
 		{
@@ -335,7 +348,7 @@ void GameMain::Draw()const
 void GameMain::Damege(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y)
+	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false)
 	{
 		player->BalloonDec();
 	}

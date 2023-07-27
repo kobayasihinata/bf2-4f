@@ -30,7 +30,7 @@ private:
     float acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
-    const int E_Max_Speed[3]{ 50,150,250 };
+    const int E_Max_Speed[3]{ 50,100,150 };
 
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
@@ -174,6 +174,9 @@ public:
 
     //敵が死亡モーション中か取得
     int GetEnemyDeathFlg() { return death_flg; }
+
+    //敵がパラシュート状態か取得
+    int GetEnemyParaFlg() { return para_flg; }
 
     //敵が水没中か取得
     int GetEnemyUnderWaterFlg() { return underwater_flg; }

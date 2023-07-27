@@ -492,6 +492,17 @@ void Player::Update()
 			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 		}
 	}
+
+	if (is_die) {
+		if (--death_wait < 0)
+		{
+			underwater_flg = false;
+			is_die = false;
+			splash_anim = 0;
+			life = life - 1;
+			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		}
+	}
 }
 
 void Player::Draw()const
@@ -676,14 +687,16 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	if (my_x[0] < sub_x[1] - 5 &&
 		sub_x[0] + 5 < my_x[1])
 	{
-		//PlayerがStageFloorより下へ行こうとした場合
+		//Playerが敵より下へ行こうとした場合
 		if (my_y[1] > sub_y[0] &&
 			my_y[0] < sub_y[0])
 		{
+			//敵より下には行けないようにする
+			location.y = sub_y[0] - area.height;
 			return 4;
 		}
 
-		//PlayerがStageFloorより上へ行こうとした場合
+		//Playerが敵より上へ行こうとした場合
 		if (my_y[0] < sub_y[1] &&
 			my_y[1] > sub_y[1])
 		{
@@ -695,20 +708,20 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
-		//PlayerがStageFloorより右へ行こうとした場合
+		//Playerが敵より右へ行こうとした場合
 		if (my_x[1] > sub_x[0] &&
 			my_x[0] < sub_x[0])
 		{
-			//StageFloorより右には行けないようにする
+			//敵より右には行けないようにする
 			location.x = sub_x[0] - area.width - 1;
 			return 1;
 		}
 
-		//PlayerがStageFloorより左へ行こうとした場合
+		//Playerが敵より左へ行こうとした場合
 		if (my_x[0] < sub_x[1] &&
 			my_x[1]>sub_x[1])
 		{
-			//StageFloorより左には行けないようにする
+			//敵より左には行けないようにする
 			location.x = sub_x[1] + 1;
 			return 2;
 		}
