@@ -25,7 +25,7 @@ GameMain::GameMain()
 	Pouse = false;
 
 	score = 0;
-	move_cooltime = Enemy_Move_Cool[1];
+	move_cooltime = Enemy_Move_Cool[0];
 }
 
 GameMain::~GameMain()
@@ -112,9 +112,6 @@ AbstractScene* GameMain::Update()
 							case 3:
 								enemy[i]->EnemyMoveRight();
 								enemy[i]->EnemyJumpStop();
-								break;
-							case 4:
-								
 								break;
 							default:
 								break;

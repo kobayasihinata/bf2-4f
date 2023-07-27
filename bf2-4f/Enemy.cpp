@@ -503,7 +503,7 @@ void Enemy::Draw()const
 	//DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", balloon);
 	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
-
+	DrawFormatString(0, 80, 0xffff00, "%d", no_ai_time);
 	if (show_flg == true)
 	{
 		if (flg == true)
