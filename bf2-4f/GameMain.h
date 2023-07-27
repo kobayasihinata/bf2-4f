@@ -26,7 +26,8 @@ private:
     bool Pouse;
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
-    const int Enemy_Move_Cool[3]{ 1500,1000,500 };
+    int P_x, P_y;       //プレイヤー座標
+    const int Enemy_Move_Cool[3]{ 120,80,40 };
     int move_cooltime;
 
 public:
