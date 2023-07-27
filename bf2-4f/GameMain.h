@@ -27,7 +27,7 @@ private:
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
-    const int Enemy_Move_Cool[3]{ 120,80,40 };
+    const int Enemy_Move_Cool[3]{ 360,240,120 };
     int move_cooltime;
 
 public:

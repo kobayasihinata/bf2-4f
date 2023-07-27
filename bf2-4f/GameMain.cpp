@@ -25,7 +25,7 @@ GameMain::GameMain()
 	Pouse = false;
 
 	score = 0;
-	move_cooltime = Enemy_Move_Cool[1];
+	move_cooltime = Enemy_Move_Cool[0];
 }
 
 GameMain::~GameMain()
@@ -102,9 +102,6 @@ AbstractScene* GameMain::Update()
 							case 3:
 								enemy[i]->EnemyMoveRight();
 								enemy[i]->EnemyJumpStop();
-								break;
-							case 4:
-								
 								break;
 							default:
 								break;
@@ -338,6 +335,9 @@ void GameMain::Draw()const
 
 	//スコア表示（仮）
 	DrawNumber(0, 0, score);
+	DrawFormatString(0, 100, 0xffffff, "%d", enemy_ai[0]->GetPattern());
+	DrawFormatString(0, 110, 0xffffff, "%d", enemy_ai[1]->GetPattern());
+	DrawFormatString(0, 120, 0xffffff, "%d", enemy_ai[2]->GetPattern());
 }
 
 void GameMain::Damege(int i)
