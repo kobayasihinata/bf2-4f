@@ -181,6 +181,8 @@ public:
     //“G‚ª…–v’†‚©æ“¾
     int GetEnemyUnderWaterFlg() { return underwater_flg; }
 
+    //“G‚ª…–v’†‚©İ’è
+    void SetEnemyUnderWaterFlg(int flg) { underwater_flg = flg; }
     //“G‚ª¶‚«‚Ä‚¢‚é‚©æ“¾
     int GetFlg() { return flg; }
 
