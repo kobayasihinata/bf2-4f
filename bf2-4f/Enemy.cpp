@@ -494,18 +494,7 @@ void Enemy::Update()
 
 void Enemy::Draw()const
 {
-<<<<<<< HEAD
-	////“G‚Ì“–‚½‚è”»’è‚Ì•`‰æ
-	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
-	////“G‚Ì•—‘D“–‚½‚è”»’è‚Ì•`‰æ(‰¼)
-	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
-	//DrawFormatString(0, 20, 0x00ff00, "%d", test_score);
-	//DrawFormatString(0, 40, 0x00ff00, "%f", ref_y);
-	//DrawFormatString(0, 60, 0x00ff00, "%d", balloon);
-	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
-	DrawFormatString(0, 80, 0xffff00, "%d", no_ai_time);
-=======
->>>>>>> kobayashi
+
 	if (show_flg == true)
 	{
 		if (flg == true)
