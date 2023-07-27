@@ -175,6 +175,9 @@ public:
     //“G‚ª€–Sƒ‚[ƒVƒ‡ƒ“’†‚©æ“¾
     int GetEnemyDeathFlg() { return death_flg; }
 
+    //“G‚ªƒpƒ‰ƒVƒ…[ƒgó‘Ô‚©æ“¾
+    int GetEnemyParaFlg() { return para_flg; }
+
     //“G‚ª…–v’†‚©æ“¾
     int GetEnemyUnderWaterFlg() { return underwater_flg; }
 

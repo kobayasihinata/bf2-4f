@@ -25,8 +25,10 @@ Player::Player()
 	life = 2;
 	respawn = 600;
 	death_flg = false;
+	thunder_death_flg = false;
 	death_acs = -120;
 	death_wait = 120;
+	thunder_death_wait = 60;
 	underwater_flg = false;
 	show_flg = true;
 	is_player = true;
@@ -60,7 +62,7 @@ void Player::Update()
 	if (show_flg == true)
 	{
 		//死んでいないなら
-		if (death_flg == false)
+		if (death_flg == false && thunder_death_flg == false)
 		{
 			//リスポーン後の無敵状態でないなら
 			if (--respawn <= 0)
@@ -437,7 +439,27 @@ void Player::Update()
 
 
 		}
-		//死亡中の演出
+		//死亡中の演出(雷)
+		else if (thunder_death_flg == true)
+		{
+			player_state = THUNDER_DEATH;
+			death_acs += 2;
+			//感電中のアニメーション
+			if (frame % 3 == 0)
+			{
+				player_anim++;
+			}
+			if (player_anim > 3)
+			{
+				player_anim = 0;
+			}
+			if (--thunder_death_wait < 0)
+			{
+				death_flg = true;
+				thunder_death_flg = false;
+			}
+		}
+		//死亡中の演出(通常)
 		else
 		{
 			player_state = DEATH;
@@ -462,7 +484,7 @@ void Player::Update()
 			player_anim = 0;
 		}
 	}
-	if (player_state != FLY_LEFT && player_state != FLY_RIGHT && player_state !=IDOL_LEFT && player_state != IDOL_RIGHT)
+	if (player_state != FLY_LEFT && player_state != FLY_RIGHT && player_state != IDOL_LEFT && player_state != IDOL_RIGHT && player_state != THUNDER_DEATH)
 	{
 		anim_boost = 15;
 	}
@@ -547,6 +569,9 @@ void Player::Draw()const
 			break;
 		case DEATH:
 			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 3)], TRUE);
+			break;
+		case THUNDER_DEATH:
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 2)*8], TRUE);
 			break;
 		case INVINCIBLE:
 			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[2 + (player_anim % 2)], TRUE);
@@ -687,14 +712,16 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	if (my_x[0] < sub_x[1] - 5 &&
 		sub_x[0] + 5 < my_x[1])
 	{
-		//PlayerがStageFloorより下へ行こうとした場合
+		//Playerが敵より下へ行こうとした場合
 		if (my_y[1] > sub_y[0] &&
 			my_y[0] < sub_y[0])
 		{
+			//敵より下には行けないようにする
+			location.y = sub_y[0] - area.height;
 			return 4;
 		}
 
-		//PlayerがStageFloorより上へ行こうとした場合
+		//Playerが敵より上へ行こうとした場合
 		if (my_y[0] < sub_y[1] &&
 			my_y[1] > sub_y[1])
 		{
@@ -706,20 +733,20 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
-		//PlayerがStageFloorより右へ行こうとした場合
+		//Playerが敵より右へ行こうとした場合
 		if (my_x[1] > sub_x[0] &&
 			my_x[0] < sub_x[0])
 		{
-			//StageFloorより右には行けないようにする
+			//敵より右には行けないようにする
 			location.x = sub_x[0] - area.width - 1;
 			return 1;
 		}
 
-		//PlayerがStageFloorより左へ行こうとした場合
+		//Playerが敵より左へ行こうとした場合
 		if (my_x[0] < sub_x[1] &&
 			my_x[1]>sub_x[1])
 		{
-			//StageFloorより左には行けないようにする
+			//敵より左には行けないようにする
 			location.x = sub_x[1] + 1;
 			return 2;
 		}
@@ -843,8 +870,10 @@ void Player::PlayerRespawn(float x, float y)
 	jump_combo = 0;
 	balloon = 2;
 	death_flg = false;
+	thunder_death_flg = false;
 	death_acs = -120;
 	death_wait = 120;
+	thunder_death_wait = 60;
 	respawn = 600;
 	show_flg=true;
 	underwater_flg=false;

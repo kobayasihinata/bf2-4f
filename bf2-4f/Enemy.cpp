@@ -362,8 +362,9 @@ void Enemy::Update()
 					}
 					else
 					{
-						location.y += 0.8f;
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED/2));
 					}
+					
 				}
 
 				//画面端に行くとテレポート
@@ -680,18 +681,20 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
 	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
 
-	//StageFloorの横の範囲内
+	//敵の横の範囲内
 	if (my_x[0] < sub_x[1] - 5 &&
 		sub_x[0] + 5 < my_x[1])
 	{
-		//PlayerがStageFloorより下へ行こうとした場合
+		//敵が他の敵より下へ行こうとした場合
 		if (my_y[1] > sub_y[0] &&
 			my_y[0] < sub_y[0])
 		{
+			//敵より下には行けないようにする
+			location.y = sub_y[0] - area.height;
 			return 4;
 		}
 
-		//PlayerがStageFloorより上へ行こうとした場合
+		//敵が他の敵より上へ行こうとした場合
 		if (my_y[0] < sub_y[1] &&
 			my_y[1] > sub_y[1])
 		{
@@ -699,24 +702,24 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		}
 	}
 
-	//StaegFloorの縦の範囲内
+	//敵の縦の範囲内
 	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
-		//PlayerがStageFloorより右へ行こうとした場合
+		//敵が他の敵より右へ行こうとした場合
 		if (my_x[1] > sub_x[0] &&
 			my_x[0] < sub_x[0])
 		{
-			//StageFloorより右には行けないようにする
+			//敵より右には行けないようにする
 			location.x = sub_x[0] - area.width - 1;
 			return 1;
 		}
 
-		//PlayerがStageFloorより左へ行こうとした場合
+		//敵が他の敵より左へ行こうとした場合
 		if (my_x[0] < sub_x[1] &&
 			my_x[1]>sub_x[1])
 		{
-			//StageFloorより左には行けないようにする
+			//敵より左には行けないようにする
 			location.x = sub_x[1] + 1;
 			return 2;
 		}
@@ -881,6 +884,7 @@ void Enemy::EnemyReset()
 	ref_once_left = false;
 	ref_once_right = false;
 	levelup_once = false;
+	underwater_flg = false;
 }
 
 void Enemy::EnemyLevelUp()
