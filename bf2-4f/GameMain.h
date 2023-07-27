@@ -14,13 +14,13 @@ class GameMain :
 {
 private:
     Player* player;
-    Enemy* enemy[4];
-    ENEMY_AI* enemy_ai[4];
+    Enemy* enemy[6];
+    ENEMY_AI* enemy_ai[6];
     StageFloor* stagefloor[3];
     StageWall* staegwall;
     Fish* fish;
     Thunder* thunder;
-    SoapBubble* soapbubble[4];
+    SoapBubble* soapbubble[6];
 
     int seaImage;
     bool Pouse;
@@ -45,6 +45,6 @@ public:
     void Draw() const override;
 
     //敵とプレイヤーが接触した時のダメージ処理
-    void Damege(int i);
+    void Damage(int i);
 };
 

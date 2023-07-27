@@ -151,7 +151,7 @@ AbstractScene* GameMain::Update()
 								player->ReflectionMX();
 								enemy[i]->ReflectionPX();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						case 2:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -159,7 +159,7 @@ AbstractScene* GameMain::Update()
 								player->ReflectionPX();
 								enemy[i]->ReflectionMX();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						case 3:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -167,7 +167,7 @@ AbstractScene* GameMain::Update()
 								player->ReflectionPY();
 								enemy[i]->ReflectionMY();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						case 4:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -175,7 +175,7 @@ AbstractScene* GameMain::Update()
 								enemy[i]->ReflectionPY();
 								player->ReflectionMY();
 							}
-							Damege(i);
+							Damage(i);
 							break;
 						default:
 							break;
@@ -281,7 +281,6 @@ AbstractScene* GameMain::Update()
 					if (fish->GetIsPreyedOnEnemyr() == true)
 					{
 						enemy[i]->SetFlg(false);
-						enemy[i]->SetShowFlg(false);
 					}
 					//念のため死んでいる判定にする
 					if (enemy[i]->GetShowFlg() == false)	
@@ -318,9 +317,8 @@ AbstractScene* GameMain::Update()
 		{
 			return new Title();
 		}
-
-		return this;
 	}
+	return this;
 }
 
 void GameMain::Draw()const
@@ -346,10 +344,10 @@ void GameMain::Draw()const
 	DrawGraph(159, 444, seaImage, TRUE);
 
 	//スコア表示（仮）
-	DrawNumber(0, 0, score);
+	//DrawNumber(0, 0, score);
 }
 
-void GameMain::Damege(int i)
+void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
 	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false)
