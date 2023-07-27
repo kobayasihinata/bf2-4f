@@ -261,7 +261,7 @@ AbstractScene* GameMain::Update()
 		}
 		else
 		{
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < max_enemy; i++)
 			{
 				//海面に敵のいずれかがいる場合
 				if (fish->CheckSeaSurface(enemy[i]) == true)
@@ -348,7 +348,7 @@ void GameMain::Draw()const
 void GameMain::Damege(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y)
+	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false)
 	{
 		player->BalloonDec();
 	}
