@@ -884,6 +884,7 @@ void Enemy::EnemyReset()
 	ref_once_left = false;
 	ref_once_right = false;
 	levelup_once = false;
+	underwater_flg = false;
 }
 
 void Enemy::EnemyLevelUp()

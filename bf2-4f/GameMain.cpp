@@ -53,14 +53,18 @@ AbstractScene* GameMain::Update()
 		thunder->Update();
 		if (thunder->HitPlayer(player) == true)
 		{
-			player->SetPlayerState(THUNDER_DEATH);
+			player->SetThunderDeath(true);
+		}
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
+		{
+			player->SetThunderDeath(true);
 		}
 		//stagefloorの範囲だけループする
 		for (BoxCollider* stagefloor : stagefloor)
 		{
 			thunder->Reflection(stagefloor);
 			//プレイヤーが死亡中でないなら
-			if (player->GetPlayerDeathFlg() == false)
+			if (player->GetPlayerDeathFlg() == false && player->GetThunderDeathFlg() == false)
 			{
 				//各オブジェクトとの当たり判定処理
 				player->HitStageCollision(stagefloor);
@@ -132,8 +136,8 @@ AbstractScene* GameMain::Update()
 					enemy[i]->SetOnShareFlg(false);
 				}
 
-				//敵が死亡モーション中で無ければ
-				if (enemy[i]->GetEnemyDeathFlg() == false)
+				//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
+				if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
 				{
 					//プレイヤーが無敵状態でないなら
 					if (player->GetPlayerRespawn() <= 0)
@@ -276,8 +280,8 @@ AbstractScene* GameMain::Update()
 					//画像を非表示にしてenemyのflgをfalseにする
 					if (fish->GetIsPreyedOnEnemyr() == true)
 					{
-						enemy[i]->SetShowFlg(false);
 						enemy[i]->SetFlg(false);
+						enemy[i]->SetShowFlg(false);
 					}
 					//念のため死んでいる判定にする
 					if (enemy[i]->GetShowFlg() == false)	
