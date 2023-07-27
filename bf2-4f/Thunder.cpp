@@ -109,38 +109,56 @@ void Thunder::Update()
 				thunder_anim++;
 				thunder_ball_flg = true;
 			}
-			//雷の玉を発射する
 			else
 			{
 				fire_flg = false;
 			}
 		}
 	}
-
+	
 	//雷の玉を発射しているなら
 	if (thunder_ball_flg==true)
 	{
 		thunder_ball_state = Move;
-		thunder_ball_flg = false;
 		is_fire_ready = false;
 		anim_frame = 0;
-		speed = 2;
+		speed = 2.5f;
 		switch (thunder_direction)
 		{
 		case 0:
-			angle = 0.875f;
+			//location.x = cloud_x + 95;
+			//location.y = cloud_y - 30;
+			//angle = 0.875f;
+			location.x = cloud_x + 70;
+			location.y = cloud_y - 30;
+			angle = 0.88f;
 			ChangeAngle();
 			break;
 		case 1:
-			angle = 0.125f;
+			//location.x = cloud_x + 100;
+			//location.y = cloud_y + 80;
+			//angle = 0.125f;
+			location.x = cloud_x + 75;
+			location.y = cloud_y + 80;
+			angle = 0.13f;
 			ChangeAngle();
 			break;
 		case 2:
-			angle = 0.375f;
+			//location.x = cloud_x + 5;
+			//location.y = cloud_y + 90;
+			//angle = 0.375f;
+			location.x = cloud_x + 30;
+			location.y = cloud_y + 90;
+			angle = 0.38f;
 			ChangeAngle();
 			break;
 		case 3:
-			angle = 0.625f;
+			//location.x = cloud_x + 10;
+			//location.y = cloud_y - 30;
+			//angle = 0.625f;
+			location.x = cloud_x + 30;
+			location.y = cloud_y - 30;
+			angle = 0.63f;
 			ChangeAngle();
 			break;
 		default:
@@ -151,15 +169,18 @@ void Thunder::Update()
 	}
 
 	//雷の玉のアニメーション処理
-	if (++anim_frame % 5 == 0)
+	if (show_flg == true)
 	{
-		if (thunder_ball_anim < 2)
+		if (++anim_frame % 5 == 0)
 		{
-			thunder_ball_anim++;
-		}
-		else
-		{
-			thunder_ball_anim = 1;
+			if (thunder_ball_anim < 2)
+			{
+				thunder_ball_anim++;
+			}
+			else
+			{
+				thunder_ball_anim = 1;
+			}
 		}
 	}
 
@@ -218,7 +239,7 @@ void Thunder::Update()
 		is_fire_ready = false;
 		thunder_direction_flg = false;
 
-		fire_timer = SECOND_TO_FRAME(30);
+		fire_timer = SECOND_TO_FRAME(1);
 		preliminary_action_time = SECOND_TO_FRAME(1);
 
 
@@ -250,16 +271,17 @@ void Thunder::Draw()const
 		switch (thunder_direction)
 		{
 			case 0:
-				DrawRotaGraphF(cloud_x + 100, cloud_y - 10, 1, M_PI / 180 * 190, thunder_image[thunder_anim], TRUE);
+				//DrawRotaGraphF(cloud_x + 100, cloud_y - 10, 1, M_PI / 180 * 190, thunder_image[thunder_anim], TRUE);
+				DrawRotaGraphF(cloud_x + 80, cloud_y - 10, 1, M_PI / 180 * 170, thunder_image[thunder_anim], TRUE);
 				break;
 			case 1:
-				DrawRotaGraphF(cloud_x + 100, cloud_y + 80, 1, M_PI / 180 * 340, thunder_image[thunder_anim], TRUE, TRUE);
+				DrawRotaGraphF(cloud_x + 90, cloud_y + 80, 1, M_PI / 180 * 10, thunder_image[thunder_anim], TRUE, TRUE);
 				break;
 			case 2:
-				DrawRotaGraphF(cloud_x+25, cloud_y + 80, 1, M_PI / 180 * 20, thunder_image[thunder_anim], TRUE);
+				DrawRotaGraphF(cloud_x + 40, cloud_y + 85, 1, M_PI / 180 * -10, thunder_image[thunder_anim], TRUE);
 				break;
 			case 3:
-				DrawRotaGraphF(cloud_x + 20, cloud_y - 10 , 1, M_PI / 180 * 170, thunder_image[thunder_anim], TRUE, TRUE);
+				DrawRotaGraphF(cloud_x + 40, cloud_y - 10 , 1, M_PI / 180 * 180, thunder_image[thunder_anim], TRUE, TRUE);
 				break;
 			default:
 				break;
@@ -337,7 +359,8 @@ bool Thunder::HitPlayer(const Player* player)
 	if (this->GetMin().x < player->GetMax().x &&
 		this->GetMax().x>player->GetMin().x &&
 		this->GetMin().y < player->GetMax().y &&
-		this->GetMax().y > player->GetMin().y)
+		this->GetMax().y > player->GetMin().y &&
+		this->show_flg == true)
 	{
 		ret = true;
 	}
