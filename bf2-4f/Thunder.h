@@ -61,5 +61,5 @@ public:
 
     void Reflection(const BoxCollider* boxcollider);
 
-    void HitPlayer(class Player* player);
+    bool HitPlayer(const class Player* player);
 };

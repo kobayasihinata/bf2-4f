@@ -121,11 +121,10 @@ void Thunder::Update()
 	if (thunder_ball_flg==true)
 	{
 		thunder_ball_state = Move;
-		show_flg = true;
 		thunder_ball_flg = false;
 		is_fire_ready = false;
 		anim_frame = 0;
-		speed = 3;
+		speed = 2;
 		switch (thunder_direction)
 		{
 		case 0:
@@ -147,6 +146,7 @@ void Thunder::Update()
 		default:
 			break;
 		}
+		show_flg = true;
 		thunder_ball_flg = false;
 	}
 
@@ -218,11 +218,11 @@ void Thunder::Update()
 		is_fire_ready = false;
 		thunder_direction_flg = false;
 
-		fire_timer = SECOND_TO_FRAME(1);
+		fire_timer = SECOND_TO_FRAME(30);
 		preliminary_action_time = SECOND_TO_FRAME(1);
 
 
-		//show_flg = false;
+		show_flg = false;
 		speed = 0;
 		angle = 0;
 		thunder_ball_state = Stop;
@@ -330,13 +330,17 @@ void Thunder::Reflection(const BoxCollider* boxcollider)
 	}
 }
 
-void Thunder::HitPlayer(Player* player)
+bool Thunder::HitPlayer(const Player* player)
 {
+	bool ret = false;
+
 	if (this->GetMin().x < player->GetMax().x &&
 		this->GetMax().x>player->GetMin().x &&
 		this->GetMin().y < player->GetMax().y &&
 		this->GetMax().y > player->GetMin().y)
 	{
-		player->SetPlayerState(THUNDER_DEATH);
+		ret = true;
 	}
+
+	return	ret;
 }

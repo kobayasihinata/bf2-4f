@@ -51,7 +51,10 @@ AbstractScene* GameMain::Update()
 	}
 	if (Pouse == false) {
 		thunder->Update();
-		thunder->HitPlayer(player);
+		if (thunder->HitPlayer(player) == true)
+		{
+			player->SetPlayerState(THUNDER_DEATH);
+		}
 		//stagefloor‚Ì”ÍˆÍ‚¾‚¯ƒ‹[ƒv‚·‚é
 		for (BoxCollider* stagefloor : stagefloor)
 		{
