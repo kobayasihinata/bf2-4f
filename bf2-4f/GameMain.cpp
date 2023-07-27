@@ -265,7 +265,7 @@ AbstractScene* GameMain::Update()
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//ŠC–Ê‚É“G‚Ì‚¢‚¸‚ê‚©‚ª‚¢‚éê‡
-				if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyUnderWaterFlg() == true)
+				if (fish->CheckSeaSurface(enemy[i]) == true)
 				{
 					//“G‚ÌƒŒƒxƒ‹‚ðŽæ“¾‚·‚é
 					fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
