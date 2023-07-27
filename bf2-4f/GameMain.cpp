@@ -258,7 +258,7 @@ AbstractScene* GameMain::Update()
 		}
 		else
 		{
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < max_enemy; i++)
 			{
 				//ŠC–Ê‚É“G‚Ì‚¢‚¸‚ê‚©‚ª‚¢‚éê‡
 				if (fish->CheckSeaSurface(enemy[i]) == true)
