@@ -536,7 +536,6 @@ void Player::Draw()const
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
 	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
-	//DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
 	
 	if (show_flg == true)
 	{

@@ -10,7 +10,7 @@ GameMain::GameMain()
 	player = new Player();
 	for (int i = 0; i < max_enemy; i++)
 	{
-		enemy[i] = new Enemy(220+i*80, 210, 1);
+		enemy[i] = new Enemy(220+i*80, 410, 1);
 		enemy_ai[i] = new ENEMY_AI;
 		soapbubble[i] = new SoapBubble();
 	}
@@ -86,7 +86,7 @@ AbstractScene* GameMain::Update()
 				{
 					int E_x = enemy[i]->GetEnemyLocation().x;
 					int E_y = enemy[i]->GetEnemyLocation().y;
-					//“G‚ªŽ€–S’†‚Å‚È‚¢‚È‚ç
+					//“G‚ªŽ€–S’†‚Å‚È‚¢ŠŽ‚ÂŽ€‚ñ‚Å‚¢‚È‚¢‚È‚ç
 					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
 
@@ -125,92 +125,91 @@ AbstractScene* GameMain::Update()
 							//enemy[i]->EnemyJumpStop();
 						}
 					}
-				}
 
+					//“G‚ª‚Ç‚ÌƒIƒuƒWƒFƒNƒg‚Æ‚à’…’n‚µ‚Ä‚¢‚È‚¢ê‡
+					if (enemy[i]->IsOnFloor(stagefloor) != true) {
+						//onshare_flg‚ðfalse‚É‚·‚é
+						enemy[i]->SetOnShareFlg(false);
+					}
 
-				//“G‚ª‚Ç‚ÌƒIƒuƒWƒFƒNƒg‚Æ‚à’…’n‚µ‚Ä‚¢‚È‚¢ê‡
-				if (enemy[i]->IsOnFloor(stagefloor) != true) {
-					//onshare_flg‚ðfalse‚É‚·‚é
-					enemy[i]->SetOnShareFlg(false);
-				}
-
-				//“G‚ªŽ€–Sƒ‚[ƒVƒ‡ƒ“’†‚Å–³‚¢ŠŽ‚ÂƒvƒŒƒCƒ„[‚ªŽ€–S‰‰o’†‚Å–³‚¢‚È‚ç
-				if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
-				{
-					//ƒvƒŒƒCƒ„[‚ª–³“Gó‘Ô‚Å‚È‚¢‚È‚ç
-					if (player->GetPlayerRespawn() <= 0)
+					//“G‚ªŽ€–Sƒ‚[ƒVƒ‡ƒ“’†‚Å–³‚¢ŠŽ‚ÂƒvƒŒƒCƒ„[‚ªŽ€–S‰‰o’†‚Å–³‚¢‚È‚ç
+					if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
 					{
-						//ƒvƒŒƒCƒ„[‚Æ“G‚Ì“–‚½‚è”»’è
-						switch (player->HitEnemyCollision(enemy[i]))
+						//ƒvƒŒƒCƒ„[‚ª–³“Gó‘Ô‚Å‚È‚¢‚È‚ç
+						if (player->GetPlayerRespawn() <= 0)
 						{
-						case 1:
-							if (enemy[i]->GetWaitFlg() == false)
+							//ƒvƒŒƒCƒ„[‚Æ“G‚Ì“–‚½‚è”»’è
+							switch (player->HitEnemyCollision(enemy[i]))
 							{
-								player->ReflectionMX();
-								enemy[i]->ReflectionPX();
-							}
-							Damage(i);
-							break;
-						case 2:
-							if (enemy[i]->GetWaitFlg() == false)
-							{
-								player->ReflectionPX();
-								enemy[i]->ReflectionMX();
-							}
+							case 1:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionMX();
+									enemy[i]->ReflectionPX();
+								}
 								Damage(i);
-						case 3:
-							if (enemy[i]->GetWaitFlg() == false)
-							{
-								player->ReflectionPY();
-								enemy[i]->ReflectionMY();
-							}
-							break;
-						case 4:
-							if (enemy[i]->GetWaitFlg() == false)
-							{
-								enemy[i]->ReflectionPY();
-								player->ReflectionMY();
-							}
-							Damage(i);
+								break;
+							case 2:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionPX();
+									enemy[i]->ReflectionMX();
+								}
+								Damage(i);
+							case 3:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionPY();
+									enemy[i]->ReflectionMY();
+								}
+								break;
+							case 4:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									enemy[i]->ReflectionPY();
+									player->ReflectionMY();
+								}
+								Damage(i);
 
-							break;
-						default:
-							damage_once = false;
-							break;
+								break;
+							default:
+								damage_once = false;
+								break;
+							}
 						}
-					}
 
-					//“G‚Æ“G‚Ì“–‚½‚è”»’è
-					for (int j = i + 1; j < max_enemy; j++)
-					{
-						switch (enemy[j]->HitEnemyCollision(enemy[i]))
+						//“G‚Æ“G‚Ì“–‚½‚è”»’è
+						for (int j = i + 1; j < max_enemy; j++)
 						{
-						case 1:
-							enemy[j]->ReflectionMX();
-							enemy[i]->ReflectionPX();
-							break;
-						case 2:
-							enemy[j]->ReflectionPX();
-							enemy[i]->ReflectionMX();
-							break;
-						case 3:
-							enemy[j]->ReflectionPY();
-							enemy[i]->ReflectionMY();
-							break;
-						case 4:
-							enemy[j]->ReflectionMY();
-							enemy[i]->ReflectionPY();
-							break;
-						default:
-							break;
+							switch (enemy[j]->HitEnemyCollision(enemy[i]))
+							{
+							case 1:
+								enemy[j]->ReflectionMX();
+								enemy[i]->ReflectionPX();
+								break;
+							case 2:
+								enemy[j]->ReflectionPX();
+								enemy[i]->ReflectionMX();
+								break;
+							case 3:
+								enemy[j]->ReflectionPY();
+								enemy[i]->ReflectionMY();
+								break;
+							case 4:
+								enemy[j]->ReflectionMY();
+								enemy[i]->ReflectionPY();
+								break;
+							default:
+								break;
+							}
 						}
 					}
-				}
 
-				//“G‚ª…–v’†‚È‚ç
-				if (enemy[i]->GetEnemyUnderWaterFlg() == true)
-				{
-					soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
+					//“G‚ª…–v’†‚È‚ç
+					if (enemy[i]->GetEnemyUnderWaterFlg() == true)
+					{
+						soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
+					}
 				}
 			}
 		}

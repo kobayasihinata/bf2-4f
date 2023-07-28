@@ -74,13 +74,13 @@ Enemy::Enemy(int x,int y,int level)
 	switch (level)
 	{
 	case 1:
-		LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, enemy_image);
 		break;
 	case 2:
-		LoadDivGraph("images/Enemy/Enemy_G_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		LoadDivGraph("images/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, enemy_image);
 		break;
 	case 3:
-		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, enemy_image);
 		break;
 	}
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
@@ -98,7 +98,7 @@ Enemy::Enemy(int x,int y,int level)
 
 Enemy::~Enemy()
 {
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 18; i++)
 	{
 		DeleteGraph(enemy_image[i]);
 	}
@@ -426,7 +426,7 @@ void Enemy::Update()
 		location.y += death_acs * FALL_SPPED;
 		}
 		//スコア取得時演出用
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			if (is_getscore[i] == true)
 			{
@@ -475,6 +475,7 @@ void Enemy::Update()
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
 		underwater_flg = true;
+		is_die = true;
 		enemy_state = E_SUBMERGED;
 		location.y = 471;
 		if (frame % 10 == 0)
@@ -499,7 +500,7 @@ void Enemy::Draw()const
 	{
 		if (flg == true)
 		{
-			//プレイヤーの描画
+			//敵の描画
 			switch (enemy_state)
 			{
 			case E_IDOL_RIGHT:
@@ -521,10 +522,10 @@ void Enemy::Draw()const
 				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[8 + enemy_anim], TRUE);
 				break;
 			case PARACHUTE_RIGHT:
-				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[15 + para_anim], TRUE);
 				break;
 			case PARACHUTE_LEFT:
-				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[16 + para_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[15 + para_anim], TRUE);
 				break;
 			case DEATH_RIGHT:
 				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
@@ -533,7 +534,7 @@ void Enemy::Draw()const
 				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 				break;
 			case E_SUBMERGED:
-				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y - 45, splash_image[0 + splash_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.x - IMAGE_SHIFT_Y - 45, splash_image[0 + splash_anim], TRUE);
 				break;
 			}
 			for (int i = 0; i < 5; i++)
@@ -545,7 +546,7 @@ void Enemy::Draw()const
 			}
 		}
 	}
-
+	DrawFormatString(location.x, location.y, 0xffff00, "%d", enemy_state);
 }
 
 void Enemy::HitStageCollision(const BoxCollider* box_collider)
@@ -887,13 +888,13 @@ void Enemy::EnemyLevelUp()
 	switch (enemy_level)
 	{
 	case 1:
-		LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		LoadDivGraph("images/Enemy/Enemy_P_Animation.png", 18, 6, 3, 64, 64, enemy_image);
 		break;
 	case 2:
-		LoadDivGraph("images/Enemy/Enemy_G_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		LoadDivGraph("images/Enemy/Enemy_G_Animation.png", 18, 6, 3, 64, 64, enemy_image);
 		break;
 	case 3:
-		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 20, 8, 4, 64, 64, enemy_image);
+		LoadDivGraph("images/Enemy/Enemy_R_Animation.png", 18, 6, 3, 64, 64, enemy_image);
 		break;
 	}
 }
