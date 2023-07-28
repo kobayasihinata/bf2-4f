@@ -26,6 +26,7 @@ GameMain::GameMain()
 
 	score = 0;
 	move_cooltime = Enemy_Move_Cool[0];
+	damage_once = false;
 }
 
 GameMain::~GameMain()
@@ -156,15 +157,13 @@ AbstractScene* GameMain::Update()
 								player->ReflectionPX();
 								enemy[i]->ReflectionMX();
 							}
-							Damage(i);
-							break;
+								Damage(i);
 						case 3:
 							if (enemy[i]->GetWaitFlg() == false)
 							{
 								player->ReflectionPY();
 								enemy[i]->ReflectionMY();
 							}
-							Damage(i);
 							break;
 						case 4:
 							if (enemy[i]->GetWaitFlg() == false)
@@ -173,8 +172,10 @@ AbstractScene* GameMain::Update()
 								player->ReflectionMY();
 							}
 							Damage(i);
+
 							break;
 						default:
+							damage_once = false;
 							break;
 						}
 					}
@@ -350,9 +351,10 @@ void GameMain::Draw()const
 void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false)
+	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && damage_once == false)
 	{
 		player->BalloonDec();
+		damage_once = true;
 	}
 
 	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす

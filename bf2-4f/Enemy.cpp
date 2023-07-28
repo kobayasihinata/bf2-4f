@@ -783,7 +783,7 @@ void Enemy::ReflectionPY()
 
 void Enemy::ReflectionMY()
 {
-	acs_up = fabsf(acs_up - acs_down) * 0.8f + 0.1f;
+	acs_up = fabsf(acs_up - acs_down) * 1.1f;
 	acs_down = 0;
 }
 
