@@ -19,6 +19,7 @@ Title::~Title()
 	DeleteGraph(titlelogo);
 	DeleteGraph(titlecredit);
 	DeleteGraph(titlemodeselect);
+	DeleteGraph(titlecursor[3]);
 }
 
 AbstractScene* Title::Update()
