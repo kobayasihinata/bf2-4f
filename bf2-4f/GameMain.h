@@ -17,7 +17,7 @@ private:
     Enemy* enemy[6];
     ENEMY_AI* enemy_ai[6];
     StageFloor* stagefloor[3];
-    StageWall* staegwall;
+    //StageWall* staegwall;
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
