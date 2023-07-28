@@ -481,6 +481,10 @@ void Enemy::Update()
 		if (frame % 10 == 0)
 		{
 			splash_anim++;
+			if (splash_anim >= 3)
+			{
+				splash_anim = 8;
+			}
 		}
 		if (--death_wait < 0)
 		{
@@ -534,7 +538,7 @@ void Enemy::Draw()const
 				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, enemy_image[13 + (enemy_anim % 2)], TRUE);
 				break;
 			case E_SUBMERGED:
-				DrawGraphF(location.x - IMAGE_SHIFT_X, location.x - IMAGE_SHIFT_Y - 45, splash_image[0 + splash_anim], TRUE);
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y-45, splash_image[0 + splash_anim], TRUE);
 				break;
 			}
 			for (int i = 0; i < 5; i++)

@@ -10,7 +10,7 @@ GameMain::GameMain()
 	player = new Player();
 	for (int i = 0; i < max_enemy; i++)
 	{
-		enemy[i] = new Enemy(220+i*80, 410, 1);
+		enemy[i] = new Enemy(220+i*80, 210, 1);
 		enemy_ai[i] = new ENEMY_AI;
 		soapbubble[i] = new SoapBubble();
 	}
@@ -184,20 +184,34 @@ AbstractScene* GameMain::Update()
 							switch (enemy[j]->HitEnemyCollision(enemy[i]))
 							{
 							case 1:
-								enemy[j]->ReflectionMX();
-								enemy[i]->ReflectionPX();
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionMX();
+									enemy[i]->ReflectionPX();
+								}
 								break;
 							case 2:
-								enemy[j]->ReflectionPX();
-								enemy[i]->ReflectionMX();
-								break;
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionPX();
+									enemy[i]->ReflectionMX();
+									break;
+								}
 							case 3:
-								enemy[j]->ReflectionPY();
-								enemy[i]->ReflectionMY();
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionPY();
+									enemy[i]->ReflectionMY();
+									break;
+								}
 								break;
 							case 4:
-								enemy[j]->ReflectionMY();
-								enemy[i]->ReflectionPY();
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionMY();
+									enemy[i]->ReflectionPY();
+									break;
+								}
 								break;
 							default:
 								break;
@@ -323,6 +337,13 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
+	if (Pouse == false) {
+		for (int i = 0; i < max_enemy; i++)
+		{
+			enemy[i]->Draw();
+			soapbubble[i]->Draw();
+		}
+	}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
@@ -334,11 +355,7 @@ void GameMain::Draw()const
 	}
 	if (Pouse == false) {
 		player->Draw();
-		for (int i = 0; i < max_enemy; i++)
-		{
-			enemy[i]->Draw();
-			soapbubble[i]->Draw();
-		}
+
 	}
 	fish->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
