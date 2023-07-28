@@ -52,10 +52,11 @@ private:
     bool ref_once_left;
     bool ref_once_right;
 
-    int player_image[30];   //プレイヤー画像
+    int player_image[31];   //プレイヤー画像
     int splash_image[3];   //プレイヤー画像
     int player_anim;    //プレイヤーアニメーション用
     int splash_anim;    //水没アニメーション用
+    int turn_anim;    //水没アニメーション用
     int anim_boost;     //アニメーション加速用
     int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;    //移動方向保存用

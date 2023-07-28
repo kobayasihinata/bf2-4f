@@ -38,10 +38,11 @@ Player::Player()
 	ref_once_left = FALSE;
 	ref_once_right = FALSE;
 
-	LoadDivGraph("images/Player/Player_Animation.png", 30, 8, 4, 64, 64, player_image);
+	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
 	player_anim = 0;
 	splash_anim = 0;
+	turn_anim = 0;
 	anim_boost = 0;
 	jump_anim_boost = 0;
 
@@ -476,7 +477,7 @@ void Player::Update()
 	}
 
 	//アニメーション
-	if (frame % (20 - anim_boost) == 0 && player_state != FLY_LEFT && player_state != FLY_RIGHT)
+	if (frame % (20 - anim_boost) == 0 && player_state != FLY_LEFT && player_state != FLY_RIGHT && player_state != TURN_LEFT && player_state != TURN_RIGHT)
 	{
 		player_anim++;
 		if (player_anim > 3)
@@ -491,6 +492,20 @@ void Player::Update()
 	else
 	{
 		anim_boost = 0;
+	}
+	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
+	{
+		if (frame % 15 == 0)
+		{
+			if (++turn_anim >= 1)
+			{
+				turn_anim = 1;
+			}
+		}
+	}
+	else
+	{
+		turn_anim = 0;
 	}
 
 	//プレイヤーが海面より下へ行くと残機 -1
@@ -552,25 +567,43 @@ void Player::Draw()const
 			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
 			break;
 		case TURN_LEFT:
-			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
+			if (balloon == 1)
+			{
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16], TRUE);
+
+			}
+			else 
+			{
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + turn_anim], TRUE);
+
+			}
 			break;
 		case WALK_RIGHT:
 			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
 			break;
 		case TURN_RIGHT:
-			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + ((2 - balloon) * 4)], TRUE);
+			if (balloon == 1)
+			{
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16], TRUE);
+
+			}
+			else
+			{
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[11 + turn_anim], TRUE);
+
+			}
 			break;
 		case FLY_LEFT:
-			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[17 + player_anim + ((2 - balloon) * 5)], TRUE);
 			break;
 		case FLY_RIGHT:
-			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[16 + player_anim + ((2 - balloon) * 8)], TRUE);
+			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[17 + player_anim + ((2 - balloon) * 5)], TRUE);
 			break;
 		case DEATH:
-			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 3)], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[27 + (player_anim % 3)], TRUE);
 			break;
 		case THUNDER_DEATH:
-			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[21 + (player_anim % 2)*8], TRUE);
+			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[27 + (player_anim % 2)*3], TRUE);
 			break;
 		case INVINCIBLE:
 			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[2 + (player_anim % 2)], TRUE);
