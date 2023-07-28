@@ -15,8 +15,9 @@ StageFloor::StageFloor(int x, int y, int height, int width,int shift)
 	footing1 = LoadGraph("images/Stage/Stage_Footing01.png");
 	footing2 = LoadGraph("images/Stage/Stage_Footing02.png");
 	footing3 = LoadGraph("images/Stage/Stage_Footing03.png");
-	footing4 = LoadGraph("images/Stage/Stage_Footing04.png");
 	footing5 = LoadGraph("images/Stage/Stage_Footing05.png");
+	footing6 = LoadGraph("images/Stage/Stage_Footing06.png");
+
 }
 
 StageFloor::~StageFloor()
@@ -27,7 +28,6 @@ StageFloor::~StageFloor()
 	DeleteGraph(footing1);
 	DeleteGraph(footing2);
 	DeleteGraph(footing3);
-	DeleteGraph(footing4);
 	DeleteGraph(footing5);
 }
 
@@ -66,12 +66,12 @@ void StageFloor::DrawFooting3()
 	DrawGraphF(location.x, location.y, footing3, TRUE);
 }
 
-void StageFloor::DrawFooting4()
-{
-	DrawGraphF(location.x, location.y, footing4, TRUE);
-}
-
 void StageFloor::DrawFooting5()
 {
 	DrawGraphF(location.x, location.y, footing5, TRUE);
+}
+
+void StageFloor::DrawFooting6()
+{
+	DrawGraphF(location.x, location.y, footing6, TRUE);
 }

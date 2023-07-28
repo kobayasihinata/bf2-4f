@@ -54,6 +54,7 @@ AbstractScene* GameMain::Update()
 		if (thunder->HitPlayer(player) == true)
 		{
 			player->SetThunderDeath(true);
+			thunder->InitThunder();
 		}
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
 		{
@@ -264,6 +265,11 @@ AbstractScene* GameMain::Update()
 		{
 			for (int i = 0; i < max_enemy; i++)
 			{
+				if (enemy[i]->GetIsDie() == true)
+				{
+					fish->NotAtSeaSurface();
+				}
+
 				//ŠC–Ê‚É“G‚Ì‚¢‚¸‚ê‚©‚ª‚¢‚éê‡
 				if (fish->CheckSeaSurface(enemy[i]) == true)
 				{

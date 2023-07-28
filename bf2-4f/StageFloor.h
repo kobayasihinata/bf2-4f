@@ -12,8 +12,8 @@ private:
     int footing1;
     int footing2;
     int footing3;
-    int footing4;
     int footing5;
+    int footing6;
 
 public:
     //コンストラクタ
@@ -34,7 +34,7 @@ public:
     void DrawFooting1();
     void DrawFooting2();
     void DrawFooting3();
-    void DrawFooting4();
     void DrawFooting5();
+    void DrawFooting6();
 };
 

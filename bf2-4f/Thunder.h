@@ -62,4 +62,6 @@ public:
     void Reflection(const BoxCollider* boxcollider);
 
     bool HitPlayer(const class Player* player);
+
+    void InitThunder();
 };

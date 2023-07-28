@@ -230,27 +230,7 @@ void Thunder::Update()
 	//â∫Ç…óéÇøÇΩèÍçá
 	if (is_die == true)
 	{
-		cloud_anim = 0;
-		thunder_anim = 0;
-		thunder_ball_anim = 0;
-
-		thunder_ball_flg = false;
-		fire_flg = false;
-		is_fire_ready = false;
-		thunder_direction_flg = false;
-
-		fire_timer = SECOND_TO_FRAME(30);
-		preliminary_action_time = SECOND_TO_FRAME(1);
-
-
-		show_flg = false;
-		speed = 0;
-		angle = 0;
-		thunder_ball_state = Stop;
-		location.x = cloud_x + 50;
-		location.y = cloud_y + 20;
-
-		is_die = false;
+		InitThunder();
 	}
 }
 		
@@ -366,4 +346,30 @@ bool Thunder::HitPlayer(const Player* player)
 	}
 
 	return	ret;
+}
+
+void Thunder::InitThunder()
+{
+	cloud_anim = 0;
+	thunder_anim = 0;
+	thunder_ball_anim = 0;
+
+	thunder_ball_flg = false;
+	fire_flg = false;
+	is_fire_ready = false;
+	thunder_direction_flg = false;
+
+	fire_timer = SECOND_TO_FRAME(30);
+	preliminary_action_time = SECOND_TO_FRAME(1);
+
+
+	show_flg = false;
+	speed = 0;
+	angle = 0;
+	thunder_ball_state = Stop;
+	location.x = cloud_x + 50;
+	location.y = cloud_y + 20;
+
+	is_die = false;
+
 }
