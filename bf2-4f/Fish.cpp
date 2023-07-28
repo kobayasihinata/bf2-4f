@@ -5,7 +5,7 @@
 
 Fish::Fish()
 {
-	LoadDivGraph("images/Enemy/Enemy_FishAnimation.png", 10, 6, 2, 64, 64, fish_image);
+	LoadDivGraph("images/Enemy/Enemy_FishAnimation.png", 10, 5, 2, 64, 64, fish_image);
 	location.x = SEASURFACE_START_X;
 	location.y = UNDER_WATER;
 	area.height = 55;

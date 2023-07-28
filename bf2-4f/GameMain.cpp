@@ -17,7 +17,7 @@ GameMain::GameMain()
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
-	staegwall = new StageWall();
+	//staegwall = new StageWall();
 	fish = new Fish();
 	thunder = new Thunder();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
@@ -37,7 +37,7 @@ GameMain::~GameMain()
 		delete enemy[i];
 		delete soapbubble[i];
 	}
-	delete staegwall;
+	//delete staegwall;
 	delete stagefloor[0];
 	delete stagefloor[1];
 	delete stagefloor[2];
