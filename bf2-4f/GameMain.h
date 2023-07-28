@@ -29,6 +29,7 @@ private:
     int P_x, P_y;       //プレイヤー座標
     const int Enemy_Move_Cool[3]{ 360,240,120 };
     int move_cooltime;
+    bool damage_once;   //重なっている時一回だけダメージを与える
 
 public:
 
