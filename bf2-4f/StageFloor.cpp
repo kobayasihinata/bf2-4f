@@ -10,7 +10,9 @@ StageFloor::StageFloor(int x, int y, int height, int width,int shift)
 	this->shift = shift;
 
 	landleft = LoadGraph("images/Stage/Stage_Land_Left01.png");
+	landleft2 = LoadGraph("images/Stage/Stage_Land_Left02.png");
 	landright = LoadGraph("images/Stage/Stage_Land_Right01.png");
+	landright2 = LoadGraph("images/Stage/Stage_Land_Right02.png");
 
 	footing1 = LoadGraph("images/Stage/Stage_Footing01.png");
 	footing2 = LoadGraph("images/Stage/Stage_Footing02.png");

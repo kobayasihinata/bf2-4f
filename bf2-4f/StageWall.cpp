@@ -17,7 +17,9 @@ StageWall::StageWall(int x, int y, int height, int width, int shift)
 
 StageWall::~StageWall()
 {
-
+	DeleteGraph(footing4);
+	DeleteGraph(footing7);
+	DeleteGraph(footing8);
 }
 
 void StageWall::Update()

@@ -7,7 +7,9 @@ private:
     int shift;        //‰æ‘œ’²®
 
     int landleft;
+    int landleft2;
     int landright;
+    int landright2;
 
     int footing1;
     int footing2;
