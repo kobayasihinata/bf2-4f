@@ -249,9 +249,17 @@ void Player::Update()
 								acs_left += 50;
 								acs_up -= 10;
 							}
+							else
+							{
+								acs_left = MAX_SPEED;
+							}
 							if (acs_right > 0)
 							{
 								acs_right -= 50;
+							}
+							else
+							{
+								acs_right = 0;
 							}
 						}
 						//上昇時に右入力がされていたら右に加速する
@@ -262,9 +270,17 @@ void Player::Update()
 								acs_right += 50;
 								acs_up -= 10;
 							}
+							else
+							{
+								acs_right = MAX_SPEED;
+							}
 							if (acs_left > 0)
 							{
 								acs_left -= 50;
+							}
+							else
+							{
+								acs_left = 0;
 							}
 						}
 					}
@@ -280,9 +296,17 @@ void Player::Update()
 							acs_left += 50;
 							acs_up -= 10;
 						}
+						else
+						{
+							acs_left = MAX_SPEED;
+						}
 						if (acs_right > 0)
 						{
 							acs_right -= 50;
+						}
+						else
+						{
+							acs_right = 0;
 						}
 					}
 					//上昇時に右入力がされていたら右に加速する
@@ -293,9 +317,17 @@ void Player::Update()
 							acs_right += 50;
 							acs_up -= 10;
 						}
+						else
+						{
+							acs_right = MAX_SPEED;
+						}
 						if (acs_left > 0)
 						{
 							acs_left -= 50;
+						}
+						else
+						{
+							acs_left = 0;
 						}
 					}
 
