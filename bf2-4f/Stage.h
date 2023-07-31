@@ -29,11 +29,5 @@ public:
 
 	//•`‰æˆ—
 	void Draw()const;
-
-	void Stage1();
-	void Stage2();
-	void Stage3();
-	void Stage4();
-	void Stage5();
 };
 

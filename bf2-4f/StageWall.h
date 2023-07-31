@@ -25,7 +25,5 @@ public:
     void DrawFooting4();
     void DrawFooting7();
     void DrawFooting8();
-
-
 };
 

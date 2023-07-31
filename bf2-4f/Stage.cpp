@@ -45,20 +45,11 @@ void Stage::Update()
 
 void Stage::Draw() const
 {
-
-}
-
-void Stage::Stage1()
-{
 	//ステージ１
 	//DrawGraph(0, 416, landleft, TRUE);
 	//DrawGraph(479, 416, landright, TRUE);
 	//DrawGraph(159, 444, sea, TRUE);
 	//DrawGraph(180, 290, footing1, TRUE);
-}
-
-void Stage::Stage2()
-{
 	//ステージ２
 	//DrawGraph(0,416,landleft, TRUE);
 	//DrawGraph(479,416,landright, TRUE);
@@ -66,10 +57,6 @@ void Stage::Stage2()
 	//DrawGraph(180,290,footing1, TRUE);
 	//DrawGraph(90,170,footing2, TRUE);	// 左
 	//DrawGraph(460,150,footing2, TRUE);	// 右
-}
-
-void Stage::Stage3()
-{
 	//ステージ３
 	//DrawGraph(0, 416, landleft, TRUE);
 	//DrawGraph(479, 416, landright, TRUE);
@@ -79,10 +66,6 @@ void Stage::Stage3()
 	//DrawGraph(310, 200, footing4, TRUE); //	真ん中
 	//DrawGraph(490, 100, footing4, TRUE); //	右
 	//DrawGraph(200, 100, footing5, TRUE);
-}
-
-void Stage::Stage4()
-{
 	//ステージ４
 	/*DrawGraph(0, 416, landleft2, TRUE);
 	DrawGraph(479, 416, landright2, TRUE);
@@ -92,10 +75,6 @@ void Stage::Stage4()
 	DrawGraph(230, 290, footing6, TRUE);
 	DrawGraph(120, 250, footing6, TRUE);
 	DrawGraph(310, 180, footing6, TRUE);*/
-}
-
-void Stage::Stage5()
-{
 	//ステージ５
 	/*DrawGraph(0, 416, landleft2, TRUE);
 	DrawGraph(479, 416, landright2, TRUE);
