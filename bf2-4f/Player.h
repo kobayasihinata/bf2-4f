@@ -118,6 +118,9 @@ public:
     //プレイヤーの風船を減らす
     void BalloonDec();
 
+    //プレイヤーが溺死中状態か取得する
+    bool GetUnderWaterFlg() { return underwater_flg; }
+
     //プレイヤーが雷死状態か取得する
     bool GetThunderDeathFlg() { return thunder_death_flg; }
 

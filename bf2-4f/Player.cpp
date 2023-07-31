@@ -517,21 +517,17 @@ void Player::Update()
 		//ƒvƒŒƒCƒ„[‚ğ…–v’†‚Éİ’è
 		player_state = SUBMERGED;
 		location.y = 470;
-		if (frame % 10 == 0)
-		{
-			splash_anim++;
-		}
-		if (--death_wait < 0)
-		{
-			underwater_flg = false;
-			is_die = false;
-			splash_anim = 0;
-			life = life - 1;
-			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
-		}
 	}
 
 	if (is_die) {
+		if (frame % 10 == 0)
+		{
+			splash_anim++;
+			if (splash_anim >= 3)
+			{
+				splash_anim = 8;
+			}
+		}
 		if (--death_wait < 0)
 		{
 			underwater_flg = false;
@@ -632,6 +628,7 @@ void Player::Draw()const
 			break;
 		}
 	}
+
 
 }
 

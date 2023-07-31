@@ -10,7 +10,7 @@ GameMain::GameMain()
 	player = new Player();
 	for (int i = 0; i < max_enemy; i++)
 	{
-		enemy[i] = new Enemy(220 + i * 70, 210, 1);
+		enemy[i] = new Enemy(230 + i * 70, 210, 1);
 		enemy_ai[i] = new ENEMY_AI;
 		soapbubble[i] = new SoapBubble();
 	}
@@ -328,13 +328,13 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	if (Pouse == false) {
+	//if (Pouse == false) {
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy[i]->Draw();
 			soapbubble[i]->Draw();
 		}
-	}
+	//}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
@@ -344,10 +344,10 @@ void GameMain::Draw()const
 	{
 		stagefloor->Draw();
 	}
-	if (Pouse == false) {
+	//if (Pouse == false) {
 		player->Draw();
 
-	}
+	//}
 	fish->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
 
