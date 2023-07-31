@@ -10,7 +10,7 @@ GameMain::GameMain()
 	player = new Player();
 	for (int i = 0; i < max_enemy; i++)
 	{
-		enemy[i] = new Enemy(220+i*80, 210, 1);
+		enemy[i] = new Enemy(220 + i * 70, 210, 1);
 		enemy_ai[i] = new ENEMY_AI;
 		soapbubble[i] = new SoapBubble();
 	}
@@ -162,6 +162,7 @@ AbstractScene* GameMain::Update()
 									player->ReflectionPY();
 									enemy[i]->ReflectionMY();
 								}
+								Damage(i);
 								break;
 							case 4:
 								if (enemy[i]->GetWaitFlg() == false)
@@ -181,40 +182,30 @@ AbstractScene* GameMain::Update()
 						//“G‚Æ“G‚Ì“–‚½‚è”»’è
 						for (int j = i + 1; j < max_enemy; j++)
 						{
-							switch (enemy[j]->HitEnemyCollision(enemy[i]))
+							//“G‚ª¶‚«‚Ä‚¢‚é‚È‚ç
+							if (enemy[j]->GetFlg() == true && enemy[i]->GetFlg() == true && enemy[i]->GetEnemyDeathFlg() == false && enemy[j]->GetEnemyDeathFlg() == false)
 							{
-							case 1:
-								if (enemy[j]->GetFlg() == true)
+								switch (enemy[j]->HitEnemyCollision(enemy[i]))
 								{
+								case 1:
 									enemy[j]->ReflectionMX();
 									enemy[i]->ReflectionPX();
-								}
-								break;
-							case 2:
-								if (enemy[j]->GetFlg() == true)
-								{
+									break;
+								case 2:
 									enemy[j]->ReflectionPX();
 									enemy[i]->ReflectionMX();
 									break;
-								}
-							case 3:
-								if (enemy[j]->GetFlg() == true)
-								{
+								case 3:
 									enemy[j]->ReflectionPY();
 									enemy[i]->ReflectionMY();
 									break;
-								}
-								break;
-							case 4:
-								if (enemy[j]->GetFlg() == true)
-								{
+								case 4:
 									enemy[j]->ReflectionMY();
 									enemy[i]->ReflectionPY();
 									break;
+								default:
+									break;
 								}
-								break;
-							default:
-								break;
 							}
 						}
 					}
