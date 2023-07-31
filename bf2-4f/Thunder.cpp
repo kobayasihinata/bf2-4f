@@ -235,7 +235,7 @@ void Thunder::Update()
 }
 		
 
-void Thunder::Draw()const
+void Thunder::Draw(bool flg)const
 {
 #ifdef DEBUG
 	DrawFormatString(0, 200, 0xff00ff, "%d", fire_timer);
@@ -245,11 +245,13 @@ void Thunder::Draw()const
 #endif // DEBUG
 
 	DrawGraphF(cloud_x, cloud_y, cloud_image[cloud_anim], TRUE);
-	if (fire_flg == true)
+	if (flg == false)
 	{
-		//表示場所は時計回り
-		switch (thunder_direction)
+		if (fire_flg == true)
 		{
+			//表示場所は時計回り
+			switch (thunder_direction)
+			{
 			case 0:
 				//DrawRotaGraphF(cloud_x + 100, cloud_y - 10, 1, M_PI / 180 * 190, thunder_image[thunder_anim], TRUE);
 				DrawRotaGraphF(cloud_x + 80, cloud_y - 10, 1, M_PI / 180 * 170, thunder_image[thunder_anim], TRUE);
@@ -261,15 +263,16 @@ void Thunder::Draw()const
 				DrawRotaGraphF(cloud_x + 40, cloud_y + 85, 1, M_PI / 180 * -10, thunder_image[thunder_anim], TRUE);
 				break;
 			case 3:
-				DrawRotaGraphF(cloud_x + 40, cloud_y - 10 , 1, M_PI / 180 * 180, thunder_image[thunder_anim], TRUE, TRUE);
+				DrawRotaGraphF(cloud_x + 40, cloud_y - 10, 1, M_PI / 180 * 180, thunder_image[thunder_anim], TRUE, TRUE);
 				break;
 			default:
 				break;
+			}
 		}
-	}
-	if (show_flg == true)
-	{
-		DrawGraphF(location.x - THUNDER_BALL_IMAGE_SHIFT, location.y - THUNDER_BALL_IMAGE_SHIFT, thunder_ball_image[thunder_ball_anim], TRUE);
+		if (show_flg == true)
+		{
+			DrawGraphF(location.x - THUNDER_BALL_IMAGE_SHIFT, location.y - THUNDER_BALL_IMAGE_SHIFT, thunder_ball_image[thunder_ball_anim], TRUE);
+		}
 	}
 }
 

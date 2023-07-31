@@ -55,7 +55,7 @@ public:
     void Update();
 
     //•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ÌŽÀ‘•
-    void Draw()const;
+    void Draw(bool flg)const;
 
     void ChangeAngle();
 

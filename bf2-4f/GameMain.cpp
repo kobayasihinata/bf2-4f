@@ -353,7 +353,7 @@ void GameMain::Draw()const
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
-	thunder->Draw();
+	thunder->Draw(Pouse);
 	//デバッグ用　当たり判定表示
 	for (BoxCollider* stagefloor : stagefloor)
 	{
