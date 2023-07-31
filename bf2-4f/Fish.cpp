@@ -5,7 +5,7 @@
 
 Fish::Fish()
 {
-	LoadDivGraph("images/Enemy/Enemy_FishAnimation.png", 10, 6, 2, 64, 64, fish_image);
+	LoadDivGraph("images/Enemy/Enemy_FishAnimation.png", 10, 5, 2, 64, 64, fish_image);
 	location.x = SEASURFACE_START_X;
 	location.y = UNDER_WATER;
 	area.height = 55;
@@ -90,10 +90,10 @@ void Fish::Update()
 		{
 			respawn_flg = true;
 		}
-		if (is_preying_on_enemy == true)
-		{
-			bubble_spawn_flg = false;
-		}
+		//if (is_preying_on_enemy == true)
+		//{
+		//	bubble_spawn_flg = false;
+		//}
 		reversal_flg = false;
 		fish_state = Rising_Fish_1;
 		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
@@ -105,11 +105,11 @@ void Fish::Update()
 		is_preying_on_player = false;
 	}
 
-	if (bubble_spawn_flg == false)
-	{
-		is_preying_on_enemy = false;
-		//bubble_spawn_flg = true;
-	}
+	//if (bubble_spawn_flg == false)
+	//{
+	//	is_preying_on_enemy = false;
+	//	bubble_spawn_flg = true;
+	//}
 }
 
 void Fish::Draw()const

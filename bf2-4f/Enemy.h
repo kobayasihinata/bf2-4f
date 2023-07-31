@@ -62,7 +62,7 @@ private:
     bool ref_once_left;     //反射制御用
     bool ref_once_right;    //反射制御用
 
-    int enemy_image[20];   //敵画像
+    int enemy_image[18];   //敵画像
     int splash_image[3];   //敵画像
     int getscore_image[5];   //スコア獲得演出画像
     int enemy_anim;    //敵アニメーション用

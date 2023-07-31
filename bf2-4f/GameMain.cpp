@@ -17,7 +17,7 @@ GameMain::GameMain()
 	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
-	staegwall = new StageWall();
+	//staegwall = new StageWall();
 	fish = new Fish();
 	thunder = new Thunder();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
@@ -26,6 +26,7 @@ GameMain::GameMain()
 
 	score = 0;
 	move_cooltime = Enemy_Move_Cool[0];
+	damage_once = false;
 }
 
 GameMain::~GameMain()
@@ -36,7 +37,7 @@ GameMain::~GameMain()
 		delete enemy[i];
 		delete soapbubble[i];
 	}
-	delete staegwall;
+	//delete staegwall;
 	delete stagefloor[0];
 	delete stagefloor[1];
 	delete stagefloor[2];
@@ -85,7 +86,7 @@ AbstractScene* GameMain::Update()
 				{
 					int E_x = enemy[i]->GetEnemyLocation().x;
 					int E_y = enemy[i]->GetEnemyLocation().y;
-					//敵が死亡中でないなら
+					//敵が死亡中でない且つ死んでいないなら
 					if (enemy[i]->GetEnemyDeathFlg() == false)
 					{
 
@@ -124,92 +125,105 @@ AbstractScene* GameMain::Update()
 							//enemy[i]->EnemyJumpStop();
 						}
 					}
-				}
 
+					//敵がどのオブジェクトとも着地していない場合
+					if (enemy[i]->IsOnFloor(stagefloor) != true) {
+						//onshare_flgをfalseにする
+						enemy[i]->SetOnShareFlg(false);
+					}
 
-				//敵がどのオブジェクトとも着地していない場合
-				if (enemy[i]->IsOnFloor(stagefloor) != true) {
-					//onshare_flgをfalseにする
-					enemy[i]->SetOnShareFlg(false);
-				}
-
-				//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
-				if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
-				{
-					//プレイヤーが無敵状態でないなら
-					if (player->GetPlayerRespawn() <= 0)
+					//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
+					if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
 					{
-						//プレイヤーと敵の当たり判定
-						switch (player->HitEnemyCollision(enemy[i]))
+						//プレイヤーが無敵状態でないなら
+						if (player->GetPlayerRespawn() <= 0)
 						{
-						case 1:
-							if (enemy[i]->GetWaitFlg() == false)
+							//プレイヤーと敵の当たり判定
+							switch (player->HitEnemyCollision(enemy[i]))
 							{
-								player->ReflectionMX();
-								enemy[i]->ReflectionPX();
+							case 1:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionMX();
+									enemy[i]->ReflectionPX();
+								}
+								Damage(i);
+								break;
+							case 2:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionPX();
+									enemy[i]->ReflectionMX();
+								}
+								Damage(i);
+							case 3:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									player->ReflectionPY();
+									enemy[i]->ReflectionMY();
+								}
+								break;
+							case 4:
+								if (enemy[i]->GetWaitFlg() == false)
+								{
+									enemy[i]->ReflectionPY();
+									player->ReflectionMY();
+								}
+								Damage(i);
+
+								break;
+							default:
+								damage_once = false;
+								break;
 							}
-							Damage(i);
-							break;
-						case 2:
-							if (enemy[i]->GetWaitFlg() == false)
+						}
+
+						//敵と敵の当たり判定
+						for (int j = i + 1; j < max_enemy; j++)
+						{
+							switch (enemy[j]->HitEnemyCollision(enemy[i]))
 							{
-								player->ReflectionPX();
-								enemy[i]->ReflectionMX();
+							case 1:
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionMX();
+									enemy[i]->ReflectionPX();
+								}
+								break;
+							case 2:
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionPX();
+									enemy[i]->ReflectionMX();
+									break;
+								}
+							case 3:
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionPY();
+									enemy[i]->ReflectionMY();
+									break;
+								}
+								break;
+							case 4:
+								if (enemy[j]->GetFlg() == true)
+								{
+									enemy[j]->ReflectionMY();
+									enemy[i]->ReflectionPY();
+									break;
+								}
+								break;
+							default:
+								break;
 							}
-							Damage(i);
-							break;
-						case 3:
-							if (enemy[i]->GetWaitFlg() == false)
-							{
-								player->ReflectionPY();
-								enemy[i]->ReflectionMY();
-							}
-							Damage(i);
-							break;
-						case 4:
-							if (enemy[i]->GetWaitFlg() == false)
-							{
-								enemy[i]->ReflectionPY();
-								player->ReflectionMY();
-							}
-							Damage(i);
-							break;
-						default:
-							break;
 						}
 					}
 
-					//敵と敵の当たり判定
-					for (int j = i + 1; j < max_enemy; j++)
+					//敵が水没中なら
+					if (enemy[i]->GetEnemyUnderWaterFlg() == true)
 					{
-						switch (enemy[j]->HitEnemyCollision(enemy[i]))
-						{
-						case 1:
-							enemy[j]->ReflectionMX();
-							enemy[i]->ReflectionPX();
-							break;
-						case 2:
-							enemy[j]->ReflectionPX();
-							enemy[i]->ReflectionMX();
-							break;
-						case 3:
-							enemy[j]->ReflectionPY();
-							enemy[i]->ReflectionMY();
-							break;
-						case 4:
-							enemy[j]->ReflectionMY();
-							enemy[i]->ReflectionPY();
-							break;
-						default:
-							break;
-						}
+						soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
 					}
-				}
-
-				//敵が水没中なら
-				if (enemy[i]->GetEnemyUnderWaterFlg() == true)
-				{
-					soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
 				}
 			}
 		}
@@ -265,7 +279,7 @@ AbstractScene* GameMain::Update()
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//海面に敵のいずれかがいる場合
-				if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyUnderWaterFlg() == true)
+				if (fish->CheckSeaSurface(enemy[i]) == true)
 				{
 					//敵のレベルを取得する
 					fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
@@ -323,6 +337,13 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
+	if (Pouse == false) {
+		for (int i = 0; i < max_enemy; i++)
+		{
+			enemy[i]->Draw();
+			soapbubble[i]->Draw();
+		}
+	}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
 	stagefloor[2]->DrawFooting1();
@@ -334,11 +355,7 @@ void GameMain::Draw()const
 	}
 	if (Pouse == false) {
 		player->Draw();
-		for (int i = 0; i < max_enemy; i++)
-		{
-			enemy[i]->Draw();
-			soapbubble[i]->Draw();
-		}
+
 	}
 	fish->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
@@ -350,9 +367,10 @@ void GameMain::Draw()const
 void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false)
+	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && damage_once == false)
 	{
 		player->BalloonDec();
+		damage_once = true;
 	}
 
 	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす
