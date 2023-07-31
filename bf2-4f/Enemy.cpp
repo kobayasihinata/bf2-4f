@@ -550,7 +550,6 @@ void Enemy::Draw()const
 			}
 		}
 	}
-	DrawFormatString(location.x, location.y, 0xffff00, "%d", enemy_state);
 }
 
 void Enemy::HitStageCollision(const BoxCollider* box_collider)
