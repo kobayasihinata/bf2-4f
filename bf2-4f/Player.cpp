@@ -781,7 +781,7 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	}
 
 	//StaegFloor‚Ìc‚Ì”ÍˆÍ“à
-	if (my_y[0] < sub_y[1] - 5 &&
+	 else if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
 		//Player‚ª“G‚æ‚è‰E‚Ös‚±‚¤‚Æ‚µ‚½ê‡

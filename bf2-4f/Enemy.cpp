@@ -789,7 +789,7 @@ void Enemy::ReflectionMY()
 {
 	if (para_flg == true)
 	{
-		acs_up = fabsf(acs_up - acs_down) * 0.8f;
+		acs_up = fabsf(acs_up - acs_down) * 0.7f;
 	}
 	else
 	{
