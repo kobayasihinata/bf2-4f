@@ -517,9 +517,18 @@ void Player::Update()
 		//プレイヤーを水没中に設定
 		player_state = SUBMERGED;
 		location.y = 470;
+		if (--death_wait < 0)
+		{
+			underwater_flg = false;
+			is_die = false;
+			splash_anim = 0;
+			life = life - 1;
+			PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
+		}
 	}
 
 	if (is_die) {
+		player_state = SUBMERGED;
 		if (frame % 10 == 0)
 		{
 			splash_anim++;
@@ -778,7 +787,7 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	}
 
 	//StaegFloorの縦の範囲内
-	if (my_y[0] < sub_y[1] - 5 &&
+	 else if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
 		//Playerが敵より右へ行こうとした場合
