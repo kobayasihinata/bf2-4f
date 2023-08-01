@@ -517,10 +517,6 @@ void Player::Update()
 		//ƒvƒŒƒCƒ„[‚ğ…–v’†‚Éİ’è
 		player_state = SUBMERGED;
 		location.y = 470;
-		if (frame % 10 == 0)
-		{
-			splash_anim++;
-		}
 		if (--death_wait < 0)
 		{
 			underwater_flg = false;
@@ -532,6 +528,15 @@ void Player::Update()
 	}
 
 	if (is_die) {
+		player_state = SUBMERGED;
+		if (frame % 10 == 0)
+		{
+			splash_anim++;
+			if (splash_anim >= 3)
+			{
+				splash_anim = 8;
+			}
+		}
 		if (--death_wait < 0)
 		{
 			underwater_flg = false;
