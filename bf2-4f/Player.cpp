@@ -231,7 +231,7 @@ void Player::Update()
 						//A‚ğ‰Ÿ‚¹‚Î‰Ÿ‚·‚Ù‚Çã‰Á‘¬“x‚ªã‚ª‚é
 						if (jump_combo < MAX_JUMP)
 						{
-							if (jump_combo == 0)
+							if (onfloor_flg == true)
 							{
 								jump_combo += 5 + balloon;
 							}
@@ -246,7 +246,7 @@ void Player::Update()
 						{
 							if (acs_left < MAX_SPEED)
 							{
-								acs_left += 50;
+								acs_left += 40;
 								acs_up -= 10;
 							}
 							else
@@ -255,7 +255,7 @@ void Player::Update()
 							}
 							if (acs_right > 0)
 							{
-								acs_right -= 50;
+								acs_right -= 40;
 							}
 							else
 							{
@@ -267,7 +267,7 @@ void Player::Update()
 						{
 							if (acs_right < MAX_SPEED)
 							{
-								acs_right += 50;
+								acs_right += 40;
 								acs_up -= 10;
 							}
 							else
@@ -276,7 +276,7 @@ void Player::Update()
 							}
 							if (acs_left > 0)
 							{
-								acs_left -= 50;
+								acs_left -= 40;
 							}
 							else
 							{
@@ -293,7 +293,7 @@ void Player::Update()
 					{
 						if (acs_left < MAX_SPEED)
 						{
-							acs_left += 50;
+							acs_left += 40;
 							acs_up -= 10;
 						}
 						else
@@ -302,7 +302,7 @@ void Player::Update()
 						}
 						if (acs_right > 0)
 						{
-							acs_right -= 50;
+							acs_right -= 40;
 						}
 						else
 						{
@@ -314,7 +314,7 @@ void Player::Update()
 					{
 						if (acs_right < MAX_SPEED)
 						{
-							acs_right += 50;
+							acs_right += 40;
 							acs_up -= 10;
 						}
 						else
@@ -323,7 +323,7 @@ void Player::Update()
 						}
 						if (acs_left > 0)
 						{
-							acs_left -= 50;
+							acs_left -= 40;
 						}
 						else
 						{
@@ -339,7 +339,7 @@ void Player::Update()
 						//A‚ğ‰Ÿ‚¹‚Î‰Ÿ‚·‚Ù‚Çã‰Á‘¬“x‚ªã‚ª‚é
 						if (jump_combo < MAX_JUMP)
 						{
-							if (jump_combo == 0)
+							if (onfloor_flg == true)
 							{
 								jump_combo += 5 + balloon;
 							}
@@ -437,8 +437,6 @@ void Player::Update()
 				anim_boost = 15;
 				player_state = INVINCIBLE;
 			}
-
-
 		}
 		//€–S’†‚Ì‰‰o(—‹)
 		else if (thunder_death_flg == true)
@@ -551,9 +549,7 @@ void Player::Update()
 void Player::Draw()const
 {
 	////ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚Ì•`‰æ
-	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
-	////ƒvƒŒƒCƒ„[‚Ì•—‘D“–‚½‚è”»’è‚Ì•`‰æ(‰¼)
-	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
+	//DrawBoxAA(location.x, location.y, location.x + area.width, location.y + area.height, 0xff0000, FALSE);
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
 	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
@@ -765,29 +761,8 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
 	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
 
-	//StageFloor‚Ì‰¡‚Ì”ÍˆÍ“à
-	if (my_x[0] < sub_x[1] - 5 &&
-		sub_x[0] + 5 < my_x[1])
-	{
-		//Player‚ª“G‚æ‚è‰º‚Ös‚±‚¤‚Æ‚µ‚½ê‡
-		if (my_y[1] > sub_y[0] &&
-			my_y[0] < sub_y[0])
-		{
-			//“G‚æ‚è‰º‚É‚Ís‚¯‚È‚¢‚æ‚¤‚É‚·‚é
-			location.y = sub_y[0] - area.height;
-			return 4;
-		}
-
-		//Player‚ª“G‚æ‚èã‚Ös‚±‚¤‚Æ‚µ‚½ê‡
-		if (my_y[0] < sub_y[1] &&
-			my_y[1] > sub_y[1])
-		{
-			return 3;
-		}
-	}
-
-	//StaegFloor‚Ìc‚Ì”ÍˆÍ“à
-	 else if (my_y[0] < sub_y[1] - 5 &&
+	//“G‚Ìc‚Ì”ÍˆÍ“à
+	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
 		//Player‚ª“G‚æ‚è‰E‚Ös‚±‚¤‚Æ‚µ‚½ê‡
@@ -806,6 +781,28 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 			//“G‚æ‚è¶‚É‚Ís‚¯‚È‚¢‚æ‚¤‚É‚·‚é
 			location.x = sub_x[1] + 1;
 			return 2;
+		}
+	}
+	//“G‚Ì‰¡‚Ì”ÍˆÍ“à
+	if (my_x[0] < sub_x[1] - 5 &&
+		sub_x[0] + 5 < my_x[1])
+	{
+		//Player‚ª“G‚æ‚è‰º‚Ös‚±‚¤‚Æ‚µ‚½ê‡
+		if (my_y[1] > sub_y[0] &&
+			my_y[0] < sub_y[0])
+		{
+			//“G‚æ‚è‰º‚É‚Ís‚¯‚È‚¢‚æ‚¤‚É‚·‚é
+			location.y = sub_y[0] - area.height;
+			return 4;
+		}
+
+		//Player‚ª“G‚æ‚èã‚Ös‚±‚¤‚Æ‚µ‚½ê‡
+		if (my_y[0] < sub_y[1] &&
+			my_y[1] > sub_y[1])
+		{
+			//“G‚æ‚èã‚É‚Ís‚¯‚È‚¢‚æ‚¤‚É‚·‚é
+			location.y = sub_y[1];
+			return 3;
 		}
 	}
 	return 0;
@@ -902,8 +899,9 @@ void Player::ReflectionPX()
 
 void Player::ReflectionPY()
 {
-	acs_down = fabsf(acs_up - acs_down) * 1.8f;
+	acs_down = fabsf(acs_up - acs_down) * 0.8f;
 	acs_up = 0;
+	jump_combo = 0;
 }
 
 void Player::ReflectionMY()
