@@ -43,7 +43,8 @@ void SoapBubble::Update()
 				bubble_anim = 0;
 			}
 		}
-		if (--location.y < -40)
+		location.y -= 0.8f;
+		if (location.y < -40)
 		{
 			flg = false;
 		}
@@ -55,18 +56,18 @@ void SoapBubble::Update()
 		//¶‰E‚É•—‘D‚ð¶‰E‚É—h‚ç‚·
 		if (frame < 75)
 		{
-			acs_left++;
+			acs_left+=2;
 			if (acs_right > 0)
 			{
-				acs_right-=2;
+				acs_right-=3;
 			}
 		}
 		else
 		{
-			acs_right++;
+			acs_right+=2;
 			if (acs_left > 0)
 			{
-				acs_left-=2;
+				acs_left-=3;
 			}
 		}
 		//‰¡ˆÚ“®
@@ -95,7 +96,6 @@ void SoapBubble::Draw() const
 	if (flg == true && get_once == false)
 	{
 		DrawGraph(location.x-16, location.y-16, bubble_image[bubble_anim], TRUE);
-		DrawBox(location.x, location.y, location.x + area.width, location.y + area.height, 0x00ff00, false);
 	}
 	if (bubble_get_anim < 3 && get_once == false)
 	{
