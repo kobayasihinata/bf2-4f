@@ -1,6 +1,6 @@
 #include "Dxlib.h"
 #include "GameMain.h"
-#include"Title.h"
+#include"GameOver.h"
 #include"PadInput.h"
 
 
@@ -330,7 +330,7 @@ AbstractScene* GameMain::Update()
 		//プレイヤーの残機が0より小さい場合タイトルに戻る
 		if (player->GetPlayerLife() < 0) 
 		{
-			return new Title();
+			return new GameOver();
 		}
 	}
 	return this;
