@@ -52,7 +52,7 @@ AbstractScene* GameMain::Update()
 	}
 	if (Pouse == false) {
 		thunder->Update();
-		if (thunder->HitPlayer(player) == true)
+		if (thunder->HitPlayer(player) == true && player->GetPlayerState() < DEATH)
 		{
 			player->SetThunderDeath(true);
 			thunder->InitThunder();
