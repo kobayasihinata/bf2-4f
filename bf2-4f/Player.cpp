@@ -22,7 +22,7 @@ Player::Player()
 	jump_flg = false;
 	frame = 0;
 	balloon = 2;
-	life = 0;
+	life = 2;
 	respawn = 600;
 	death_flg = false;
 	thunder_death_flg = false;
