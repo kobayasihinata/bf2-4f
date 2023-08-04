@@ -508,6 +508,10 @@ void Player::Update()
 	{
 		anim_boost = 0;
 	}
+	if (player_state == WALK_LEFT || player_state == WALK_RIGHT)
+	{
+		anim_boost = 18;
+	}
 	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
 	{
 		if (frame % 15 == 0)

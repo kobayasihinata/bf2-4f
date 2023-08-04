@@ -362,7 +362,7 @@ void Enemy::Update()
 					}
 					else
 					{
-						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED*2/3));
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED/1.5f));
 					}
 					
 				}
