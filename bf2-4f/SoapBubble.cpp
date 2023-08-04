@@ -72,6 +72,15 @@ void SoapBubble::Update()
 		}
 		//横移動
 		location.x = location.x + (acs_right * 0.01) - (acs_left * 0.01);
+		//画面端に行くとテレポート
+		if (location.x < 0 - PLAYER_ENEMY_WIDTH)
+		{
+			location.x = SCREEN_WIDTH - 2;
+		}
+		if (location.x > SCREEN_WIDTH - 1)
+		{
+			location.x = 0 - PLAYER_ENEMY_WIDTH + 2;
+		}
 	}
 	else
 	{
