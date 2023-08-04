@@ -94,7 +94,7 @@ void SoapBubble::Update()
 		if (++getscore_anim > 180)
 		{
 			is_getscore = false;
-			get_once == true;
+			get_once = true;
 			getscore_anim = 0;
 		}
 	}
