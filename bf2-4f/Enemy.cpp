@@ -196,14 +196,14 @@ void Enemy::Update()
 						enemy_state = E_FLY_LEFT;
 						EnemyMoveLeft();
 						EnemyJump();
-						SetNot_AI(50);
+						SetNot_AI(25);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
 						EnemyMoveRight();
 						EnemyJump();
-						SetNot_AI(50);
+						SetNot_AI(25);
 					}
 					onfloor_flg = true;
 					OnFloor();
@@ -362,7 +362,7 @@ void Enemy::Update()
 					}
 					else
 					{
-						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED/2));
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED/1.5f));
 					}
 					
 				}
@@ -494,6 +494,9 @@ void Enemy::Update()
 			flg = false;
 			show_flg = false;
 		}
+	}
+	if (--no_ai_time <= 0) {
+		no_ai_time = 0;
 	}
 }
 
@@ -910,12 +913,11 @@ void Enemy::SetNot_AI(int No_time)
 }
 
 int Enemy::No_AI_Flg() {
-	if (--no_ai_time > 0) {
+	if (no_ai_time > 0) {
 		return true;
 	}
 	else
 	{
-		no_ai_time = 0;
 		return false;
 	}
 }

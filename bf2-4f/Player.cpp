@@ -202,21 +202,17 @@ void Player::Update()
 				{
 					jump_flg = true;
 
-					//下加速度減少
 					if (acs_down >= 0)
 					{
-						if (acs_down >= 0)
-						{
-							acs_down -= 2;
-						}
-						else
-						{
-							acs_down = 0;
-						}
+						acs_down -= 2;
+					}
+					else
+					{
+						acs_down = 0;
 					}
 
 					//ジャンプ中のアニメーション
-					if (frame % 5 == 0)
+					if (frame % 3 == 0)
 					{
 						player_anim++;
 					}
@@ -233,6 +229,7 @@ void Player::Update()
 						{
 							if (onfloor_flg == true)
 							{
+								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
 							jump_combo += 2;
@@ -240,6 +237,10 @@ void Player::Update()
 						if (acs_up < MAX_SPEED / 2)
 						{
 							acs_up += jump_combo * 3 + balloon;
+						}
+						else
+						{
+							acs_up = MAX_SPEED / 2;
 						}
 						//上昇時に左入力がされていたら左に加速する
 						if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
@@ -341,11 +342,19 @@ void Player::Update()
 						{
 							if (onfloor_flg == true)
 							{
+								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
 							jump_combo += 2;
 						}
-						acs_up += jump_combo * 3 + balloon;
+						if (acs_up < MAX_SPEED / 2)
+						{
+							acs_up += jump_combo * 3 + balloon;
+						}
+						else
+						{
+							acs_up = MAX_SPEED / 2;
+						}
 					}
 				}
 				//連打中に上昇値が減らないようにする
@@ -361,7 +370,14 @@ void Player::Update()
 						{
 							acs_up -= 2;
 						}
-
+						if (acs_down >= 0)
+						{
+							acs_down -= 2;
+						}
+						else
+						{
+							acs_down = 0;
+						}
 					}
 				}
 				else
@@ -373,7 +389,7 @@ void Player::Update()
 					}
 				}
 				//ジャンプ連打時アニメーション処理
-				if (jump_anim_boost > 0 && frame % 5 == 0)
+				if (jump_anim_boost > 0 && frame % 3 == 0)
 				{
 					player_anim++;
 					jump_anim_boost--;
@@ -491,6 +507,10 @@ void Player::Update()
 	else
 	{
 		anim_boost = 0;
+	}
+	if (player_state == WALK_LEFT || player_state == WALK_RIGHT)
+	{
+		anim_boost = 18;
 	}
 	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
 	{
@@ -853,18 +873,18 @@ void Player::OnFloor()
 	acs_up = 0;
 
 	//アニメーション方向判定
-	if (last_move_x > 0)
-	{
-		player_state = IDOL_RIGHT;
-	}
-	if (last_move_x < 0)
+	if (last_input == -1)
 	{
 		player_state = IDOL_LEFT;
 	}
+	if (last_input == 1)
+	{
+		player_state = IDOL_RIGHT;
+	}
 	if (acs_left > 0)
 	{
-		player_state = WALK_LEFT;
-		acs_left-=6;
+		player_state = TURN_LEFT;
+		acs_left-=7;
 	}
 	else
 	{
@@ -872,8 +892,8 @@ void Player::OnFloor()
 	}
 	if (acs_right > 0)
 	{
-		player_state = WALK_RIGHT;
-		acs_right-=6;
+		player_state = TURN_RIGHT;
+		acs_right-=7;
 	}
 	else
 	{

@@ -131,7 +131,7 @@ void Thunder::Update()
 			//angle = 0.875f;
 			location.x = cloud_x + 70;
 			location.y = cloud_y - 30;
-			angle = 0.88f;
+			angle = 0.8f;
 			ChangeAngle();
 			break;
 		case 1:
@@ -140,7 +140,7 @@ void Thunder::Update()
 			//angle = 0.125f;
 			location.x = cloud_x + 75;
 			location.y = cloud_y + 80;
-			angle = 0.13f;
+			angle = 0.2f;
 			ChangeAngle();
 			break;
 		case 2:
@@ -149,7 +149,7 @@ void Thunder::Update()
 			//angle = 0.375f;
 			location.x = cloud_x + 30;
 			location.y = cloud_y + 90;
-			angle = 0.38f;
+			angle = 0.3f;
 			ChangeAngle();
 			break;
 		case 3:
@@ -158,7 +158,7 @@ void Thunder::Update()
 			//angle = 0.625f;
 			location.x = cloud_x + 30;
 			location.y = cloud_y - 30;
-			angle = 0.63f;
+			angle = 0.71f;
 			ChangeAngle();
 			break;
 		default:
