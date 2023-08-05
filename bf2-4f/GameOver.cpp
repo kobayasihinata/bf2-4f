@@ -4,10 +4,13 @@
 #include "Title.h"
 
 GameOver::GameOver() {
+	//if (GameOver_Img == 0) {
+		GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+	//}
 	WaitTimer = SECOND_TO_FRAME(4);
 }
 GameOver::~GameOver() {
-
+	
 }
 AbstractScene* GameOver::Update() {
 	PAD_INPUT::UpdateKey();
@@ -17,5 +20,7 @@ AbstractScene* GameOver::Update() {
 	return this;
 }
 void GameOver::Draw()const {
-	DrawFormatString(300, 300, 0xffffff, "GameOver");
+	DrawGraph(221, 233, GameOver_Img, 0);
+	DrawLine(320, 0, 320, 480, 0xff0000, 1);
+	DrawLine(0, 240, 640, 240, 0xff0000, 1);
 }
