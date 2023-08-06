@@ -21,6 +21,4 @@ AbstractScene* GameOver::Update() {
 }
 void GameOver::Draw()const {
 	DrawGraph(221, 233, GameOver_Img, 0);
-	DrawLine(320, 0, 320, 480, 0xff0000, 1);
-	DrawLine(0, 240, 640, 240, 0xff0000, 1);
 }
