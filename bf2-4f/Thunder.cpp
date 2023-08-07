@@ -4,7 +4,7 @@
 #include"Define.h"
 #include"Player.h"
 
-//#define DEBUG
+#define DEBUG
 
 Thunder::Thunder()
 {
@@ -362,9 +362,13 @@ void Thunder::InitThunder()
 	is_fire_ready = false;
 	thunder_direction_flg = false;
 
+#ifdef DEBUG
+	fire_timer = SECOND_TO_FRAME(1);
+	preliminary_action_time = SECOND_TO_FRAME(1);
+#else
 	fire_timer = SECOND_TO_FRAME(30);
 	preliminary_action_time = SECOND_TO_FRAME(1);
-
+#endif // DEBUG
 
 	show_flg = false;
 	speed = 0;
