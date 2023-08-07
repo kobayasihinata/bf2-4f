@@ -194,14 +194,12 @@ void Enemy::Update()
 					if (last_input == -1)
 					{
 						enemy_state = E_FLY_LEFT;
-						EnemyMoveLeft();
 						EnemyJump();
 						SetNot_AI(25);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
-						EnemyMoveRight();
 						EnemyJump();
 						SetNot_AI(25);
 					}
