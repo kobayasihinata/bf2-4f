@@ -1,3 +1,4 @@
+#include <time.h>
 #include "Dxlib.h"
 #include "GameMain.h"
 #include"GameOver.h"
@@ -25,7 +26,12 @@ GameMain::GameMain()
 	Pouse = false;
 
 	score = 0;
-	move_cooltime = Enemy_Move_Cool[0];
+
+	for (int i = 0; i <= ENEMY_NAMBER; i++)
+	{
+		Avoidance[i] = FALSE;
+	}
+	
 	damage_once = false;
 }
 
@@ -93,10 +99,11 @@ AbstractScene* GameMain::Update()
 
 						//各オブジェクトとの当たり判定処理
 						enemy[i]->HitStageCollision(stagefloor);
-						//敵のAI取得
+						enemy_ai[i]->Update_AI_Cool();
 
-						if (++move_cooltime >= Enemy_Move_Cool[enemy[i]->GetEnemyLevel() - 1] && enemy[i]->No_AI_Flg() == 0)
+						if (enemy[i]->No_AI_Flg() == 0)
 						{
+							//敵のAI取得
 							switch (enemy_ai[i]->Update(P_x, P_y, E_x, E_y))
 							{
 							case 0:
@@ -118,12 +125,19 @@ AbstractScene* GameMain::Update()
 							default:
 								break;
 							}
-							move_cooltime = 0;
+							if (enemy_ai[i]->GetPattern() != 99) {
+								enemy_ai[i]->Set_AI_Cool(enemy[i]->GetEnemyLevel() - 1);
+							}
 						}
-						if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y - 80 < P_y)
+						if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100)
 						{
-							enemy[i]->SetNot_AI(300);
-							//enemy[i]->EnemyJumpStop();
+							Avoidance[i] = TRUE;
+						}
+						if (Avoidance[i] == TRUE) {
+							enemy_ai[i]->Set_AI_Cool_Cnt(0);
+							if ((E_x < P_x - 150 && E_x > P_x + 150) || (E_y < P_y - 50 || E_y >= P_y + 100)) {
+								Avoidance[i] = FALSE;
+							}
 						}
 					}
 

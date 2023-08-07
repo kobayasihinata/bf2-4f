@@ -9,13 +9,15 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 
+#define ENEMY_NAMBER 6
+
 class GameMain :
     public AbstractScene
 {
 private:
     Player* player;
-    Enemy* enemy[6];
-    ENEMY_AI* enemy_ai[6];
+    Enemy* enemy[ENEMY_NAMBER];
+    ENEMY_AI* enemy_ai[ENEMY_NAMBER];
     StageFloor* stagefloor[3];
     //StageWall* staegwall;
     Fish* fish;
@@ -27,8 +29,7 @@ private:
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
-    const int Enemy_Move_Cool[3]{ 360,240,120 };
-    int move_cooltime;
+    bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
 
 public:
