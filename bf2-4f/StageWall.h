@@ -1,14 +1,14 @@
 #pragma once
-#include "collider/BoxCollider.h"
+#include"StageObject.h"
 class StageWall :
-    public BoxCollider
+    public StageObject
 {
 private:
-    int shift;
+    //int shift;
 
-    int footing4;
-    int footing7;
-    int footing8;
+    //int footing4;
+    //int footing7;
+    //int footing8;
 
 public:
     //コンストラクタ

@@ -10,6 +10,7 @@
 #include"Thunder.h"
 
 #define ENEMY_NAMBER 6
+#define FLOOR_MAX 7
 
 class GameMain :
     public AbstractScene
@@ -18,7 +19,7 @@ private:
     Player* player;
     Enemy* enemy[ENEMY_NAMBER];
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
-    StageFloor* stagefloor[3];
+    StageFloor* stagefloor[FLOOR_MAX];
     //StageWall* staegwall;
     Fish* fish;
     Thunder* thunder;
@@ -31,6 +32,7 @@ private:
     int P_x, P_y;       //プレイヤー座標
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
+    int now_floor_max;  //現在の床の数
 
 public:
 
