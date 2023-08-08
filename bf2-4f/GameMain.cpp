@@ -9,9 +9,13 @@ GameMain::GameMain()
 {
 	stage = 0;
 	player = new Player();
-	for (int i = 3; i < FLOOR_MAX; i++)
+	for (int i = 0; i < MAX_FLOOR; i++)
 	{
 		stagefloor[i] = new StageFloor(0, 0, 0, 0, 0);
+	}
+	for (int i = 0; i < MAX_WALL; i++)
+	{
+		stagewall[i] = new StageWall(0, 0, 0, 0, 0);
 	}
 	CreateStage(stage);
 	//staegwall = new StageWall();
@@ -44,10 +48,14 @@ GameMain::~GameMain()
 		delete enemy[i];
 		delete soapbubble[i];
 	}
-	//delete staegwall;
-	for (int i = 0; i < FLOOR_MAX; i++)
+	
+	for (int i = 0; i < MAX_FLOOR; i++)
 	{
 		delete stagefloor[i];
+	}
+	for (int i = 0; i < MAX_WALL; i++)
+	{
+		delete stagewall[i];
 	}
 	delete thunder;
 	DeleteGraph(seaImage);
@@ -86,12 +94,12 @@ AbstractScene* GameMain::Update()
 					P_y = player->GetPlayerLocation().y;
 				}
 
-			//プレイヤーがいずれかのオブジェクトに着地していない場合
-			if (player->IsOnFloor(stagefloor[i]) != true)
-			{
-				//onshare_flgをfalseにする
-				player->SetOnShareFlg(false);
-			}
+				//プレイヤーがいずれかのオブジェクトに着地していない場合
+				if (player->IsOnFloor(stagefloor) != true) 
+				{
+					//onshare_flgをfalseにする
+					player->SetOnShareFlg(false);
+				}
 
 				for (int j = 0; j < max_enemy; j++)
 				{
@@ -147,12 +155,12 @@ AbstractScene* GameMain::Update()
 							}
 						}
 
-					//敵がいずれかのオブジェクトに着地していない場合
-					if (enemy[j]->IsOnFloor(stagefloor[j]) != true)
-					{
-						//onshare_flgをfalseにする
-						enemy[j]->SetOnShareFlg(false);
-					}
+						//敵がいずれかのオブジェクトに着地していない場合
+						if (enemy[i]->IsOnFloor(stagefloor) != true) 
+						{
+							//onshare_flgをfalseにする
+							enemy[i]->SetOnShareFlg(false);
+						}
 
 						//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
 						if (enemy[j]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
@@ -241,7 +249,7 @@ AbstractScene* GameMain::Update()
 				}
 			}
 
-		for (int i = 0; i < now_floor_max; i++)
+		for (int i = 0; i < MAX_FLOOR; i++)
 		{
 			//プレイヤーが各オブジェクトのいずれかに着地している場合
 			if (player->IsOnFloor(stagefloor[i]) == true)
@@ -253,7 +261,7 @@ AbstractScene* GameMain::Update()
 		//敵の数だけ繰り返す
 		for (int i = 0; i < max_enemy; i++)
 		{
-			for (int j = 0; j < now_floor_max; j++)
+			for (int j = 0; j < MAX_FLOOR; j++)
 			{
 				//敵が各オブジェクトのいずれかに着地している場合
 				if (enemy[i]->IsOnFloor(stagefloor[j]) == true)
@@ -442,25 +450,63 @@ void GameMain::Draw()const
 	//		DrawLine(0, i, SCREEN_WIDTH, i, 0x00ff00);
 	//	}
 	//}
-	stagefloor[0]->DrawLandLeft();
-	stagefloor[1]->DrawLandRight();
+	thunder->Draw(Pouse);
 	switch (stage)
 	{
 	case 0:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
 		stagefloor[2]->DrawFooting1();
 		break;
 	case 1:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
 		stagefloor[2]->DrawFooting1();
 		stagefloor[3]->DrawFooting2();
 		stagefloor[4]->DrawFooting2();
 		break;
+	case 2:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
+		stagefloor[2]->DrawFooting3();
+		stagefloor[3]->DrawFooting5();
+
+		stagewall[0]->DrawFooting4();
+		stagewall[1]->DrawFooting4();
+		stagewall[2]->DrawFooting4();
+		break;
+	case 3:
+		stagefloor[0]->DrawLandLeft2();
+		stagefloor[1]->DrawLandRight2();
+		stagefloor[2]->DrawFooting6();
+		stagefloor[3]->DrawFooting6();
+		stagefloor[4]->DrawFooting6();
+		stagefloor[5]->DrawFooting6();
+		stagefloor[6]->DrawFooting6();
+		break;
+	case 4:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
+		stagefloor[2]->DrawFooting6();
+		stagefloor[3]->DrawFooting6();
+		stagefloor[4]->DrawFooting6();
+
+		stagewall[0]->DrawFooting7();
+		stagewall[1]->DrawFooting7();
+		stagewall[2]->DrawFooting8();
+		break;
+	default:
+		break;
 	}
-	thunder->Draw(Pouse);
 	//デバッグ用　当たり判定表示
-	//for (BoxCollider* stagefloor : stagefloor)
-	//{
-	//	stagefloor->Draw();
-	//}
+	for (BoxCollider* stagefloor : stagefloor)
+	{
+		stagefloor->Draw();
+	}
+	for (BoxCollider* stagewall : stagewall)
+	{
+		stagewall->Draw();
+	}
 	if (Pouse == false) {
 		player->Draw();
 
@@ -521,10 +567,9 @@ void GameMain::CreateStage(int stage)
 	switch (stage)
 	{
 	case 0:
-		now_floor_max = 3;
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(180, 260, 18, 280, 0);
 
 		thunder = new Thunder();
 
@@ -537,12 +582,11 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 1:
-		now_floor_max = 5;
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
-		stagefloor[3] = new StageFloor(60, 132, 18, 120, 0);
-		stagefloor[4] = new StageFloor(460, 122, 18, 120, 0);
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(180, 290, 18, 280, 0);
+		stagefloor[3]->SetInit(90, 170, 18, 120, 0);
+		stagefloor[4]->SetInit(460, 150, 18, 120, 0);
 
 		thunder = new Thunder();
 
@@ -559,9 +603,25 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 2:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(270, 370, 18, 80, 0);
+		stagefloor[3]->SetInit(200, 100, 18, 40, 0);
+
+		//stagefloor[7]->SetInit(160, 280, 18, 60, 0);
+		//stagefloor[8]->SetInit(310, 200, 18, 60, 0);
+		//stagefloor[9]->SetInit(490, 100, 18, 60, 0);
+
+		for (int i = 4; i < MAX_FLOOR; i++)
+		{
+			stagefloor[i]->SetInit(-1, -1, 0, 0, 0);
+		}
+
+		stagewall[0]->SetInit(160, 280, 18, 60, 0);
+		stagewall[1]->SetInit(310, 200, 18, 60, 0);
+		stagewall[2]->SetInit(490, 100, 18, 60, 0);
+
+
 
 		thunder = new Thunder();
 
@@ -578,9 +638,18 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 3:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(350, 370, 18, 60, 0);
+		stagefloor[3]->SetInit(455, 270, 18, 60, 0);
+		stagefloor[4]->SetInit(230, 290, 18, 60, 0);
+		stagefloor[5]->SetInit(120, 250, 18, 60, 0);
+		stagefloor[6]->SetInit(310, 180, 18, 60, 0);
+
+		for (int i = 0; i < MAX_WALL; i++)
+		{
+			stagewall[i]->SetInit(-1, -1, 0, 0, 0);
+		}
 
 		thunder = new Thunder();
 
@@ -597,9 +666,21 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 4:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(200, 325, 18, 60, 0);
+		stagefloor[3]->SetInit(370, 325, 18, 60, 0);
+		stagefloor[4]->SetInit(220, 80, 18, 60, 0);
+
+		for (int i = 5; i < MAX_FLOOR; i++)
+		{
+			stagefloor[i]->SetInit(-1, -1, 0, 0, 0);
+		}
+
+
+		stagewall[0]->SetInit(100, 200, 50, 20, 0);
+		stagewall[1]->SetInit(260, 170, 50, 20, 0);
+		stagewall[2]->SetInit(500, 160, 70, 20, 0);
 
 		thunder = new Thunder();
 

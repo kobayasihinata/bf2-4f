@@ -32,10 +32,20 @@ void StageFloor::DrawLandLeft()
 	DrawBox(location.x, location.y, location.x + area.width, location.y + area.height, 0x00ff00, false);
 }
 
+void StageFloor::DrawLandLeft2()
+{
+	DrawGraphF(location.x, location.y - shift, landleft2, TRUE);
+}
+
 void StageFloor::DrawLandRight()
 {
 	DrawGraphF(location.x, location.y - shift, landright, TRUE);
 	DrawBox(location.x, location.y, location.x + area.width, location.y + area.height, 0x00ff00, false);
+}
+
+void StageFloor::DrawLandRight2()
+{
+	DrawGraphF(location.x, location.y - shift, landright2, TRUE);
 }
 
 void StageFloor::DrawFooting1()

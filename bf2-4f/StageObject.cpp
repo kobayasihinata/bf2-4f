@@ -47,6 +47,7 @@ StageObject::~StageObject()
 	DeleteGraph(footing2);
 	DeleteGraph(footing3);
 	DeleteGraph(footing5);
+	DeleteGraph(footing6);
 
 	DeleteGraph(footing4);
 	DeleteGraph(footing7);
