@@ -8,6 +8,7 @@
 #include"Fish.h"
 #include"SoapBubble.h"
 #include"Thunder.h"
+#include"UI.h"
 
 class GameMain :
     public AbstractScene
@@ -21,6 +22,7 @@ private:
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
+    UI* ui;
 
     int seaImage;
     bool Pouse;
