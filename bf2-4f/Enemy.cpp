@@ -46,6 +46,8 @@ Enemy::Enemy(int x,int y,int level)
 			break;
 		}
 	}
+	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
+	crack_SE = LoadSoundMem("sounds/SE_crack.wav");
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
@@ -385,6 +387,13 @@ void Enemy::Update()
 				//風船が0こになったなら
 				if (balloon <= 0)
 				{
+					
+					if (crack == 0)
+					{
+						PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
+						crack++;
+					}
+					
 					if (++damage < 10)
 					{
 						anim_boost = 15;
@@ -402,6 +411,9 @@ void Enemy::Update()
 						//パラシュート状態に変化
 						para_flg = true;
 						damage = 11;
+					}
+					if (CheckSoundMem(para_SE) == FALSE) {
+						PlaySoundMem(para_SE, DX_PLAYTYPE_BACK);
 					}
 				}
 			}

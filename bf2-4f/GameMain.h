@@ -11,6 +11,7 @@
 #include"UI.h"
 
 #define ENEMY_NAMBER 6
+#define FLOOR_MAX 7
 
 class GameMain :
     public AbstractScene
@@ -19,7 +20,7 @@ private:
     Player* player;
     Enemy* enemy[ENEMY_NAMBER];
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
-    StageFloor* stagefloor[3];
+    StageFloor* stagefloor[FLOOR_MAX];
     //StageWall* staegwall;
     Fish* fish;
     Thunder* thunder;
@@ -28,6 +29,8 @@ private:
 
     int stage;      //現在のステージ数
     int seaImage;
+    int GameStart_BGM;
+    int EnemuyMove_SE;
     bool Pouse;
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
@@ -35,6 +38,8 @@ private:
     bool damage_once;   //重なっている時一回だけダメージを与える
     bool clear_flg;     //次のステージへ遷移する条件を調べる用
     int clear_wait;     //次のステージへ遷移する前の待ち時間
+    int now_floor_max;  //現在の床の数
+
 public:
 
     //コンストラクタ

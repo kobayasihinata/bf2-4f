@@ -9,28 +9,11 @@ StageFloor::StageFloor(int x, int y, int height, int width,int shift)
 	area.width = (float)width;
 	this->shift = shift;
 
-	landleft = LoadGraph("images/Stage/Stage_Land_Left01.png");
-	landleft2 = LoadGraph("images/Stage/Stage_Land_Left02.png");
-	landright = LoadGraph("images/Stage/Stage_Land_Right01.png");
-	landright2 = LoadGraph("images/Stage/Stage_Land_Right02.png");
-
-	footing1 = LoadGraph("images/Stage/Stage_Footing01.png");
-	footing2 = LoadGraph("images/Stage/Stage_Footing02.png");
-	footing3 = LoadGraph("images/Stage/Stage_Footing03.png");
-	footing5 = LoadGraph("images/Stage/Stage_Footing05.png");
-	footing6 = LoadGraph("images/Stage/Stage_Footing06.png");
-
 }
 
 StageFloor::~StageFloor()
 {
-	DeleteGraph(landleft);
-	DeleteGraph(landright);
 
-	DeleteGraph(footing1);
-	DeleteGraph(footing2);
-	DeleteGraph(footing3);
-	DeleteGraph(footing5);
 }
 
 void StageFloor::Update()
