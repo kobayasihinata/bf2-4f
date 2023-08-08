@@ -7,7 +7,7 @@
 
 GameMain::GameMain()
 {
-	stage = 0;
+	stage = 1;
 	player = new Player();
 	for (int i = 3; i < FLOOR_MAX; i++)
 	{
@@ -34,8 +34,6 @@ GameMain::GameMain()
 	damage_once = false;
 	clear_flg = false;
 	clear_wait = 0;
-
-	now_floor_max = 3;
 }
 
 GameMain::~GameMain()
@@ -74,127 +72,127 @@ AbstractScene* GameMain::Update()
 			{
 				player->SetThunderDeath(true);
 			}
-			//stagefloorの範囲だけループする
-			for (BoxCollider* stagefloor : stagefloor)
+			//現在のstagefloorの数だけループする
+			for (int i = 0; i < now_floor_max; i++)
 			{
-				thunder->Reflection(stagefloor);
+				thunder->Reflection(stagefloor[i]);
 				//プレイヤーが死亡中でないなら
 				if (player->GetPlayerDeathFlg() == false && player->GetThunderDeathFlg() == false)
 				{
 					//各オブジェクトとの当たり判定処理
-					player->HitStageCollision(stagefloor);
+					player->HitStageCollision(stagefloor[i]);
 					//現在位置取得
 					P_x = player->GetPlayerLocation().x;
 					P_y = player->GetPlayerLocation().y;
 				}
 
 			//プレイヤーがいずれかのオブジェクトに着地していない場合
-			if (player->IsOnFloor(stagefloor) != true) 
+			if (player->IsOnFloor(stagefloor[i]) != true)
 			{
 				//onshare_flgをfalseにする
 				player->SetOnShareFlg(false);
 			}
 
-				for (int i = 0; i < max_enemy; i++)
+				for (int j = 0; j < max_enemy; j++)
 				{
-					if (enemy[i]->GetFlg() == true)
+					if (enemy[j]->GetFlg() == true)
 					{
-						int E_x = enemy[i]->GetEnemyLocation().x;
-						int E_y = enemy[i]->GetEnemyLocation().y;
+						int E_x = enemy[j]->GetEnemyLocation().x;
+						int E_y = enemy[j]->GetEnemyLocation().y;
 						//敵が死亡中でない且つ死んでいないなら
-						if (enemy[i]->GetEnemyDeathFlg() == false)
+						if (enemy[j]->GetEnemyDeathFlg() == false)
 						{
 
 							//各オブジェクトとの当たり判定処理
-							enemy[i]->HitStageCollision(stagefloor);
-							enemy_ai[i]->Update_AI_Cool();
+							enemy[j]->HitStageCollision(stagefloor[i]);
+							enemy_ai[j]->Update_AI_Cool();
 
-							if (enemy[i]->No_AI_Flg() == 0)
+							if (enemy[j]->No_AI_Flg() == 0)
 							{
 								//敵のAI取得
-								switch (enemy_ai[i]->Update(P_x, P_y, E_x, E_y))
+								switch (enemy_ai[j]->Update(P_x, P_y, E_x, E_y))
 								{
 								case 0:
-									enemy[i]->EnemyMoveLeft();
-									enemy[i]->EnemyJump();
+									enemy[j]->EnemyMoveLeft();
+									enemy[j]->EnemyJump();
 									break;
 								case 1:
-									enemy[i]->EnemyMoveRight();
-									enemy[i]->EnemyJump();
+									enemy[j]->EnemyMoveRight();
+									enemy[j]->EnemyJump();
 									break;
 								case 2:
-									enemy[i]->EnemyMoveLeft();
-									enemy[i]->EnemyJumpStop();
+									enemy[j]->EnemyMoveLeft();
+									enemy[j]->EnemyJumpStop();
 									break;
 								case 3:
-									enemy[i]->EnemyMoveRight();
-									enemy[i]->EnemyJumpStop();
+									enemy[j]->EnemyMoveRight();
+									enemy[j]->EnemyJumpStop();
 									break;
 								default:
 									break;
 								}
-								if (enemy_ai[i]->GetPattern() != 99) {
-									enemy_ai[i]->Set_AI_Cool(enemy[i]->GetEnemyLevel() - 1);
+								if (enemy_ai[j]->GetPattern() != 99) {
+									enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel() - 1);
 								}
 							}
 							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100)
 							{
-								Avoidance[i] = TRUE;
+								Avoidance[j] = TRUE;
 							}
-							if (Avoidance[i] == TRUE) {
-								enemy_ai[i]->Set_AI_Cool_Cnt(0);
+							if (Avoidance[j] == TRUE) {
+								enemy_ai[j]->Set_AI_Cool_Cnt(0);
 								if ((E_x < P_x - 150 && E_x > P_x + 150) || (E_y < P_y - 50 || E_y >= P_y + 100)) {
-									Avoidance[i] = FALSE;
+									Avoidance[j] = FALSE;
 								}
 							}
 						}
 
 					//敵がいずれかのオブジェクトに着地していない場合
-					if (enemy[i]->IsOnFloor(stagefloor) != true) 
+					if (enemy[j]->IsOnFloor(stagefloor[j]) != true)
 					{
 						//onshare_flgをfalseにする
-						enemy[i]->SetOnShareFlg(false);
+						enemy[j]->SetOnShareFlg(false);
 					}
 
 						//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
-						if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
+						if (enemy[j]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
 						{
 							//プレイヤーが無敵状態でないなら
 							if (player->GetPlayerRespawn() <= 0)
 							{
 								//プレイヤーと敵の当たり判定
-								switch (player->HitEnemyCollision(enemy[i]))
+								switch (player->HitEnemyCollision(enemy[j]))
 								{
 								case 1:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
 										player->ReflectionMX();
-										enemy[i]->ReflectionPX();
+										enemy[j]->ReflectionPX();
 									}
-									Damage(i);
+									Damage(j);
 									break;
 								case 2:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
 										player->ReflectionPX();
-										enemy[i]->ReflectionMX();
+										enemy[j]->ReflectionMX();
 									}
-									Damage(i);
+									Damage(j);
 								case 3:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
 										player->ReflectionPY();
-										enemy[i]->ReflectionMY();
+										enemy[j]->ReflectionMY();
 									}
-									Damage(i);
+									Damage(j);
 									break;
 								case 4:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
-										enemy[i]->ReflectionPY();
+										enemy[j]->ReflectionPY();
 										player->ReflectionMY();
 									}
-									Damage(i);
+									Damage(j);
 
 									break;
 								default:
@@ -204,28 +202,28 @@ AbstractScene* GameMain::Update()
 							}
 
 							//敵と敵の当たり判定
-							for (int j = i + 1; j < max_enemy; j++)
+							for (int k = j + 1; k < max_enemy; k++)
 							{
 								//敵が生きているなら
-								if (enemy[j]->GetFlg() == true && enemy[i]->GetFlg() == true && enemy[i]->GetEnemyDeathFlg() == false && enemy[j]->GetEnemyDeathFlg() == false)
+								if (enemy[k]->GetFlg() == true && enemy[i]->GetFlg() == true && enemy[j]->GetEnemyDeathFlg() == false && enemy[k]->GetEnemyDeathFlg() == false)
 								{
-									switch (enemy[j]->HitEnemyCollision(enemy[i]))
+									switch (enemy[k]->HitEnemyCollision(enemy[j]))
 									{
 									case 1:
-										enemy[j]->ReflectionMX();
-										enemy[i]->ReflectionPX();
+										enemy[k]->ReflectionMX();
+										enemy[j]->ReflectionPX();
 										break;
 									case 2:
-										enemy[j]->ReflectionPX();
-										enemy[i]->ReflectionMX();
+										enemy[k]->ReflectionPX();
+										enemy[j]->ReflectionMX();
 										break;
 									case 3:
-										enemy[j]->ReflectionPY();
-										enemy[i]->ReflectionMY();
+										enemy[k]->ReflectionPY();
+										enemy[j]->ReflectionMY();
 										break;
 									case 4:
-										enemy[j]->ReflectionMY();
-										enemy[i]->ReflectionPY();
+										enemy[k]->ReflectionMY();
+										enemy[j]->ReflectionPY();
 										break;
 									default:
 										break;
@@ -235,9 +233,9 @@ AbstractScene* GameMain::Update()
 						}
 
 						//敵が水没中なら
-						if (enemy[i]->GetEnemyUnderWaterFlg() == true)
+						if (enemy[j]->GetEnemyUnderWaterFlg() == true)
 						{
-							soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
+							soapbubble[j]->SoapBubbleSpawn(enemy[j]->GetLocation().x);
 						}
 					}
 				}
@@ -446,7 +444,17 @@ void GameMain::Draw()const
 	//}
 	stagefloor[0]->DrawLandLeft();
 	stagefloor[1]->DrawLandRight();
-	stagefloor[2]->DrawFooting1();
+	switch (stage)
+	{
+	case 0:
+		stagefloor[2]->DrawFooting1();
+		break;
+	case 1:
+		stagefloor[2]->DrawFooting1();
+		stagefloor[3]->DrawFooting2();
+		stagefloor[4]->DrawFooting2();
+		break;
+	}
 	thunder->Draw(Pouse);
 	//デバッグ用　当たり判定表示
 	//for (BoxCollider* stagefloor : stagefloor)
@@ -513,6 +521,7 @@ void GameMain::CreateStage(int stage)
 	switch (stage)
 	{
 	case 0:
+		now_floor_max = 3;
 		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
@@ -528,9 +537,12 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 1:
+		now_floor_max = 5;
 		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
 		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
 		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		stagefloor[3] = new StageFloor(60, 132, 18, 120, 0);
+		stagefloor[4] = new StageFloor(460, 122, 18, 120, 0);
 
 		thunder = new Thunder();
 
