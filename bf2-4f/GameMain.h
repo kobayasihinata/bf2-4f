@@ -27,8 +27,6 @@ private:
 
     int stage;      //現在のステージ数
     int seaImage;
-    int GameStart_BGM;
-    int EnemuyMove_SE;
     bool Pouse;
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
@@ -41,15 +39,15 @@ private:
 
    
     //BGM
-    static int GameStartBGM;		//ゲームスタートBGM
-    static int MainBGM;				//ゲームメインBGM
-    static int Continue;			//コンテニューBGM
-    static int StageClear;			//ステージクリアBGM
-    static int GameOver;			//ゲームオーバーBGM
+    int GameStart_BGM;          //ゲームスタートBGM
+    int Continue_BGM;			//コンテニューBGM
+    int StageClear_BGM;			//ステージクリアBGM
+    int GameOver_BGM;			//ゲームオーバーBGM
 
     //SE
-    static int BaloonBurstSE;			//バルーン破裂SE
-    static int BirdSE;				//トリ鳴き声SE
+    int EnemuyMove_SE;          //トリ鳴き声SE
+    int BaloonBurst_SE;			//バルーン破裂SE
+    				
   
   
     

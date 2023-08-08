@@ -65,13 +65,9 @@ private:
     int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;    //移動方向保存用
     int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
+    bool sound_flg; //サウンド用
 
-    //SE
-    static int JumpSE;				//プレイヤー浮上SE
-    static int WalkSE;				//プレイヤー歩行SE
-    static int Falling;				//プレイヤー落下SE
-    static int SeaFalling;			//海落下SE
-    static int BaloonBurst;			//バルーン破裂SE:
+ 
 public:
 
     //コンストラクタ

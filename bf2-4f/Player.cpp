@@ -52,6 +52,8 @@ Player::Player()
 
 	last_move_x = 1;
 	last_input = 1;
+
+	
 }
 
 Player::~Player()

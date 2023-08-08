@@ -20,6 +20,9 @@ GameMain::GameMain()
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
 	EnemuyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	StageClear_BGM = LoadSoundMem("SE_StageClear.wav");
+	
+
 	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
 	Pouse = false;
@@ -376,6 +379,10 @@ AbstractScene* GameMain::Update()
 
 			//クリアチェック
 			clear_flg = true;
+			if (CheckSoundMem(StageClear_BGM) == FALSE)
+			{
+				PlaySoundMem(StageClear_BGM, DX_PLAYTYPE_BACK);
+			}
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//敵一体でも生きていたらフラグを立てない
