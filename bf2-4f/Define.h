@@ -5,6 +5,8 @@
 #define SCREEN_WIDTH 640			//画面の横幅
 #define SCREEN_HEIGHT 480			//画面の高さ
 
+#define MAX_STAGE 5					//最大ステージ数
+
 #define PLAYER_ENEMY_HEIGHT 50		//プレイヤーと敵の高さ
 #define PLAYER_ENEMY_WIDTH  32		//プレイヤーと敵の横幅
 

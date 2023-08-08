@@ -148,4 +148,7 @@ public:
     int GetPlayerState() { return player_state; }
 
     void SetPlayerState(const PLAYER_STATE state) { player_state = state; }
+
+    //プレイヤーを初期地点に移動させる
+    void ResetPlayerPos();
 };
