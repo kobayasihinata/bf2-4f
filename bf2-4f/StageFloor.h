@@ -1,19 +1,21 @@
 #pragma once
-#include "collider/BoxCollider.h"
+#include"StageObject.h"
 class StageFloor :
-    public BoxCollider
+    public StageObject
 {
 private:
-    int shift;        //画像調整
+    //int shift;        //画像調整
 
-    int landleft;
-    int landright;
+    //int landleft;
+    //int landleft2;
+    //int landright;
+    //int landright2;
 
-    int footing1;
-    int footing2;
-    int footing3;
-    int footing4;
-    int footing5;
+    //int footing1;
+    //int footing2;
+    //int footing3;
+    //int footing5;
+    //int footing6;
 
 public:
     //コンストラクタ
@@ -34,7 +36,7 @@ public:
     void DrawFooting1();
     void DrawFooting2();
     void DrawFooting3();
-    void DrawFooting4();
     void DrawFooting5();
+    void DrawFooting6();
 };
 

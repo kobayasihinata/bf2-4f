@@ -43,7 +43,8 @@ void SoapBubble::Update()
 				bubble_anim = 0;
 			}
 		}
-		if (--location.y < -40)
+		location.y -= 0.8f;
+		if (location.y < -40)
 		{
 			flg = false;
 		}
@@ -55,22 +56,31 @@ void SoapBubble::Update()
 		//左右に風船を左右に揺らす
 		if (frame < 75)
 		{
-			acs_left++;
+			acs_left+=2;
 			if (acs_right > 0)
 			{
-				acs_right-=2;
+				acs_right-=3;
 			}
 		}
 		else
 		{
-			acs_right++;
+			acs_right+=2;
 			if (acs_left > 0)
 			{
-				acs_left-=2;
+				acs_left-=3;
 			}
 		}
 		//横移動
 		location.x = location.x + (acs_right * 0.01) - (acs_left * 0.01);
+		//画面端に行くとテレポート
+		if (location.x < 0 - PLAYER_ENEMY_WIDTH)
+		{
+			location.x = SCREEN_WIDTH - 2;
+		}
+		if (location.x > SCREEN_WIDTH - 1)
+		{
+			location.x = 0 - PLAYER_ENEMY_WIDTH + 2;
+		}
 	}
 	else
 	{
@@ -84,6 +94,7 @@ void SoapBubble::Update()
 		if (++getscore_anim > 180)
 		{
 			is_getscore = false;
+			get_once = true;
 			getscore_anim = 0;
 		}
 	}
@@ -91,10 +102,9 @@ void SoapBubble::Update()
 
 void SoapBubble::Draw() const
 {
-	if (flg == true && get_once == false)
+	if (flg == true)
 	{
 		DrawGraph(location.x-16, location.y-16, bubble_image[bubble_anim], TRUE);
-		DrawBox(location.x, location.y, location.x + area.width, location.y + area.height, 0x00ff00, false);
 	}
 	if (bubble_get_anim < 3)
 	{

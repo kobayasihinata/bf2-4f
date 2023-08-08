@@ -127,6 +127,9 @@ public:
     //プレイヤーの風船を減らす
     void BalloonDec();
 
+    //プレイヤーが溺死中状態か取得する
+    bool GetUnderWaterFlg() { return underwater_flg; }
+
     //プレイヤーが雷死状態か取得する
     bool GetThunderDeathFlg() { return thunder_death_flg; }
 
@@ -150,4 +153,7 @@ public:
     int GetPlayerState() { return player_state; }
 
     void SetPlayerState(const PLAYER_STATE state) { player_state = state; }
+
+    //プレイヤーを初期地点に移動させる
+    void ResetPlayerPos();
 };

@@ -201,47 +201,18 @@ void Player::Update()
 				if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
 				{
 					jump_flg = true;
-					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
-					{
-						if (acs_left < MAX_SPEED)
-						{
-							acs_left += 4;
-							acs_up -= 3;
-						}
-						if (acs_right > 0)
-						{
-							acs_right--;
-						}
-					}
-					if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
-					{
-						if (acs_right < MAX_SPEED)
-						{
-							acs_right += 4;
-							acs_up -= 3;
-						}
-						if (acs_left > 0)
-						{
-							acs_left--;
 
-						}
-					}
-
-					//下加速度減少
 					if (acs_down >= 0)
 					{
-						if (acs_down >= 0)
-						{
-							acs_down -= 2;
-						}
-						else
-						{
-							acs_down = 0;
-						}
+						acs_down -= 2;
+					}
+					else
+					{
+						acs_down = 0;
 					}
 
 					//ジャンプ中のアニメーション
-					if (frame % 5 == 0)
+					if (frame % 3 == 0)
 					{
 						player_anim++;
 					}
@@ -256,8 +227,9 @@ void Player::Update()
 						//Aを押せば押すほど上加速度が上がる
 						if (jump_combo < MAX_JUMP)
 						{
-							if (jump_combo == 0)
+							if (onfloor_flg == true)
 							{
+								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
 							jump_combo += 2;
@@ -266,40 +238,97 @@ void Player::Update()
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
+						else
+						{
+							acs_up = MAX_SPEED / 2;
+						}
+						//上昇時に左入力がされていたら左に加速する
+						if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+						{
+							if (acs_left < MAX_SPEED)
+							{
+								acs_left += 40;
+								acs_up -= 10;
+							}
+							else
+							{
+								acs_left = MAX_SPEED;
+							}
+							if (acs_right > 0)
+							{
+								acs_right -= 40;
+							}
+							else
+							{
+								acs_right = 0;
+							}
+						}
+						//上昇時に右入力がされていたら右に加速する
+						if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+						{
+							if (acs_right < MAX_SPEED)
+							{
+								acs_right += 40;
+								acs_up -= 10;
+							}
+							else
+							{
+								acs_right = MAX_SPEED;
+							}
+							if (acs_left > 0)
+							{
+								acs_left -= 40;
+							}
+							else
+							{
+								acs_left = 0;
+							}
+						}
 					}
 				}
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
-					if (PAD_INPUT::GetLStick().ThumbX < -10000)
+					//上昇時に左入力がされていたら左に加速する
+					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 					{
 						if (acs_left < MAX_SPEED)
 						{
-							acs_left += 2;
-							if (acs_up > 0)
-							{
-								acs_up -= 2;
-							}
+							acs_left += 40;
+							acs_up -= 10;
+						}
+						else
+						{
+							acs_left = MAX_SPEED;
 						}
 						if (acs_right > 0)
 						{
-							acs_right--;
+							acs_right -= 40;
+						}
+						else
+						{
+							acs_right = 0;
 						}
 					}
-
-					if (PAD_INPUT::GetLStick().ThumbX > 10000)
+					//上昇時に右入力がされていたら右に加速する
+					if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
 					{
 						if (acs_right < MAX_SPEED)
 						{
-							acs_right += 2;
-							if (acs_up > 0)
-							{
-								acs_up -= 2;
-							}
+							acs_right += 40;
+							acs_up -= 10;
+						}
+						else
+						{
+							acs_right = MAX_SPEED;
 						}
 						if (acs_left > 0)
 						{
-							acs_left--;
+							acs_left -= 40;
+						}
+						else
+						{
+							acs_left = 0;
 						}
 					}
 
@@ -311,13 +340,21 @@ void Player::Update()
 						//Aを押せば押すほど上加速度が上がる
 						if (jump_combo < MAX_JUMP)
 						{
-							if (jump_combo == 0)
+							if (onfloor_flg == true)
 							{
+								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
 							jump_combo += 2;
 						}
-						acs_up += jump_combo * 3 + balloon;
+						if (acs_up < MAX_SPEED / 2)
+						{
+							acs_up += jump_combo * 3 + balloon;
+						}
+						else
+						{
+							acs_up = MAX_SPEED / 2;
+						}
 					}
 				}
 				//連打中に上昇値が減らないようにする
@@ -333,33 +370,13 @@ void Player::Update()
 						{
 							acs_up -= 2;
 						}
-					}
-					else
-					{
-						if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+						if (acs_down >= 0)
 						{
-							if (acs_left < MAX_SPEED)
-							{
-								acs_left += 2;
-								acs_up -= 3;
-							}
-							if (acs_right > 0)
-							{
-								acs_right--;
-							}
+							acs_down -= 2;
 						}
-
-						if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+						else
 						{
-							if (acs_right < MAX_SPEED)
-							{
-								acs_right += 2;
-								acs_up -= 3;
-							}
-							if (acs_left > 0)
-							{
-								acs_left--;
-							}
+							acs_down = 0;
 						}
 					}
 				}
@@ -372,7 +389,7 @@ void Player::Update()
 					}
 				}
 				//ジャンプ連打時アニメーション処理
-				if (jump_anim_boost > 0 && frame % 5 == 0)
+				if (jump_anim_boost > 0 && frame % 3 == 0)
 				{
 					player_anim++;
 					jump_anim_boost--;
@@ -409,7 +426,6 @@ void Player::Update()
 					location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * FALL_SPPED);
 				}
 
-
 				//画面端に行くとテレポート
 				if (location.x < 0 - PLAYER_ENEMY_WIDTH)
 				{
@@ -437,8 +453,6 @@ void Player::Update()
 				anim_boost = 15;
 				player_state = INVINCIBLE;
 			}
-
-
 		}
 		//死亡中の演出(雷)
 		else if (thunder_death_flg == true)
@@ -460,6 +474,7 @@ void Player::Update()
 				thunder_death_flg = false;
 			}
 		}
+
 		//死亡中の演出(通常)
 		else
 		{
@@ -493,6 +508,10 @@ void Player::Update()
 	{
 		anim_boost = 0;
 	}
+	if (player_state == WALK_LEFT || player_state == WALK_RIGHT)
+	{
+		anim_boost = 18;
+	}
 	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
 	{
 		if (frame % 15 == 0)
@@ -516,10 +535,6 @@ void Player::Update()
 		//プレイヤーを水没中に設定
 		player_state = SUBMERGED;
 		location.y = 470;
-		if (frame % 10 == 0)
-		{
-			splash_anim++;
-		}
 		if (--death_wait < 0)
 		{
 			underwater_flg = false;
@@ -531,6 +546,15 @@ void Player::Update()
 	}
 
 	if (is_die) {
+		player_state = SUBMERGED;
+		if (frame % 10 == 0)
+		{
+			splash_anim++;
+			if (splash_anim >= 3)
+			{
+				splash_anim = 8;
+			}
+		}
 		if (--death_wait < 0)
 		{
 			underwater_flg = false;
@@ -545,16 +569,7 @@ void Player::Update()
 void Player::Draw()const
 {
 	////プレイヤーの当たり判定の描画
-	DrawBoxAA(location.x, location.y+BALLOON_HEIGHT, location.x + PLAYER_ENEMY_WIDTH, location.y + PLAYER_ENEMY_HEIGHT, 0xff0000, TRUE);
-	//プレイヤーの風船当たり判定の描画(仮)
-	DrawBox(location.x, location.y, location.x + PLAYER_ENEMY_WIDTH, location.y + BALLOON_HEIGHT, 0x00ff00, TRUE);
-	DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
-	DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
-	DrawFormatString(0, 60, 0x00ff00, "%d", life);
-	DrawFormatString(0, 80, 0xffff00, "%d", onshare_flg);
-	//DrawBoxAA(location.x, location.y+PLAYER_BALLOON_HEIGHT, location.x + PLAYER_WIDTH, location.y + PLAYER_HEIGHT, 0xff0000, TRUE);
-	////プレイヤーの風船当たり判定の描画(仮)
-	//DrawBox(location.x, location.y, location.x + PLAYER_WIDTH, location.y + PLAYER_BALLOON_HEIGHT, 0x00ff00, TRUE);
+	//DrawBoxAA(location.x, location.y, location.x + area.width, location.y + area.height, 0xff0000, FALSE);
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
 	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
@@ -572,7 +587,16 @@ void Player::Draw()const
 			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[0 + (player_anim % 3) + ((2 - balloon) * 4)], TRUE);
 			break;
 		case WALK_LEFT:
-			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+			if (balloon == 1)
+			{
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[9 + player_anim + ((2 - balloon) * 4)], TRUE);
+
+			}
+			else
+			{
+				DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+
+			}			
 			break;
 		case TURN_LEFT:
 			if (balloon == 1)
@@ -587,7 +611,16 @@ void Player::Draw()const
 			}
 			break;
 		case WALK_RIGHT:
-			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+			if (balloon == 1)
+			{
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[9 + player_anim + ((2 - balloon) * 4)], TRUE);
+
+			}
+			else
+			{
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[8 + player_anim + ((2 - balloon) * 4)], TRUE);
+
+			}
 			break;
 		case TURN_RIGHT:
 			if (balloon == 1)
@@ -621,6 +654,7 @@ void Player::Draw()const
 			break;
 		}
 	}
+
 
 }
 
@@ -748,28 +782,7 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 	sub_x[1] = sub_x[0] + box_collider->GetArea().width;
 	sub_y[1] = sub_y[0] + box_collider->GetArea().height;
 
-	//StageFloorの横の範囲内
-	if (my_x[0] < sub_x[1] - 5 &&
-		sub_x[0] + 5 < my_x[1])
-	{
-		//Playerが敵より下へ行こうとした場合
-		if (my_y[1] > sub_y[0] &&
-			my_y[0] < sub_y[0])
-		{
-			//敵より下には行けないようにする
-			location.y = sub_y[0] - area.height;
-			return 4;
-		}
-
-		//Playerが敵より上へ行こうとした場合
-		if (my_y[0] < sub_y[1] &&
-			my_y[1] > sub_y[1])
-		{
-			return 3;
-		}
-	}
-
-	//StaegFloorの縦の範囲内
+	//敵の縦の範囲内
 	if (my_y[0] < sub_y[1] - 5 &&
 		sub_y[0] + 5 < my_y[1])
 	{
@@ -789,6 +802,28 @@ int Player::HitEnemyCollision(const BoxCollider* box_collider)
 			//敵より左には行けないようにする
 			location.x = sub_x[1] + 1;
 			return 2;
+		}
+	}
+	//敵の横の範囲内
+	if (my_x[0] < sub_x[1] - 5 &&
+		sub_x[0] + 5 < my_x[1])
+	{
+		//Playerが敵より下へ行こうとした場合
+		if (my_y[1] > sub_y[0] &&
+			my_y[0] < sub_y[0])
+		{
+			//敵より下には行けないようにする
+			location.y = sub_y[0] - area.height;
+			return 4;
+		}
+
+		//Playerが敵より上へ行こうとした場合
+		if (my_y[0] < sub_y[1] &&
+			my_y[1] > sub_y[1])
+		{
+			//敵より上には行けないようにする
+			location.y = sub_y[1];
+			return 3;
 		}
 	}
 	return 0;
@@ -839,18 +874,18 @@ void Player::OnFloor()
 	acs_up = 0;
 
 	//アニメーション方向判定
-	if (last_move_x > 0)
-	{
-		player_state = IDOL_RIGHT;
-	}
-	if (last_move_x < 0)
+	if (last_input == -1)
 	{
 		player_state = IDOL_LEFT;
 	}
+	if (last_input == 1)
+	{
+		player_state = IDOL_RIGHT;
+	}
 	if (acs_left > 0)
 	{
-		player_state = WALK_LEFT;
-		acs_left-=6;
+		player_state = TURN_LEFT;
+		acs_left-=7;
 	}
 	else
 	{
@@ -858,8 +893,8 @@ void Player::OnFloor()
 	}
 	if (acs_right > 0)
 	{
-		player_state = WALK_RIGHT;
-		acs_right-=6;
+		player_state = TURN_RIGHT;
+		acs_right-=7;
 	}
 	else
 	{
@@ -885,8 +920,9 @@ void Player::ReflectionPX()
 
 void Player::ReflectionPY()
 {
-	acs_down = fabsf(acs_up - acs_down) * 1.8f;
+	acs_down = fabsf(acs_up - acs_down) * 0.8f;
 	acs_up = 0;
+	jump_combo = 0;
 }
 
 void Player::ReflectionMY()
@@ -925,4 +961,19 @@ void Player::BalloonDec()
 	{
 		death_flg = true;
 	}
+}
+void Player::ResetPlayerPos()
+{
+	player_state = IDOL_RIGHT;
+	location.x = PLAYER_RESPAWN_POS_X;
+	location.y = PLAYER_RESPAWN_POS_Y;
+	acs_left = 0;
+	acs_right = 0;
+	acs_up = 0;
+	acs_down = 0;
+	land_acs_left = 0;
+	land_acs_right = 0;
+	jump_int = 0;
+	jump_combo = 0;
+	respawn = 600;
 }

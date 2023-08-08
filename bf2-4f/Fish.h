@@ -24,13 +24,15 @@ private:
         PreyingOn_Enemy_3,
     };
 
+    int falling_anim;
+    int anim_frame;
     int fish_image[10];                 //画像用
     int fish_state;                     //さかなの状態
     int probability;                    //確率
     int frame_count;                    //フレーム計測用
     int player_flying_on_sea_timer;     //プレイヤーが海面を飛んでいる時の計測用
 
-    const float speed = 1.2f;           //速さ
+    float speed = 1.6f;           //速さ
     
     bool is_rising;                     //さかなが海から飛び上がっている？
     bool is_falling;                    //さかなが海に落ちている？

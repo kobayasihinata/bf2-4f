@@ -1,8 +1,5 @@
-#pragma once
-#include "AbstractScene.h"
 
-class Stage : 
-	public AbstractScene
+class Stage
 {
 private:
 	int stagefloor;
@@ -28,10 +25,9 @@ public:
 	~Stage();
 
 	//•`‰æˆÈŠO‚Ìˆ—
-	AbstractScene* Update()override;
+	void Update();
 
 	//•`‰æˆ—
-	void Draw()const override;
-
+	void Draw()const;
 };
 

@@ -9,28 +9,34 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 
+#define ENEMY_NAMBER 6
+#define FLOOR_MAX 7
 
 class GameMain :
     public AbstractScene
 {
 private:
     Player* player;
-    Enemy* enemy[6];
-    ENEMY_AI* enemy_ai[6];
-    StageFloor* stagefloor[3];
+    Enemy* enemy[ENEMY_NAMBER];
+    ENEMY_AI* enemy_ai[ENEMY_NAMBER];
+    StageFloor* stagefloor[FLOOR_MAX];
     //StageWall* staegwall;
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
 
+    int stage;      //現在のステージ数
     int seaImage;
     bool Pouse;
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
-    const int Enemy_Move_Cool[3]{ 360,240,120 };
-    int move_cooltime;
+    bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
+    bool clear_flg;     //次のステージへ遷移する条件を調べる用
+    int clear_wait;     //次のステージへ遷移する前の待ち時間
+    int now_floor_max;  //現在の床の数
+
    
     //BGM
     static int GameStartBGM;		//ゲームスタートBGM
@@ -63,8 +69,10 @@ public:
     //敵とプレイヤーが接触した時のダメージ処理
     void Damage(int i);
 
-    //サウンド
-    void Sound();
+    //次のステージへ
+    int NextStage();
 
+    //敵と地面を生成する
+    void CreateStage(int stage);
 };
 

@@ -58,11 +58,13 @@ public:
     void Update();
 
     //•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ÌŽÀ‘•
-    void Draw()const;
+    void Draw(bool flg)const;
 
     void ChangeAngle();
 
     void Reflection(const BoxCollider* boxcollider);
 
     bool HitPlayer(const class Player* player);
+
+    void InitThunder();
 };

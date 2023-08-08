@@ -131,7 +131,7 @@ void Thunder::Update()
 			//angle = 0.875f;
 			location.x = cloud_x + 70;
 			location.y = cloud_y - 30;
-			angle = 0.88f;
+			angle = 0.8f;
 			ChangeAngle();
 			break;
 		case 1:
@@ -140,7 +140,7 @@ void Thunder::Update()
 			//angle = 0.125f;
 			location.x = cloud_x + 75;
 			location.y = cloud_y + 80;
-			angle = 0.13f;
+			angle = 0.2f;
 			ChangeAngle();
 			break;
 		case 2:
@@ -149,7 +149,7 @@ void Thunder::Update()
 			//angle = 0.375f;
 			location.x = cloud_x + 30;
 			location.y = cloud_y + 90;
-			angle = 0.38f;
+			angle = 0.3f;
 			ChangeAngle();
 			break;
 		case 3:
@@ -158,7 +158,7 @@ void Thunder::Update()
 			//angle = 0.625f;
 			location.x = cloud_x + 30;
 			location.y = cloud_y - 30;
-			angle = 0.63f;
+			angle = 0.71f;
 			ChangeAngle();
 			break;
 		default:
@@ -230,32 +230,12 @@ void Thunder::Update()
 	//下に落ちた場合
 	if (is_die == true)
 	{
-		cloud_anim = 0;
-		thunder_anim = 0;
-		thunder_ball_anim = 0;
-
-		thunder_ball_flg = false;
-		fire_flg = false;
-		is_fire_ready = false;
-		thunder_direction_flg = false;
-
-		fire_timer = SECOND_TO_FRAME(30);
-		preliminary_action_time = SECOND_TO_FRAME(1);
-
-
-		show_flg = false;
-		speed = 0;
-		angle = 0;
-		thunder_ball_state = Stop;
-		location.x = cloud_x + 50;
-		location.y = cloud_y + 20;
-
-		is_die = false;
+		InitThunder();
 	}
 }
 		
 
-void Thunder::Draw()const
+void Thunder::Draw(bool flg)const
 {
 #ifdef DEBUG
 	DrawFormatString(0, 200, 0xff00ff, "%d", fire_timer);
@@ -265,11 +245,13 @@ void Thunder::Draw()const
 #endif // DEBUG
 
 	DrawGraphF(cloud_x, cloud_y, cloud_image[cloud_anim], TRUE);
-	if (fire_flg == true)
+	if (flg == false)
 	{
-		//表示場所は時計回り
-		switch (thunder_direction)
+		if (fire_flg == true)
 		{
+			//表示場所は時計回り
+			switch (thunder_direction)
+			{
 			case 0:
 				//DrawRotaGraphF(cloud_x + 100, cloud_y - 10, 1, M_PI / 180 * 190, thunder_image[thunder_anim], TRUE);
 				DrawRotaGraphF(cloud_x + 80, cloud_y - 10, 1, M_PI / 180 * 170, thunder_image[thunder_anim], TRUE);
@@ -281,15 +263,16 @@ void Thunder::Draw()const
 				DrawRotaGraphF(cloud_x + 40, cloud_y + 85, 1, M_PI / 180 * -10, thunder_image[thunder_anim], TRUE);
 				break;
 			case 3:
-				DrawRotaGraphF(cloud_x + 40, cloud_y - 10 , 1, M_PI / 180 * 180, thunder_image[thunder_anim], TRUE, TRUE);
+				DrawRotaGraphF(cloud_x + 40, cloud_y - 10, 1, M_PI / 180 * 180, thunder_image[thunder_anim], TRUE, TRUE);
 				break;
 			default:
 				break;
+			}
 		}
-	}
-	if (show_flg == true)
-	{
-		DrawGraphF(location.x - THUNDER_BALL_IMAGE_SHIFT, location.y - THUNDER_BALL_IMAGE_SHIFT, thunder_ball_image[thunder_ball_anim], TRUE);
+		if (show_flg == true)
+		{
+			DrawGraphF(location.x - THUNDER_BALL_IMAGE_SHIFT, location.y - THUNDER_BALL_IMAGE_SHIFT, thunder_ball_image[thunder_ball_anim], TRUE);
+		}
 	}
 }
 
@@ -366,4 +349,34 @@ bool Thunder::HitPlayer(const Player* player)
 	}
 
 	return	ret;
+}
+
+void Thunder::InitThunder()
+{
+	cloud_anim = 0;
+	thunder_anim = 0;
+	thunder_ball_anim = 0;
+
+	thunder_ball_flg = false;
+	fire_flg = false;
+	is_fire_ready = false;
+	thunder_direction_flg = false;
+
+#ifdef DEBUG
+	fire_timer = SECOND_TO_FRAME(1);
+	preliminary_action_time = SECOND_TO_FRAME(1);
+#else
+	fire_timer = SECOND_TO_FRAME(30);
+	preliminary_action_time = SECOND_TO_FRAME(1);
+#endif // DEBUG
+
+	show_flg = false;
+	speed = 0;
+	angle = 0;
+	thunder_ball_state = Stop;
+	location.x = cloud_x + 50;
+	location.y = cloud_y + 20;
+
+	is_die = false;
+
 }

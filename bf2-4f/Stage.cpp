@@ -38,18 +38,18 @@ Stage::~Stage()
 	DeleteGraph(footing8);
 }
 
-AbstractScene* Stage::Update()
+void Stage::Update()
 {
-	return this;
+
 }
 
 void Stage::Draw() const
 {
 	//ステージ１
-	DrawGraph(0,416,landleft, TRUE);
-	DrawGraph(479,416,landright, TRUE);
-	DrawGraph(159,444,sea, TRUE);
-	DrawGraph(180,290,footing1, TRUE);
+	//DrawGraph(0, 416, landleft, TRUE);
+	//DrawGraph(479, 416, landright, TRUE);
+	//DrawGraph(159, 444, sea, TRUE);
+	//DrawGraph(180, 290, footing1, TRUE);
 	//ステージ２
 	//DrawGraph(0,416,landleft, TRUE);
 	//DrawGraph(479,416,landright, TRUE);
@@ -83,6 +83,6 @@ void Stage::Draw() const
 	DrawGraph(370, 325, footing6, TRUE);
 	DrawGraph(220, 80, footing6, TRUE);
 	DrawGraph(100, 200, footing7, TRUE);
-	DrawGraph(260, 170, footing7, TRUE);
+	//DrawGraph(260, 170, footing7, TRUE);
 	DrawGraph(500, 160, footing8, TRUE);*/
 }
