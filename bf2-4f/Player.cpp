@@ -961,3 +961,18 @@ void Player::BalloonDec()
 		death_flg = true;
 	}
 }
+void Player::ResetPlayerPos()
+{
+	player_state = IDOL_RIGHT;
+	location.x = PLAYER_RESPAWN_POS_X;
+	location.y = PLAYER_RESPAWN_POS_Y;
+	acs_left = 0;
+	acs_right = 0;
+	acs_up = 0;
+	acs_down = 0;
+	land_acs_left = 0;
+	land_acs_right = 0;
+	jump_int = 0;
+	jump_combo = 0;
+	respawn = 600;
+}
