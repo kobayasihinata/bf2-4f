@@ -6,28 +6,32 @@
  {
 	UI_image1 = LoadGraph("images/UI/UI_HiScore.png");
 	UI_image2 = LoadGraph("images/UI/UI_Score.png");
-	for (int i = 0; i < 10; i++)
-	{
-		UI_image3[i] = NULL;
-	}
-	LoadDivGraph("images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, UI_image3);
-	Score_image = LoadGraph("images/Score/GetScore_500.png");
-	Score_image = LoadGraph("images/Score/GetScore_750.png");
-	Score_image = LoadGraph("images/Score/GetScore_1000.png");
-	Score_image = LoadGraph("images/Score/GetScore_1500.png");
-	Score_image = LoadGraph("images/Score/GetScore_2000.png");
+
+
+	LoadDivGraph("images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, numbers_image);
 }
   
   void UI::Draw()const
   {
-	  DrawGraph(300, 5, UI_image1, TRUE);
-	  DrawGraph(170, 5, UI_image2, TRUE);
-	  DrawGraph(190, 0, UI_image3[0], TRUE);
+	  DrawGraph(170, 7, UI_image1, TRUE);
+	  DrawGraph(10, 7, UI_image2, TRUE);
+	  //スコア表示（仮）
+	  DrawNumber(21, 0, GameMain::GetScore());
 
+	  //ハイスコア表示(仮に現在のスコアを入れている)
+	  DrawNumber(200, 0, GameMain::GetScore());
 	  
   }
 
- int UI::Score()
- {
-	 return 0;
- }
+  void UI::DrawNumber(int x, int y, int score)const
+  {
+	  int a;
+	  int value = score;
+	  for (int i = 5; i >= 0; i--)
+	  {
+		  a = value % 10;
+		  value /= 10;
+		  //DrawFormatString(x, y + (i * 20), 0x00ff00, "%d", j);
+		  DrawGraph(x + (i * 20), y, numbers_image[a], TRUE);
+	  }
+  }

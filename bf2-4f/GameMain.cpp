@@ -4,6 +4,7 @@
 #include"GameOver.h"
 #include"PadInput.h"
 
+static int score;      //現在のステージ数
 
 GameMain::GameMain()
 {
@@ -12,6 +13,7 @@ GameMain::GameMain()
 	CreateStage(stage);
 	//staegwall = new StageWall();
 	fish = new Fish();
+	ui = new UI();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	Pouse = false;
@@ -42,6 +44,7 @@ GameMain::~GameMain()
 	delete stagefloor[2];
 	delete thunder;
 	DeleteGraph(seaImage);
+	score = 0;
 }
 
 AbstractScene* GameMain::Update()
@@ -428,10 +431,8 @@ void GameMain::Draw()const
 		}
 	//}
 	fish->Draw();
+	ui->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
-
-	//スコア表示（仮）
-	DrawNumber(0, 0, score);
 }
 
 void GameMain::Damage(int i)
@@ -565,4 +566,9 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	}
+}
+
+int GameMain::GetScore()
+{
+	return score;
 }

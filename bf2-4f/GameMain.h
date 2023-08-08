@@ -8,6 +8,7 @@
 #include"Fish.h"
 #include"SoapBubble.h"
 #include"Thunder.h"
+#include"UI.h"
 
 #define ENEMY_NAMBER 6
 
@@ -23,11 +24,11 @@ private:
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
+    UI* ui;
 
     int stage;      //現在のステージ数
     int seaImage;
     bool Pouse;
-    int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
@@ -56,5 +57,8 @@ public:
 
     //敵と地面を生成する
     void CreateStage(int stage);
+
+    //点数取得
+    static int GetScore();
 };
 
