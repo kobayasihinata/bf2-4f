@@ -8,6 +8,7 @@
 #include"Fish.h"
 #include"SoapBubble.h"
 #include"Thunder.h"
+#include"UI.h"
 
 #define ENEMY_NAMBER 6
 #define FLOOR_MAX 7
@@ -24,6 +25,7 @@ private:
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
+    UI* ui;
 
     int stage;      //現在のステージ数
     int seaImage;
