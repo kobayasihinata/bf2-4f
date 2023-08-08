@@ -31,9 +31,19 @@ void StageFloor::DrawLandLeft()
 	DrawGraphF(location.x, location.y - shift, landleft, TRUE);
 }
 
+void StageFloor::DrawLandLeft2()
+{
+	DrawGraphF(location.x, location.y - shift, landleft2, TRUE);
+}
+
 void StageFloor::DrawLandRight()
 {
 	DrawGraphF(location.x, location.y - shift, landright, TRUE);
+}
+
+void StageFloor::DrawLandRight2()
+{
+	DrawGraphF(location.x, location.y - shift, landright2, TRUE);
 }
 
 void StageFloor::DrawFooting1()

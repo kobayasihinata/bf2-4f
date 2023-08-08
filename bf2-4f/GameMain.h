@@ -10,7 +10,8 @@
 #include"Thunder.h"
 
 #define ENEMY_NAMBER 6
-#define FLOOR_MAX 7
+#define MAX_FLOOR 7
+#define MAX_WALL 3
 
 class GameMain :
     public AbstractScene
@@ -19,8 +20,8 @@ private:
     Player* player;
     Enemy* enemy[ENEMY_NAMBER];
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
-    StageFloor* stagefloor[FLOOR_MAX];
-    //StageWall* staegwall;
+    StageFloor* stagefloor[MAX_FLOOR];
+    StageWall* stagewall[MAX_WALL];
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
@@ -35,7 +36,6 @@ private:
     bool damage_once;   //重なっている時一回だけダメージを与える
     bool clear_flg;     //次のステージへ遷移する条件を調べる用
     int clear_wait;     //次のステージへ遷移する前の待ち時間
-    int now_floor_max;  //現在の床の数
 
 public:
 

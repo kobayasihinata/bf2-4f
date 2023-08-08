@@ -32,6 +32,8 @@ public:
 
     //‰æ‘œ‚ð•\Ž¦‚³‚¹‚é
     void DrawLandLeft();
+    void DrawLandLeft2();
+    void DrawLandRight2();
     void DrawLandRight();
     void DrawFooting1();
     void DrawFooting2();
