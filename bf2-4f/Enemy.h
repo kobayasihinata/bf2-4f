@@ -79,6 +79,11 @@ private:
 
     int test_score; //点数加算確認用
 
+    //SE
+    static int EnemyLandingSE;		//敵着地SE
+    static int CrushEnemy;			//敵撃破SE
+    static int CreateBaloonSE;		//敵風船を膨らませるSE
+
 public:
 
     //コンストラクタ

@@ -3,6 +3,7 @@
 #include"PadInput.h"
 #include"GameMain.h"
 
+
 Title::Title()
 {
 	titlelogo = LoadGraph("images/Title/Title_Logo.png");

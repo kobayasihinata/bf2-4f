@@ -9,6 +9,7 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 
+
 class GameMain :
     public AbstractScene
 {
@@ -30,6 +31,20 @@ private:
     const int Enemy_Move_Cool[3]{ 360,240,120 };
     int move_cooltime;
     bool damage_once;   //重なっている時一回だけダメージを与える
+   
+    //BGM
+    static int GameStartBGM;		//ゲームスタートBGM
+    static int MainBGM;				//ゲームメインBGM
+    static int Continue;			//コンテニューBGM
+    static int StageClear;			//ステージクリアBGM
+    static int GameOver;			//ゲームオーバーBGM
+
+    //SE
+    static int BaloonBurstSE;			//バルーン破裂SE
+    static int BirdSE;				//トリ鳴き声SE
+  
+  
+    
 
 public:
 
@@ -47,5 +62,9 @@ public:
 
     //敵とプレイヤーが接触した時のダメージ処理
     void Damage(int i);
+
+    //サウンド
+    void Sound();
+
 };
 

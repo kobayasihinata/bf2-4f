@@ -4,6 +4,7 @@
 #include"PadInput.h"
 
 
+
 GameMain::GameMain()
 {
 	max_enemy = 3;
@@ -27,6 +28,21 @@ GameMain::GameMain()
 	score = 0;
 	move_cooltime = Enemy_Move_Cool[0];
 	damage_once = false;
+
+	//GameStartBGM“Ç‚Ýž‚Ý
+	if ((GameStartBGM = LoadSoundMem()) == -1);
+	//MainBGM“Ç‚Ýž‚Ý
+	if ((MainBGM = LoadSoundMem()) == -1);
+	//Continue“Ç‚Ýž‚Ý
+	if ((Continue = LoadSoundMem()) == -1);
+	//StageClear“Ç‚Ýž‚Ý
+	if ((StageClear = LoadSoundMem()) == -1);
+	//BaloonBurstSE“Ç‚Ýž‚Ý
+	if ((BaloonBurstSE = LoadSoundMem()) == -1);
+	//BirdSE“Ç‚Ýž‚Ý
+	if ((BirdSE = LoadSoundMem()) == -1);
+	
+
 }
 
 GameMain::~GameMain()
@@ -385,3 +401,5 @@ void GameMain::Damage(int i)
 		score += enemy[i]->ApplyDamege();
 	}
 }
+
+
