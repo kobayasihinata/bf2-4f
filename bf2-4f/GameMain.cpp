@@ -7,7 +7,7 @@
 
 GameMain::GameMain()
 {
-	stage = 1;
+	stage = 0;
 	player = new Player();
 	for (int i = 3; i < FLOOR_MAX; i++)
 	{
@@ -465,13 +465,13 @@ void GameMain::Draw()const
 		player->Draw();
 
 	}
-	//if (Pouse == false) {
+	if (Pouse == false) {
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy[i]->Draw();
 			soapbubble[i]->Draw();
 		}
-	//}
+	}
 	fish->Draw();
 	ui->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
