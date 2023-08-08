@@ -9,15 +9,6 @@ GameMain::GameMain()
 {
 	stage = 0;
 	player = new Player();
-	for (int i = 0; i < max_enemy; i++)
-	{
-		enemy[i] = new Enemy(230 + i * 70, 210, 1);
-		enemy_ai[i] = new ENEMY_AI;
-		soapbubble[i] = new SoapBubble();
-	}
-	stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-	stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-	stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
 	for (int i = 3; i < FLOOR_MAX; i++)
 	{
 		stagefloor[i] = new StageFloor(0, 0, 0, 0, 0);
@@ -25,7 +16,6 @@ GameMain::GameMain()
 	CreateStage(stage);
 	//staegwall = new StageWall();
 	fish = new Fish();
-	thunder = new Thunder();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	Pouse = false;
@@ -345,18 +335,18 @@ AbstractScene* GameMain::Update()
 
 		/*ƒvƒŒƒCƒ„[A“G‚ª‚¢‚é‚Æ‚«‚³‚©‚È‚ÉH‚×‚ç‚ê‚ÄƒvƒŒƒCƒ„[‚ª€‚ñ‚¾ê‡
 		“G‚ª”ÍˆÍ“à‚É‚¢‚é‚È‚çŠC–Ê‚Éã‚ª‚Á‚Ä‚±‚È‚¢ƒoƒO‚ª‚ ‚é
-		“G‚ª”ÍˆÍŠO‚Éo‚½ê‡ã‚ª‚Á‚Ä‚±‚ê‚é*/
+		“G‚ª”ÍˆÍŠO‚Éo‚½ê‡ã‚ª‚Á‚Ä‚±‚ê‚é?*/
 		for (int i = 0; i < max_enemy;)
 		{
 			//ƒvƒŒƒCƒ„[‚©“G‚Ì‚¢‚¸‚ê‚àŠC–Ê‚É‚¢‚È‚¢ê‡ŠC‚É–ß‚é
 			if (fish->CheckSeaSurface(player) == false &&
 				fish->CheckSeaSurface(enemy[i]) == false)
 			{
-				i++;
 				if (i == max_enemy - 1)
 				{
 					fish->NotAtSeaSurface();
 				}
+				i++;
 			}
 			else
 			{
@@ -399,19 +389,20 @@ AbstractScene* GameMain::Update()
 	}
 	else
 	{
-	//“G‘SŒ‚”j‰‰o
-	if (--clear_wait <= 0)
-	{
-		if (stage < MAX_STAGE-1)
+		//“G‘SŒ‚”j‰‰o
+		if (--clear_wait <= 0)
 		{
-			NextStage();
+			if (stage < MAX_STAGE-1)
+			{
+				NextStage();
+			}
+			else
+			{
+				return new GameOver();
+			}
 		}
-		else
-		{
-			return new GameOver();
-		}
+
 	}
- }
 
 	return this;
 }
@@ -456,7 +447,7 @@ void GameMain::Draw()const
 	if (Pouse == false) {
 		player->Draw();
 
-	//}
+	}
 	//if (Pouse == false) {
 		for (int i = 0; i < max_enemy; i++)
 		{
