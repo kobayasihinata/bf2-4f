@@ -43,6 +43,7 @@ GameMain::~GameMain()
 	delete stagefloor[1];
 	delete stagefloor[2];
 	delete thunder;
+	delete ui;
 	DeleteGraph(seaImage);
 	score = 0;
 }
