@@ -46,7 +46,7 @@ Player::Player()
 	anim_boost = 0;
 	jump_anim_boost = 0;
 
-	last_move_x = 1;
+	last_move_x = 0;
 	last_input = 1;
 }
 
@@ -123,6 +123,7 @@ void Player::Update()
 					else
 					{
 						player_state = WALK_RIGHT;
+						last_input = 1;
 						if (land_acs_right < MAX_SPEED_LAND)
 						{
 							land_acs_right+=4;
@@ -164,6 +165,7 @@ void Player::Update()
 					else
 					{
 						player_state = WALK_LEFT;
+						last_input = -1;
 						if (land_acs_left < MAX_SPEED_LAND)
 						{
 							land_acs_left+=4;
@@ -188,11 +190,11 @@ void Player::Update()
 				}
 
 				//‹}“]‰ñ”»’f
-				if ((PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
+				if ((PAD_INPUT::GetLStick().ThumbX > -10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
 				{
 					player_state = TURN_LEFT;
 				}
-				if ((PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
+				if ((PAD_INPUT::GetLStick().ThumbX < 10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
 				{
 					player_state = TURN_RIGHT;
 				}
@@ -414,10 +416,8 @@ void Player::Update()
 				}
 
 				//ˆÚ“®‹——£‚ð•Û‘¶
-				if ((acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED) != 0)
-				{
-					last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-				}
+				last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+				
 
 				//ˆÚ“®
 				if (underwater_flg == false)
