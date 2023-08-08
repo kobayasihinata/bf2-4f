@@ -8,6 +8,7 @@ class GameOver :
 {
 private:
     int GameOver_Img;
+    int GameOver_BGM;
     int WaitTimer;
 public:
 

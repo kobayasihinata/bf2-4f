@@ -27,6 +27,8 @@ private:
 
     int stage;      //現在のステージ数
     int seaImage;
+    int GameStart_BGM;
+    int EnemuyMove_SE;
     bool Pouse;
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数

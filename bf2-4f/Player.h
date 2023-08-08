@@ -54,6 +54,10 @@ private:
 
     int player_image[31];   //プレイヤー画像
     int splash_image[3];   //プレイヤー画像
+    int PlayerJump_SE;
+    int Splash_SE;
+    int Falling_SE;
+    int Restart_SE;
     int player_anim;    //プレイヤーアニメーション用
     int splash_anim;    //水没アニメーション用
     int turn_anim;    //水没アニメーション用
