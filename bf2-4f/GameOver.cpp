@@ -7,6 +7,8 @@ GameOver::GameOver() {
 	//if (GameOver_Img == 0) {
 		GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
 	//}
+		GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
+		PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
 	WaitTimer = SECOND_TO_FRAME(4);
 }
 GameOver::~GameOver() {

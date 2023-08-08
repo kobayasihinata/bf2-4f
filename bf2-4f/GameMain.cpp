@@ -20,7 +20,11 @@ GameMain::GameMain()
 	CreateStage(stage);
 	//staegwall = new StageWall();
 	fish = new Fish();
+	ui = new UI();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
+	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
+	EnemuyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
 	Pouse = false;
 
@@ -409,7 +413,12 @@ AbstractScene* GameMain::Update()
 		}
 
 	}
-
+	if (CheckSoundMem(GameStart_BGM) == FALSE) {
+		if (CheckSoundMem(EnemuyMove_SE) == FALSE)
+		{
+			PlaySoundMem(EnemuyMove_SE, DX_PLAYTYPE_BACK);
+		}
+	}
 	return this;
 }
 
@@ -510,10 +519,13 @@ void GameMain::Draw()const
 		}
 	//}
 	fish->Draw();
+	ui->Draw();
 	DrawGraph(159, 444, seaImage, TRUE);
 
 	//スコア表示（仮）
-	DrawNumber(0, 0, score);
+	DrawNumber(170, 0, score);
+	//スコア表示（仮）
+	DrawNumber(350, 0, score);
 }
 
 void GameMain::Damage(int i)

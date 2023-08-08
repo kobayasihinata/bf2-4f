@@ -13,9 +13,14 @@ public:
 	int UI_image1;
 	int UI_image2;
 	int UI_image3[10];
+	int UI_image4;
+	int UI_image5;
+	int UI_image6;
 	int Score_image;  
 
 	void AddScore(int point) { gScore += point; }
 	int GetScore() { return gScore;}
 
+	//”š‚Ì•`‰æ(UI.h‚Æcpp‚É‘‚­‚Ì‚à‚ ‚è)
+	//void DrawNumber(int x, int y, int score)const;
 };
