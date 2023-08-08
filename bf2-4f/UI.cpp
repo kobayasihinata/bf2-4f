@@ -4,8 +4,9 @@
 
 UI::UI() 
 {
-	UI_image1 = LoadGraph("images/UI/UI_HiScore.png");
-	UI_image2 = LoadGraph("images/UI/UI_Score.png");
+	highscore_image = LoadGraph("images/UI/UI_HiScore.png");
+	score_image = LoadGraph("images/UI/UI_Score.png");
+	player_life_image = LoadGraph("images/UI/UI_Stock.png");
 
 	ReadHighScore();
 
@@ -14,8 +15,8 @@ UI::UI()
 
 UI::~UI()
 {
-	DeleteGraph(UI_image1);
-	DeleteGraph(UI_image2);
+	DeleteGraph(highscore_image);
+	DeleteGraph(score_image);
 	for (int i = 0; i < 10; i++)
 	{
 		DeleteGraph(numbers_image[i]);
@@ -25,15 +26,15 @@ UI::~UI()
 		SaveHighScore();
 	}
 }
-void UI::Draw()const
+void UI::Draw(int life)const
 {
-	DrawGraph(170, 7, UI_image1, TRUE);
-	DrawGraph(10, 7, UI_image2, TRUE);
+	DrawGraph(170, 7, highscore_image, TRUE);
+	DrawGraph(10, 7, score_image, TRUE);
 
 	//スコア表示（仮）
 	DrawNumber(21, 0, GameMain::GetScore());
 
-	//ハイスコア表示(仮に現在のスコアを入れている)
+	//ハイスコア表示
 	if (GameMain::GetScore() > high_score)
 	{
 		DrawNumber(200, 0, GameMain::GetScore());
@@ -43,6 +44,11 @@ void UI::Draw()const
 		DrawNumber(200, 0, high_score);
 	}
   
+	//プレイヤー残機表示
+	for (int i = 0; i < life; i++)
+	{
+		DrawGraph(70-(i*11), 25, player_life_image, TRUE);
+	}
 }
 
 void UI::DrawNumber(int x, int y, int score)const

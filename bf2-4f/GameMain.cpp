@@ -432,7 +432,7 @@ void GameMain::Draw()const
 		}
 	//}
 	fish->Draw();
-	ui->Draw();
+	ui->Draw(player->GetPlayerLife());
 	DrawGraph(159, 444, seaImage, TRUE);
 }
 
