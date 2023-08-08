@@ -24,6 +24,7 @@ private:
     Thunder* thunder;
     SoapBubble* soapbubble[6];
 
+    int stage;      //現在のステージ数
     int seaImage;
     bool Pouse;
     int score;  //仮のスコア格納場所
@@ -31,7 +32,8 @@ private:
     int P_x, P_y;       //プレイヤー座標
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
-
+    bool clear_flg;     //次のステージへ遷移する条件を調べる用
+    int clear_wait;     //次のステージへ遷移する前の待ち時間
 public:
 
     //コンストラクタ
@@ -48,5 +50,11 @@ public:
 
     //敵とプレイヤーが接触した時のダメージ処理
     void Damage(int i);
+
+    //次のステージへ
+    int NextStage();
+
+    //敵と地面を生成する
+    void CreateStage(int stage);
 };
 

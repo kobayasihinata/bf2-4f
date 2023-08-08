@@ -102,11 +102,11 @@ void SoapBubble::Update()
 
 void SoapBubble::Draw() const
 {
-	if (flg == true && get_once == false)
+	if (flg == true)
 	{
 		DrawGraph(location.x-16, location.y-16, bubble_image[bubble_anim], TRUE);
 	}
-	if (bubble_get_anim < 3 && get_once == false)
+	if (bubble_get_anim < 3)
 	{
 		DrawGraph(location.x - 16, location.y - 16, bubble_image[3], TRUE);
 	}
@@ -144,6 +144,7 @@ int SoapBubble::HitPlayerCollision(const BoxCollider* box_collider)
 		getscore_y = sub_y[0];
 		flg = false;
 		bubble_get_anim = 0;
+		get_once = true;
 		return SOAPBUBBLE_GETPOINT;
 	}
 	return 0;
