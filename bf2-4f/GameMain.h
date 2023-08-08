@@ -25,6 +25,8 @@ private:
     SoapBubble* soapbubble[6];
 
     int seaImage;
+    int GameStart_BGM;
+    int EnemuyMove_SE;
     bool Pouse;
     int score;  //‰¼‚ÌƒXƒRƒAŠi”[êŠ
     int max_enemy;      //“G‚Ì”

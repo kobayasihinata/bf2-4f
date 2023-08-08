@@ -22,6 +22,9 @@ GameMain::GameMain()
 	fish = new Fish();
 	thunder = new Thunder();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
+	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
+	EnemuyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
 	Pouse = false;
 
@@ -345,6 +348,12 @@ AbstractScene* GameMain::Update()
 		if (player->GetPlayerLife() < 0) 
 		{
 			return new GameOver();
+		}
+	}
+	if (CheckSoundMem(GameStart_BGM) == FALSE) {
+		if (CheckSoundMem(EnemuyMove_SE) == FALSE)
+		{
+			PlaySoundMem(EnemuyMove_SE, DX_PLAYTYPE_BACK);
 		}
 	}
 	return this;
