@@ -3,16 +3,14 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Enemy_AI.h"
-#include"StageFloor.h"
-#include"StageWall.h"
+#include"StageObject.h"
 #include"Fish.h"
 #include"SoapBubble.h"
 #include"Thunder.h"
 #include"UI.h"
 
 #define ENEMY_NAMBER 6
-#define MAX_FLOOR 7
-#define MAX_WALL 3
+#define MAX_FLOOR 7+3
 
 class GameMain :
     public AbstractScene
@@ -21,8 +19,7 @@ private:
     Player* player;
     Enemy* enemy[ENEMY_NAMBER];
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
-    StageFloor* stagefloor[MAX_FLOOR];
-    StageWall* stagewall[MAX_WALL];
+    StageObject* stageobject[MAX_FLOOR];
     Fish* fish;
     Thunder* thunder;
     SoapBubble* soapbubble[6];
@@ -66,7 +63,7 @@ public:
     void CreateStage(int stage);
 
     //敵のスポーン位置を指定した床の上に設定
-    Location SpawnPosSet(StageFloor* floor);
-    Location SpawnPosSet(StageWall* wall);
+    Location SpawnPosSet(StageObject* floor);
+    //Location SpawnPosSet(StageObject* wall);
 };
 

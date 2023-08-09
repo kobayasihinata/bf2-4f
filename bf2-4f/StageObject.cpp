@@ -54,3 +54,68 @@ StageObject::~StageObject()
 	DeleteGraph(footing8);
 
 }
+
+void StageObject::Draw() const
+{
+	BoxCollider::Draw();
+}
+
+void StageObject::DrawLandLeft()
+{
+	DrawGraphF(location.x, location.y - shift, landleft, TRUE);
+}
+
+void StageObject::DrawLandLeft2()
+{
+	DrawGraphF(location.x, location.y - shift, landleft2, TRUE);
+}
+
+void StageObject::DrawLandRight()
+{
+	DrawGraphF(location.x, location.y - shift, landright, TRUE);
+}
+
+void StageObject::DrawLandRight2()
+{
+	DrawGraphF(location.x, location.y - shift, landright2, TRUE);
+}
+
+void StageObject::DrawFooting1()
+{
+	DrawGraphF(location.x, location.y - shift, footing1, TRUE);
+}
+
+void StageObject::DrawFooting2()
+{
+	DrawGraphF(location.x, location.y, footing2, TRUE);
+}
+
+void StageObject::DrawFooting3()
+{
+	DrawGraphF(location.x, location.y, footing3, TRUE);
+}
+
+void StageObject::DrawFooting5()
+{
+	DrawGraphF(location.x, location.y, footing5, TRUE);
+}
+
+void StageObject::DrawFooting6()
+{
+	DrawGraphF(location.x, location.y, footing6, TRUE);
+}
+
+void StageObject::DrawFooting4()
+{
+	DrawGraphF(location.x , location.y, footing4, TRUE);
+}
+
+void StageObject::DrawFooting7()
+{
+	DrawGraphF(location.x, location.y - shift, footing7, TRUE);
+}
+
+void StageObject::DrawFooting8()
+{
+	DrawGraphF(location.x, location.y - shift, footing8, TRUE);
+}

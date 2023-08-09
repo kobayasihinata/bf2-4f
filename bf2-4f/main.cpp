@@ -5,8 +5,6 @@
 #include"Title.h"
 #include"GameMain.h"
 #include"Define.h"
-#include"StageFloor.h"
-
 
 #define FRAMERATE 60.0 //フレームレート
 

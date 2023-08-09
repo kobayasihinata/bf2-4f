@@ -166,9 +166,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SoapBubble.cpp" />
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="StageFloor.cpp" />
     <ClCompile Include="StageObject.cpp" />
-    <ClCompile Include="StageWall.cpp" />
     <ClCompile Include="Thunder.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="UI.cpp" />
@@ -192,9 +190,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SoapBubble.h" />
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="StageFloor.h" />
     <ClInclude Include="StageObject.h" />
-    <ClInclude Include="StageWall.h" />
     <ClInclude Include="Thunder.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="UI.h" />
