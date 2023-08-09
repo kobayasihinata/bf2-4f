@@ -11,6 +11,13 @@
 
 #define ENEMY_NAMBER 6
 #define FLOOR_MAX 7
+#define SECOND_TO_FRAME(sec) ((sec)*60)
+
+enum State {
+    Normal,
+    Clear,
+    Over,
+};
 
 class GameMain :
     public AbstractScene
@@ -35,9 +42,13 @@ private:
     int P_x, P_y;       //プレイヤー座標
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
+    int main_state;
     bool clear_flg;     //次のステージへ遷移する条件を調べる用
     int clear_wait;     //次のステージへ遷移する前の待ち時間
     int now_floor_max;  //現在の床の数
+    int GameOver_Img;
+    int GameOver_BGM;
+    int WaitTimer;
 
 public:
 

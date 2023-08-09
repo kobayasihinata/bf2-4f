@@ -1,7 +1,7 @@
 #include <time.h>
 #include "Dxlib.h"
 #include "GameMain.h"
-#include"GameOver.h"
+#include "Title.h"
 #include"PadInput.h"
 
 
@@ -21,6 +21,7 @@ GameMain::GameMain()
 	EnemuyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
 	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
+	main_state = Normal;
 	Pouse = false;
 
 	score = 0;
@@ -57,8 +58,9 @@ GameMain::~GameMain()
 AbstractScene* GameMain::Update()
 {
 	//敵全撃破後の演出中で無ければ
-	if (clear_wait <= 0)
+	switch (main_state)
 	{
+	case Normal:
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
 			Pouse = !Pouse;
 		}
@@ -87,12 +89,12 @@ AbstractScene* GameMain::Update()
 					P_y = player->GetPlayerLocation().y;
 				}
 
-			//プレイヤーがいずれかのオブジェクトに着地していない場合
-			if (player->IsOnFloor(stagefloor) != true) 
-			{
-				//onshare_flgをfalseにする
-				player->SetOnShareFlg(false);
-			}
+				//プレイヤーがいずれかのオブジェクトに着地していない場合
+				if (player->IsOnFloor(stagefloor) != true)
+				{
+					//onshare_flgをfalseにする
+					player->SetOnShareFlg(false);
+				}
 
 				for (int i = 0; i < max_enemy; i++)
 				{
@@ -148,12 +150,12 @@ AbstractScene* GameMain::Update()
 							}
 						}
 
-					//敵がいずれかのオブジェクトに着地していない場合
-					if (enemy[i]->IsOnFloor(stagefloor) != true) 
-					{
-						//onshare_flgをfalseにする
-						enemy[i]->SetOnShareFlg(false);
-					}
+						//敵がいずれかのオブジェクトに着地していない場合
+						if (enemy[i]->IsOnFloor(stagefloor) != true)
+						{
+							//onshare_flgをfalseにする
+							enemy[i]->SetOnShareFlg(false);
+						}
 
 						//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
 						if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
@@ -242,33 +244,33 @@ AbstractScene* GameMain::Update()
 				}
 			}
 
-		for (int i = 0; i < now_floor_max; i++)
-		{
-			//プレイヤーが各オブジェクトのいずれかに着地している場合
-			if (player->IsOnFloor(stagefloor[i]) == true)
+			for (int i = 0; i < now_floor_max; i++)
 			{
-				//onshare_flgをtrueにする
-				player->SetOnShareFlg(true);
-			}
-		}
-		//敵の数だけ繰り返す
-		for (int i = 0; i < max_enemy; i++)
-		{
-			for (int j = 0; j < now_floor_max; j++)
-			{
-				//敵が各オブジェクトのいずれかに着地している場合
-				if (enemy[i]->IsOnFloor(stagefloor[j]) == true)
+				//プレイヤーが各オブジェクトのいずれかに着地している場合
+				if (player->IsOnFloor(stagefloor[i]) == true)
 				{
 					//onshare_flgをtrueにする
-					enemy[i]->SetOnShareFlg(true);
+					player->SetOnShareFlg(true);
 				}
 			}
-			enemy[i]->Update();
-			soapbubble[i]->Update();
-			if (player->GetPlayerDeathFlg() == false)
+			//敵の数だけ繰り返す
+			for (int i = 0; i < max_enemy; i++)
 			{
-				score += soapbubble[i]->HitPlayerCollision(player);
-			}
+				for (int j = 0; j < now_floor_max; j++)
+				{
+					//敵が各オブジェクトのいずれかに着地している場合
+					if (enemy[i]->IsOnFloor(stagefloor[j]) == true)
+					{
+						//onshare_flgをtrueにする
+						enemy[i]->SetOnShareFlg(true);
+					}
+				}
+				enemy[i]->Update();
+				soapbubble[i]->Update();
+				if (player->GetPlayerDeathFlg() == false)
+				{
+					score += soapbubble[i]->HitPlayerCollision(player);
+				}
 
 			}
 
@@ -281,33 +283,33 @@ AbstractScene* GameMain::Update()
 				fish->NotAtSeaSurface();
 			}
 
-		//海面にプレイヤーがいる場合
-		if (fish->CheckSeaSurface(player) == true)
-		{
-			if (player->GetPlayerState() < DEATH)
+			//海面にプレイヤーがいる場合
+			if (fish->CheckSeaSurface(player) == true)
 			{
-				//捕食処理：ターゲットはプレイヤー
-				fish->TargetPrey(player);
+				if (player->GetPlayerState() < DEATH)
+				{
+					//捕食処理：ターゲットはプレイヤー
+					fish->TargetPrey(player);
+				}
+				//プレイヤーが捕食された場合
+				//画像を非表示にして死んでいる判定にする
+				if (fish->GetIsPreyedOnPlayer() == true)
+				{
+					player->SetShowFlg(false);
+					player->SetIsDie(true);
+				}
 			}
-			//プレイヤーが捕食された場合
-			//画像を非表示にして死んでいる判定にする
-			if (fish->GetIsPreyedOnPlayer() == true)
+			else
 			{
-				player->SetShowFlg(false);
-				player->SetIsDie(true);
-			}
-		}
-		else
-		{
-			for (int i = 0; i < max_enemy; i++)
-			{
-				/*バグが発生しているためコメントアウト*/
-				//if (enemy[i]->GetIsDie() == true)
-				//{
-				//	fish->NotAtSeaSurface();
-				//}
+				for (int i = 0; i < max_enemy; i++)
+				{
+					/*バグが発生しているためコメントアウト*/
+					//if (enemy[i]->GetIsDie() == true)
+					//{
+					//	fish->NotAtSeaSurface();
+					//}
 
-					//海面に敵のいずれかがいる場合
+						//海面に敵のいずれかがいる場合
 					if (fish->CheckSeaSurface(enemy[i]) == true)
 					{
 						//敵のレベルを取得する
@@ -336,26 +338,26 @@ AbstractScene* GameMain::Update()
 
 			}
 
-		/*プレイヤー、敵がいるときさかなに食べられてプレイヤーが死んだ場合
-		敵が範囲内にいるなら海面に上がってこないバグがある
-		敵が範囲外に出た場合上がってこれる?*/
-		for (int i = 0; i < max_enemy;)
-		{
-			//プレイヤーか敵のいずれも海面にいない場合海に戻る
-			if (fish->CheckSeaSurface(player) == false &&
-				fish->CheckSeaSurface(enemy[i]) == false)
+			/*プレイヤー、敵がいるときさかなに食べられてプレイヤーが死んだ場合
+			敵が範囲内にいるなら海面に上がってこないバグがある
+			敵が範囲外に出た場合上がってこれる?*/
+			for (int i = 0; i < max_enemy;)
 			{
-				if (i == max_enemy - 1)
+				//プレイヤーか敵のいずれも海面にいない場合海に戻る
+				if (fish->CheckSeaSurface(player) == false &&
+					fish->CheckSeaSurface(enemy[i]) == false)
 				{
-					fish->NotAtSeaSurface();
+					if (i == max_enemy - 1)
+					{
+						fish->NotAtSeaSurface();
+					}
+					i++;
 				}
-				i++;
+				else
+				{
+					break;
+				}
 			}
-			else
-			{
-				break;
-			}
-		}
 
 			//さかな側でプレイヤーのスポーンフラグがたったら
 			if (fish->GetRespawnFlg() == true)
@@ -365,12 +367,6 @@ AbstractScene* GameMain::Update()
 				player->SetIsDie(false);
 				player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 				fish->SetRespawnFlg(false);
-			}
-
-			//プレイヤーの残機が0より小さい場合タイトルに戻る
-			if (player->GetPlayerLife() < 0)
-			{
-				return new GameOver();
 			}
 
 			//クリアチェック
@@ -386,25 +382,46 @@ AbstractScene* GameMain::Update()
 			//全員やられてたら
 			if (clear_flg == true)
 			{
+				main_state = Clear;
 				clear_wait = 180;
 			}
+			//プレイヤーの残機が0より小さい場合タイトルに戻る
+			if (player->GetPlayerLife() < 0)
+			{
+				main_state = Over;
+				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+				GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
+				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
+				WaitTimer = SECOND_TO_FRAME(4);
+			}
 		}
-	}
-	else
-	{
+		break;
+	case Clear:
 		//敵全撃破演出
 		if (--clear_wait <= 0)
 		{
-			if (stage < MAX_STAGE-1)
+			if (stage < MAX_STAGE - 1)
 			{
 				NextStage();
 			}
 			else
 			{
-				return new GameOver();
+				main_state = Over;
+				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+				GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
+				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
+				WaitTimer = SECOND_TO_FRAME(4);
 			}
 		}
-
+		break;
+	case Over:
+		PAD_INPUT::UpdateKey();
+		if (--WaitTimer <= 0 || PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			return new Title();
+		}
+		break;
+	default:
+		break;
 	}
 	if (CheckSoundMem(GameStart_BGM) == FALSE) {
 		if (CheckSoundMem(EnemuyMove_SE) == FALSE)
@@ -468,6 +485,10 @@ void GameMain::Draw()const
 
 	//スコア表示（仮）
 	DrawNumber(0, 0, score);
+
+	if (main_state == Over) {
+		DrawGraph(221, 233, GameOver_Img, 0);
+	}
 }
 
 void GameMain::Damage(int i)
