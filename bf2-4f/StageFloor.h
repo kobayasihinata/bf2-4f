@@ -40,5 +40,10 @@ public:
     void DrawFooting3();
     void DrawFooting5();
     void DrawFooting6();
+
+    //°‚ÌÀ•W‚ğæ“¾
+    Location GetLocation() { return location; }
+    //°‚Ì•‚Æ‚‚³‚ğæ“¾
+    Area GetWidth() { return area; }
 };
 

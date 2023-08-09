@@ -35,6 +35,7 @@ private:
     bool Pouse;
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
+    int now_floor_max;      //床の数
     int P_x, P_y;       //プレイヤー座標
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
@@ -63,5 +64,9 @@ public:
 
     //敵と地面を生成する
     void CreateStage(int stage);
+
+    //敵のスポーン位置を指定した床の上に設定
+    Location SpawnPosSet(StageFloor* floor);
+    Location SpawnPosSet(StageWall* wall);
 };
 
