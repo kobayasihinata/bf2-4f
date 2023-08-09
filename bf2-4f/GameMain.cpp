@@ -1,7 +1,7 @@
 #include <time.h>
 #include "Dxlib.h"
 #include "GameMain.h"
-#include"GameOver.h"
+#include "Title.h"
 #include"PadInput.h"
 
 
@@ -18,9 +18,11 @@ GameMain::GameMain()
 	ui = new UI();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
-	EnemuyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
+	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
 	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
+	main_state = Normal;
 	Pouse = false;
 
 	score = 0;
@@ -55,8 +57,9 @@ GameMain::~GameMain()
 AbstractScene* GameMain::Update()
 {
 	//敵全撃破後の演出中で無ければ
-	if (clear_wait <= 0)
+	switch (main_state)
 	{
+	case Normal:
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
 			Pouse = !Pouse;
 		}
@@ -279,33 +282,34 @@ AbstractScene* GameMain::Update()
 				fish->NotAtSeaSurface();
 			}
 
-		//海面にプレイヤーがいる場合
-		if (fish->CheckSeaSurface(player) == true)
-		{
-			if (player->GetPlayerState() < DEATH)
+			//海面にプレイヤーがいる場合
+			if (fish->CheckSeaSurface(player) == true)
 			{
-				//捕食処理：ターゲットはプレイヤー
-				fish->TargetPrey(player);
+				if (player->GetPlayerState() < DEATH)
+				{
+					//捕食処理：ターゲットはプレイヤー
+					fish->TargetPrey(player);
+				}
+				//プレイヤーが捕食された場合
+				//画像を非表示にして死んでいる判定にする
+				if (fish->GetIsPreyedOnPlayer() == true)
+				{
+					player->SetShowFlg(false);
+					player->SetIsDie(true);
+					PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
+				}
 			}
-			//プレイヤーが捕食された場合
-			//画像を非表示にして死んでいる判定にする
-			if (fish->GetIsPreyedOnPlayer() == true)
+			else
 			{
-				player->SetShowFlg(false);
-				player->SetIsDie(true);
-			}
-		}
-		else
-		{
-			for (int i = 0; i < max_enemy; i++)
-			{
-				/*バグが発生しているためコメントアウト*/
-				//if (enemy[i]->GetIsDie() == true)
-				//{
-				//	fish->NotAtSeaSurface();
-				//}
+				for (int i = 0; i < max_enemy; i++)
+				{
+					/*バグが発生しているためコメントアウト*/
+					//if (enemy[i]->GetIsDie() == true)
+					//{
+					//	fish->NotAtSeaSurface();
+					//}
 
-					//海面に敵のいずれかがいる場合
+						//海面に敵のいずれかがいる場合
 					if (fish->CheckSeaSurface(enemy[i]) == true)
 					{
 						//敵のレベルを取得する
@@ -322,6 +326,7 @@ AbstractScene* GameMain::Update()
 							enemy[i]->SetShowFlg(false);
 							enemy[i]->SetFlg(false);
 							enemy[i]->SetIsDie(true);
+							PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
 						}
 						//念のため死んでいる判定にする
 						if (enemy[i]->GetShowFlg() == false)
@@ -334,26 +339,26 @@ AbstractScene* GameMain::Update()
 
 			}
 
-		/*プレイヤー、敵がいるときさかなに食べられてプレイヤーが死んだ場合
-		敵が範囲内にいるなら海面に上がってこないバグがある
-		敵が範囲外に出た場合上がってこれる?*/
-		for (int i = 0; i < max_enemy;)
-		{
-			//プレイヤーか敵のいずれも海面にいない場合海に戻る
-			if (fish->CheckSeaSurface(player) == false &&
-				fish->CheckSeaSurface(enemy[i]) == false)
+			/*プレイヤー、敵がいるときさかなに食べられてプレイヤーが死んだ場合
+			敵が範囲内にいるなら海面に上がってこないバグがある
+			敵が範囲外に出た場合上がってこれる?*/
+			for (int i = 0; i < max_enemy;)
 			{
-				if (i == max_enemy - 1)
+				//プレイヤーか敵のいずれも海面にいない場合海に戻る
+				if (fish->CheckSeaSurface(player) == false &&
+					fish->CheckSeaSurface(enemy[i]) == false)
 				{
-					fish->NotAtSeaSurface();
+					if (i == max_enemy - 1)
+					{
+						fish->NotAtSeaSurface();
+					}
+					i++;
 				}
-				i++;
+				else
+				{
+					break;
+				}
 			}
-			else
-			{
-				break;
-			}
-		}
 
 			//さかな側でプレイヤーのスポーンフラグがたったら
 			if (fish->GetRespawnFlg() == true)
@@ -363,12 +368,6 @@ AbstractScene* GameMain::Update()
 				player->SetIsDie(false);
 				player->PlayerRespawn(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 				fish->SetRespawnFlg(false);
-			}
-
-			//プレイヤーの残機が0より小さい場合タイトルに戻る
-			if (player->GetPlayerLife() < 0)
-			{
-				return new GameOver();
 			}
 
 			//クリアチェック
@@ -384,31 +383,50 @@ AbstractScene* GameMain::Update()
 			//全員やられてたら
 			if (clear_flg == true)
 			{
+				PlaySoundMem(StageClear_SE, DX_PLAYTYPE_BACK);
+				main_state = Clear;
 				clear_wait = 180;
 			}
+			//プレイヤーの残機が0より小さい場合タイトルに戻る
+			if (player->GetPlayerLife() < 0)
+			{
+				main_state = Over;
+				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+				GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
+				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
+				WaitTimer = SECOND_TO_FRAME(4);
+			}
 		}
-	}
-	else
-	{
+		break;
+	case Clear:
 		//敵全撃破演出
 		if (--clear_wait <= 0)
 		{
-			if (stage < MAX_STAGE-1)
+			if (stage < MAX_STAGE - 1)
 			{
 				NextStage();
 			}
 			else
 			{
-				return new GameOver();
+				main_state = Over;
+				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+				GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
+				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
+				WaitTimer = SECOND_TO_FRAME(4);
 			}
 		}
-
+		break;
+	case Over:
+		PAD_INPUT::UpdateKey();
+		if (--WaitTimer <= 0 || PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			return new Title();
+		}
+		break;
+	default:
+		break;
 	}
 	if (CheckSoundMem(GameStart_BGM) == FALSE) {
-		if (CheckSoundMem(EnemuyMove_SE) == FALSE)
-		{
-			PlaySoundMem(EnemuyMove_SE, DX_PLAYTYPE_BACK);
-		}
+		
 	}
 	return this;
 }
@@ -513,6 +531,10 @@ void GameMain::Draw()const
 	DrawNumber(170, 0, score);
 	//スコア表示（仮）
 	DrawNumber(350, 0, score);
+
+	if (main_state == Over) {
+		DrawGraph(221, 233, GameOver_Img, 0);
+	}
 }
 
 void GameMain::Damage(int i)
@@ -546,6 +568,7 @@ int GameMain::NextStage()
 
 	fish = new Fish();
 	CreateStage(stage);
+	main_state = Normal;
 }
 
 void GameMain::CreateStage(int stage)
