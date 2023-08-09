@@ -32,11 +32,18 @@ public:
 
     //‰æ‘œ‚ğ•\¦‚³‚¹‚é
     void DrawLandLeft();
+    void DrawLandLeft2();
+    void DrawLandRight2();
     void DrawLandRight();
     void DrawFooting1();
     void DrawFooting2();
     void DrawFooting3();
     void DrawFooting5();
     void DrawFooting6();
+
+    //°‚ÌÀ•W‚ğæ“¾
+    Location GetLocation() { return location; }
+    //°‚Ì•‚Æ‚‚³‚ğæ“¾
+    Area GetWidth() { return area; }
 };
 

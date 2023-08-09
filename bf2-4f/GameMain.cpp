@@ -10,9 +10,13 @@ GameMain::GameMain()
 {
 	stage = 0;
 	player = new Player();
-	for (int i = 3; i < FLOOR_MAX; i++)
+	for (int i = 0; i < MAX_FLOOR; i++)
 	{
 		stagefloor[i] = new StageFloor(0, 0, 0, 0, 0);
+	}
+	for (int i = 0; i < MAX_WALL; i++)
+	{
+		stagewall[i] = new StageWall(0, 0, 0, 0, 0);
 	}
 	CreateStage(stage);
 	//staegwall = new StageWall();
@@ -35,8 +39,6 @@ GameMain::GameMain()
 	damage_once = false;
 	clear_flg = false;
 	clear_wait = 0;
-
-	now_floor_max = 3;
 }
 
 GameMain::~GameMain()
@@ -47,10 +49,14 @@ GameMain::~GameMain()
 		delete enemy[i];
 		delete soapbubble[i];
 	}
-	//delete staegwall;
-	for (int i = 0; i < FLOOR_MAX; i++)
+	
+	for (int i = 0; i < MAX_FLOOR; i++)
 	{
 		delete stagefloor[i];
+	}
+	for (int i = 0; i < MAX_WALL; i++)
+	{
+		delete stagewall[i];
 	}
 	delete thunder;
 	delete ui;
@@ -77,127 +83,127 @@ AbstractScene* GameMain::Update()
 			{
 				player->SetThunderDeath(true);
 			}
-			//stagefloorの範囲だけループする
-			for (BoxCollider* stagefloor : stagefloor)
+			//現在のstagefloorの数だけループする
+			for (int i = 0; i < now_floor_max; i++)
 			{
-				thunder->Reflection(stagefloor);
+				thunder->Reflection(stagefloor[i]);
 				//プレイヤーが死亡中でないなら
 				if (player->GetPlayerDeathFlg() == false && player->GetThunderDeathFlg() == false)
 				{
 					//各オブジェクトとの当たり判定処理
-					player->HitStageCollision(stagefloor);
+					player->HitStageCollision(stagefloor[i]);
 					//現在位置取得
 					P_x = player->GetPlayerLocation().x;
 					P_y = player->GetPlayerLocation().y;
 				}
 
-			//プレイヤーがいずれかのオブジェクトに着地していない場合
-			if (player->IsOnFloor(stagefloor) != true) 
-			{
-				//onshare_flgをfalseにする
-				player->SetOnShareFlg(false);
-			}
-
-				for (int i = 0; i < max_enemy; i++)
+				//プレイヤーがいずれかのオブジェクトに着地していない場合
+				if (player->IsOnFloor(stagefloor[i]) != true)
 				{
-					if (enemy[i]->GetFlg() == true)
+					//onshare_flgをfalseにする
+					player->SetOnShareFlg(false);
+				}
+
+				for (int j = 0; j < max_enemy; j++)
+				{
+					if (enemy[j]->GetFlg() == true)
 					{
-						int E_x = enemy[i]->GetEnemyLocation().x;
-						int E_y = enemy[i]->GetEnemyLocation().y;
+						int E_x = enemy[j]->GetEnemyLocation().x;
+						int E_y = enemy[j]->GetEnemyLocation().y;
 						//敵が死亡中でない且つ死んでいないなら
-						if (enemy[i]->GetEnemyDeathFlg() == false)
+						if (enemy[j]->GetEnemyDeathFlg() == false)
 						{
 
 							//各オブジェクトとの当たり判定処理
-							enemy[i]->HitStageCollision(stagefloor);
-							enemy_ai[i]->Update_AI_Cool();
+							enemy[j]->HitStageCollision(stagefloor[i]);
+							enemy_ai[j]->Update_AI_Cool();
 
-							if (enemy[i]->No_AI_Flg() == 0)
+							if (enemy[j]->No_AI_Flg() == 0)
 							{
 								//敵のAI取得
-								switch (enemy_ai[i]->Update(P_x, P_y, E_x, E_y))
+								switch (enemy_ai[j]->Update(P_x, P_y, E_x, E_y))
 								{
 								case 0:
-									enemy[i]->EnemyMoveLeft();
-									enemy[i]->EnemyJump();
+									enemy[j]->EnemyMoveLeft();
+									enemy[j]->EnemyJump();
 									break;
 								case 1:
-									enemy[i]->EnemyMoveRight();
-									enemy[i]->EnemyJump();
+									enemy[j]->EnemyMoveRight();
+									enemy[j]->EnemyJump();
 									break;
 								case 2:
-									enemy[i]->EnemyMoveLeft();
-									enemy[i]->EnemyJumpStop();
+									enemy[j]->EnemyMoveLeft();
+									enemy[j]->EnemyJumpStop();
 									break;
 								case 3:
-									enemy[i]->EnemyMoveRight();
-									enemy[i]->EnemyJumpStop();
+									enemy[j]->EnemyMoveRight();
+									enemy[j]->EnemyJumpStop();
 									break;
 								default:
 									break;
 								}
-								if (enemy_ai[i]->GetPattern() != 99) {
-									enemy_ai[i]->Set_AI_Cool(enemy[i]->GetEnemyLevel() - 1);
+								if (enemy_ai[j]->GetPattern() != 99) {
+									enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel() - 1);
 								}
 							}
 							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100)
 							{
-								Avoidance[i] = TRUE;
+								Avoidance[j] = TRUE;
 							}
-							if (Avoidance[i] == TRUE) {
-								enemy_ai[i]->Set_AI_Cool_Cnt(0);
+							if (Avoidance[j] == TRUE) {
+								enemy_ai[j]->Set_AI_Cool_Cnt(0);
 								if ((E_x < P_x - 150 && E_x > P_x + 150) || (E_y < P_y - 50 || E_y >= P_y + 100)) {
-									Avoidance[i] = FALSE;
+									Avoidance[j] = FALSE;
 								}
 							}
 						}
 
-					//敵がいずれかのオブジェクトに着地していない場合
-					if (enemy[i]->IsOnFloor(stagefloor) != true) 
-					{
-						//onshare_flgをfalseにする
-						enemy[i]->SetOnShareFlg(false);
-					}
+						//敵がいずれかのオブジェクトに着地していない場合
+						if (enemy[j]->IsOnFloor(stagefloor[j]) != true)
+						{
+							//onshare_flgをfalseにする
+							enemy[j]->SetOnShareFlg(false);
+						}
 
 						//敵が死亡モーション中で無い且つプレイヤーが死亡演出中で無いなら
-						if (enemy[i]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
+						if (enemy[j]->GetEnemyDeathFlg() == false && player->GetThunderDeathFlg() == false && player->GetPlayerDeathFlg() == false)
 						{
 							//プレイヤーが無敵状態でないなら
 							if (player->GetPlayerRespawn() <= 0)
 							{
 								//プレイヤーと敵の当たり判定
-								switch (player->HitEnemyCollision(enemy[i]))
+								switch (player->HitEnemyCollision(enemy[j]))
 								{
 								case 1:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
 										player->ReflectionMX();
-										enemy[i]->ReflectionPX();
+										enemy[j]->ReflectionPX();
 									}
-									Damage(i);
+									Damage(j);
 									break;
 								case 2:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
 										player->ReflectionPX();
-										enemy[i]->ReflectionMX();
+										enemy[j]->ReflectionMX();
 									}
-									Damage(i);
+									Damage(j);
 								case 3:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
 										player->ReflectionPY();
-										enemy[i]->ReflectionMY();
+										enemy[j]->ReflectionMY();
 									}
-									Damage(i);
+									Damage(j);
 									break;
 								case 4:
-									if (enemy[i]->GetWaitFlg() == false)
+									if (enemy[j]->GetWaitFlg() == false)
 									{
-										enemy[i]->ReflectionPY();
+										enemy[j]->ReflectionPY();
 										player->ReflectionMY();
 									}
-									Damage(i);
+									Damage(j);
 
 									break;
 								default:
@@ -207,28 +213,28 @@ AbstractScene* GameMain::Update()
 							}
 
 							//敵と敵の当たり判定
-							for (int j = i + 1; j < max_enemy; j++)
+							for (int k = j + 1; k < max_enemy; k++)
 							{
 								//敵が生きているなら
-								if (enemy[j]->GetFlg() == true && enemy[i]->GetFlg() == true && enemy[i]->GetEnemyDeathFlg() == false && enemy[j]->GetEnemyDeathFlg() == false)
+								if (enemy[k]->GetFlg() == true && enemy[j]->GetFlg() == true && enemy[j]->GetEnemyDeathFlg() == false && enemy[k]->GetEnemyDeathFlg() == false)
 								{
-									switch (enemy[j]->HitEnemyCollision(enemy[i]))
+									switch (enemy[k]->HitEnemyCollision(enemy[j]))
 									{
 									case 1:
-										enemy[j]->ReflectionMX();
-										enemy[i]->ReflectionPX();
+										enemy[k]->ReflectionMX();
+										enemy[j]->ReflectionPX();
 										break;
 									case 2:
-										enemy[j]->ReflectionPX();
-										enemy[i]->ReflectionMX();
+										enemy[k]->ReflectionPX();
+										enemy[j]->ReflectionMX();
 										break;
 									case 3:
-										enemy[j]->ReflectionPY();
-										enemy[i]->ReflectionMY();
+										enemy[k]->ReflectionPY();
+										enemy[j]->ReflectionMY();
 										break;
 									case 4:
-										enemy[j]->ReflectionMY();
-										enemy[i]->ReflectionPY();
+										enemy[k]->ReflectionMY();
+										enemy[j]->ReflectionPY();
 										break;
 									default:
 										break;
@@ -238,9 +244,9 @@ AbstractScene* GameMain::Update()
 						}
 
 						//敵が水没中なら
-						if (enemy[i]->GetEnemyUnderWaterFlg() == true)
+						if (enemy[j]->GetEnemyUnderWaterFlg() == true)
 						{
-							soapbubble[i]->SoapBubbleSpawn(enemy[i]->GetLocation().x);
+							soapbubble[j]->SoapBubbleSpawn(enemy[j]->GetLocation().x);
 						}
 					}
 				}
@@ -447,26 +453,74 @@ void GameMain::Draw()const
 	//		DrawLine(0, i, SCREEN_WIDTH, i, 0x00ff00);
 	//	}
 	//}
-	stagefloor[0]->DrawLandLeft();
-	stagefloor[1]->DrawLandRight();
-	stagefloor[2]->DrawFooting1();
 	thunder->Draw(Pouse);
+	switch (stage)
+	{
+	case 0:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
+		stagefloor[2]->DrawFooting1();
+		break;
+	case 1:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
+		stagefloor[2]->DrawFooting1();
+		stagefloor[3]->DrawFooting2();
+		stagefloor[4]->DrawFooting2();
+		break;
+	case 2:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
+		stagefloor[2]->DrawFooting3();
+		stagefloor[3]->DrawFooting5();
+
+		stagewall[0]->DrawFooting4();
+		stagewall[1]->DrawFooting4();
+		stagewall[2]->DrawFooting4();
+		break;
+	case 3:
+		stagefloor[0]->DrawLandLeft2();
+		stagefloor[1]->DrawLandRight2();
+		stagefloor[2]->DrawFooting6();
+		stagefloor[3]->DrawFooting6();
+		stagefloor[4]->DrawFooting6();
+		stagefloor[5]->DrawFooting6();
+		stagefloor[6]->DrawFooting6();
+		break;
+	case 4:
+		stagefloor[0]->DrawLandLeft();
+		stagefloor[1]->DrawLandRight();
+		stagefloor[2]->DrawFooting6();
+		stagefloor[3]->DrawFooting6();
+		stagefloor[4]->DrawFooting6();
+
+		stagewall[0]->DrawFooting7();
+		stagewall[1]->DrawFooting7();
+		stagewall[2]->DrawFooting8();
+		break;
+	default:
+		break;
+	}
 	//デバッグ用　当たり判定表示
-	//for (BoxCollider* stagefloor : stagefloor)
-	//{
-	//	stagefloor->Draw();
-	//}
+	for (BoxCollider* stagefloor : stagefloor)
+	{
+		stagefloor->Draw();
+	}
+	for (BoxCollider* stagewall : stagewall)
+	{
+		stagewall->Draw();
+	}
 	if (Pouse == false) {
 		player->Draw();
 
 	}
-	//if (Pouse == false) {
+	if (Pouse == false) {
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy[i]->Draw();
 			soapbubble[i]->Draw();
 		}
-	//}
+	}
 	fish->Draw();
 	ui->Draw(player->GetPlayerLife());
 	DrawGraph(159, 444, seaImage, TRUE);
@@ -511,33 +565,39 @@ void GameMain::CreateStage(int stage)
 	switch (stage)
 	{
 	case 0:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		now_floor_max = 3;
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(180, 260, 18, 280, 0);
 
 		thunder = new Thunder();
 
 		max_enemy = 3;
+		enemy[0] = new Enemy(SpawnPosSet(stagefloor[2]).x-70, SpawnPosSet(stagefloor[2]).y, 1);
+		enemy[1] = new Enemy(SpawnPosSet(stagefloor[2]).x, SpawnPosSet(stagefloor[2]).y, 1);
+		enemy[2] = new Enemy(SpawnPosSet(stagefloor[2]).x+70, SpawnPosSet(stagefloor[2]).y, 1);
 		for (int i = 0; i < max_enemy; i++)
 		{
-			enemy[i] = new Enemy(230 + i * 70, 210, 1);
 			enemy_ai[i] = new ENEMY_AI;
 			soapbubble[i] = new SoapBubble();
 		}
 		break;
 	case 1:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		now_floor_max = 5;
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(180, 260, 18, 280, 0);
+		stagefloor[3]->SetInit(90, 150, 18, 120, 0);
+		stagefloor[4]->SetInit(460, 130, 18, 120, 0);
 
 		thunder = new Thunder();
 
 		max_enemy = 5;
-		enemy[0] = new Enemy(110, 80, 2);
-		enemy[1] = new Enemy(510, 70, 2);
-		enemy[2] = new Enemy(230, 210, 1);
-		enemy[3] = new Enemy(300, 210, 1);
-		enemy[4] = new Enemy(370, 210, 1);
+		enemy[0] = new Enemy(SpawnPosSet(stagefloor[3]).x, SpawnPosSet(stagefloor[3]).y, 2);
+		enemy[1] = new Enemy(SpawnPosSet(stagefloor[4]).x, SpawnPosSet(stagefloor[4]).y, 2);
+		enemy[2] = new Enemy(SpawnPosSet(stagefloor[2]).x - 70, SpawnPosSet(stagefloor[2]).y, 1);
+		enemy[3] = new Enemy(SpawnPosSet(stagefloor[2]).x, SpawnPosSet(stagefloor[2]).y, 1);
+		enemy[4] = new Enemy(SpawnPosSet(stagefloor[2]).x + 70, SpawnPosSet(stagefloor[2]).y, 1);
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy_ai[i] = new ENEMY_AI;
@@ -545,18 +605,34 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 2:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		now_floor_max = 7;
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(270, 370, 18, 80, 0);
+		stagefloor[3]->SetInit(200, 100, 18, 40, 0);
+		stagefloor[4]->SetInit(160, 280, 18, 60, 0);
+		stagefloor[5]->SetInit(310, 200, 18, 60, 0);
+		stagefloor[6]->SetInit(490, 100, 18, 60, 0);
+
+		//for (int i = 4; i < MAX_FLOOR; i++)
+		//{
+		//	stagefloor[i]->SetInit(-1, -1, 0, 0, 0);
+		//}
+
+		stagewall[0]->SetInit(160, 280, 18, 60, 0);
+		stagewall[1]->SetInit(310, 200, 18, 60, 0);
+		stagewall[2]->SetInit(490, 100, 18, 60, 0);
+
+
 
 		thunder = new Thunder();
 
 		max_enemy = 5;
-		enemy[0] = new Enemy(210, 30, 3);
-		enemy[1] = new Enemy(550, 30, 3);
-		enemy[2] = new Enemy(350, 100, 2);
-		enemy[3] = new Enemy(200, 220, 2);
-		enemy[4] = new Enemy(300, 300, 1);
+		enemy[0] = new Enemy(SpawnPosSet(stagefloor[3]).x, SpawnPosSet(stagefloor[3]).y, 3);
+		enemy[1] = new Enemy(SpawnPosSet(stagefloor[6]).x, SpawnPosSet(stagefloor[6]).y, 3);
+		enemy[2] = new Enemy(SpawnPosSet(stagefloor[5]).x, SpawnPosSet(stagefloor[5]).y, 2);
+		enemy[3] = new Enemy(SpawnPosSet(stagefloor[4]).x, SpawnPosSet(stagefloor[4]).y, 2);
+		enemy[4] = new Enemy(SpawnPosSet(stagefloor[2]).x, SpawnPosSet(stagefloor[2]).y, 1);
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy_ai[i] = new ENEMY_AI;
@@ -564,18 +640,28 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 3:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		now_floor_max = 7;
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(350, 370, 18, 60, 0);
+		stagefloor[3]->SetInit(455, 270, 18, 60, 0);
+		stagefloor[4]->SetInit(230, 290, 18, 60, 0);
+		stagefloor[5]->SetInit(120, 250, 18, 60, 0);
+		stagefloor[6]->SetInit(310, 180, 18, 60, 0);
+
+		for (int i = 0; i < MAX_WALL; i++)
+		{
+			stagewall[i]->SetInit(-1, -1, 0, 0, 0);
+		}
 
 		thunder = new Thunder();
 
 		max_enemy = 5;
-		enemy[0] = new Enemy(320, 130, 2);
-		enemy[1] = new Enemy(140, 210, 1);
-		enemy[2] = new Enemy(240, 240, 1);
-		enemy[3] = new Enemy(450, 230, 1);
-		enemy[4] = new Enemy(350, 320, 3);
+		enemy[0] = new Enemy(SpawnPosSet(stagefloor[6]).x, SpawnPosSet(stagefloor[6]).y, 2);
+		enemy[1] = new Enemy(SpawnPosSet(stagefloor[5]).x, SpawnPosSet(stagefloor[5]).y, 1);
+		enemy[2] = new Enemy(SpawnPosSet(stagefloor[4]).x, SpawnPosSet(stagefloor[4]).y, 1);
+		enemy[3] = new Enemy(SpawnPosSet(stagefloor[3]).x, SpawnPosSet(stagefloor[3]).y, 1);
+		enemy[4] = new Enemy(SpawnPosSet(stagefloor[2]).x, SpawnPosSet(stagefloor[2]).y, 1);
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy_ai[i] = new ENEMY_AI;
@@ -583,19 +669,32 @@ void GameMain::CreateStage(int stage)
 		}
 		break;
 	case 4:
-		stagefloor[0] = new StageFloor(0, 416, 30, 160, 5);
-		stagefloor[1] = new StageFloor(479, 416, 30, 160, 5);
-		stagefloor[2] = new StageFloor(180, 260, 18, 280, 0);
+		now_floor_max = 5;
+		stagefloor[0]->SetInit(0, 416, 30, 160, 5);
+		stagefloor[1]->SetInit(479, 416, 30, 160, 5);
+		stagefloor[2]->SetInit(200, 325, 18, 60, 0);
+		stagefloor[3]->SetInit(370, 325, 18, 60, 0);
+		stagefloor[4]->SetInit(220, 80, 18, 60, 0);
+
+		for (int i = 5; i < MAX_FLOOR; i++)
+		{
+			stagefloor[i]->SetInit(-1, -1, 0, 0, 0);
+		}
+
+
+		stagewall[0]->SetInit(100, 200, 50, 20, 0);
+		stagewall[1]->SetInit(260, 170, 50, 20, 0);
+		stagewall[2]->SetInit(500, 160, 70, 20, 0);
 
 		thunder = new Thunder();
 
 		max_enemy = 6;
-		enemy[0] = new Enemy(210, 20, 3);
-		enemy[1] = new Enemy(90, 160, 2);
-		enemy[2] = new Enemy(230, 110, 2);
-		enemy[3] = new Enemy(450, 100, 2);
-		enemy[4] = new Enemy(200, 300, 1);
-		enemy[5] = new Enemy(350, 300, 1);
+		enemy[0] = new Enemy(SpawnPosSet(stagefloor[4]).x, SpawnPosSet(stagefloor[4]).y, 3);
+		enemy[1] = new Enemy(SpawnPosSet(stagewall[0]).x, SpawnPosSet(stagewall[0]).y, 2);
+		enemy[2] = new Enemy(SpawnPosSet(stagewall[1]).x, SpawnPosSet(stagewall[1]).y, 2);
+		enemy[3] = new Enemy(SpawnPosSet(stagewall[2]).x, SpawnPosSet(stagewall[2]).y, 2);
+		enemy[4] = new Enemy(SpawnPosSet(stagefloor[2]).x, SpawnPosSet(stagefloor[2]).y, 1);
+		enemy[5] = new Enemy(SpawnPosSet(stagefloor[3]).x, SpawnPosSet(stagefloor[3]).y, 1);
 		for (int i = 0; i < max_enemy; i++)
 		{
 			enemy_ai[i] = new ENEMY_AI;
@@ -608,4 +707,20 @@ void GameMain::CreateStage(int stage)
 int GameMain::GetScore()
 {
 	return score;
+}
+
+Location GameMain::SpawnPosSet(StageFloor* floor)
+{
+	Location spawn;
+	spawn.x = floor->GetLocation().x + (floor->GetArea().width / 2) - PLAYER_ENEMY_WIDTH /2 ;
+	spawn.y = floor->GetLocation().y - PLAYER_ENEMY_HEIGHT;
+	return spawn;
+}
+
+Location GameMain::SpawnPosSet(StageWall* wall)
+{
+	Location spawn;
+	spawn.x = wall->GetLocation().x + (wall->GetArea().width / 2) - PLAYER_ENEMY_WIDTH / 2;
+	spawn.y = wall->GetLocation().y - PLAYER_ENEMY_HEIGHT;
+	return spawn;
 }
