@@ -580,6 +580,7 @@ int GameMain::NextStage()
 
 	fish = new Fish();
 	CreateStage(stage);
+	main_state = Normal;
 }
 
 void GameMain::CreateStage(int stage)
