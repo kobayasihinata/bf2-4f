@@ -950,27 +950,29 @@ void Player::ReflectionMY()
 
 void Player::PlayerRespawn(float x, float y)
 {
-	player_state = IDOL_RIGHT;
-	location.x = x;
-	location.y = y;
-	acs_left = 0;
-	acs_right = 0;
-	acs_up = 0;
-	acs_down = 0;
-	land_acs_left = 0;
-	land_acs_right = 0;
-	jump_int = 0;
-	jump_combo = 0;
-	balloon = 2;
-	death_flg = false;
-	thunder_death_flg = false;
-	death_acs = -120;
-	death_wait = 120;
-	thunder_death_wait = 60;
-	respawn = 600;
-	show_flg=true;
-	underwater_flg=false;
-	PlaySoundMem(Restart_SE,DX_PLAYTYPE_BACK);
+	if (life >= 0) {
+		player_state = IDOL_RIGHT;
+		location.x = x;
+		location.y = y;
+		acs_left = 0;
+		acs_right = 0;
+		acs_up = 0;
+		acs_down = 0;
+		land_acs_left = 0;
+		land_acs_right = 0;
+		jump_int = 0;
+		jump_combo = 0;
+		balloon = 2;
+		death_flg = false;
+		thunder_death_flg = false;
+		death_acs = -120;
+		death_wait = 120;
+		thunder_death_wait = 60;
+		respawn = 600;
+		show_flg = true;
+		underwater_flg = false;
+		PlaySoundMem(Restart_SE, DX_PLAYTYPE_BACK);
+	}
 }
 
 void Player::BalloonDec()
