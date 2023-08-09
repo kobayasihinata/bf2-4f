@@ -23,7 +23,8 @@ GameMain::GameMain()
 	ui = new UI();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
-	EnemuyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
+	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
 	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
 	main_state = Normal;
@@ -304,6 +305,7 @@ AbstractScene* GameMain::Update()
 				{
 					player->SetShowFlg(false);
 					player->SetIsDie(true);
+					PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
 				}
 			}
 			else
@@ -333,6 +335,7 @@ AbstractScene* GameMain::Update()
 							enemy[i]->SetShowFlg(false);
 							enemy[i]->SetFlg(false);
 							enemy[i]->SetIsDie(true);
+							PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
 						}
 						//”O‚Ì‚½‚ßŽ€‚ñ‚Å‚¢‚é”»’è‚É‚·‚é
 						if (enemy[i]->GetShowFlg() == false)
@@ -389,6 +392,7 @@ AbstractScene* GameMain::Update()
 			//‘Sˆõ‚â‚ç‚ê‚Ä‚½‚ç
 			if (clear_flg == true)
 			{
+				PlaySoundMem(StageClear_SE, DX_PLAYTYPE_BACK);
 				main_state = Clear;
 				clear_wait = 180;
 			}
@@ -431,10 +435,7 @@ AbstractScene* GameMain::Update()
 		break;
 	}
 	if (CheckSoundMem(GameStart_BGM) == FALSE) {
-		if (CheckSoundMem(EnemuyMove_SE) == FALSE)
-		{
-			PlaySoundMem(EnemuyMove_SE, DX_PLAYTYPE_BACK);
-		}
+		
 	}
 	return this;
 }
