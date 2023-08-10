@@ -22,9 +22,9 @@ private:
     bool get_once;           //何回もシャボン玉を取れるバグ解消(臨時)
 
     //SE
-    int BreakSoupBubbleSE;	//シャボン玉破裂SE
+    int GetSoupBubble_SE;	//シャボン玉破裂SE
 
-    bool sound_flg; //サウンド用
+    
 public:
 
     //コンストラクタ

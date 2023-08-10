@@ -44,10 +44,9 @@ private:
     bool target_flg;                    //捕食対象はいる？
 
     //BGM
-    static int FishPreying;			//サカナ落下BGM
+    int Eatable_SE;			//サカナ落下BGM
 
-    //SE
-    static int RespawnFishSE;		//サカナ出現SE
+  
 public:
     //コンストラクタ
     Fish();

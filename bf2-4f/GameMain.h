@@ -35,7 +35,7 @@ private:
     int stage;      //現在のステージ数
     int seaImage;
 
-    int GameStart_BGM;
+    int GameStart_BGM;   //ゲームスタートBGM
     int Eatable_SE;
     int StageClear_SE;
 
@@ -50,15 +50,15 @@ private:
     int clear_wait;     //次のステージへ遷移する前の待ち時間
     int now_floor_max;  //現在の床の数
     int GameOver_Img;
-    int GameOver_BGM;
+    int GameOver_BGM;   //ゲームオーバーBGM
     int WaitTimer;
 
    
     //BGM
-    int GameStart_BGM;          //ゲームスタートBGM
+      
     int Continue_BGM;			//コンテニューBGM
     int StageClear_BGM;			//ステージクリアBGM
-    int GameOver_BGM;			//ゲームオーバーBGM
+ 		
 
     //SE
     int EnemuyMove_SE;          //トリ鳴き声SE
