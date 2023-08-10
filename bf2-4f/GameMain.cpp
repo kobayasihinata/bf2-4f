@@ -2,8 +2,8 @@
 #include "Dxlib.h"
 #include "GameMain.h"
 #include "Title.h"
-#include"PadInput.h"
-#include"Pause.h"
+#include "PadInput.h"
+#include "Pause.h"
 
 static int score;      //現在のステージ数
 

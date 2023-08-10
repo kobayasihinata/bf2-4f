@@ -3,11 +3,11 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Enemy_AI.h"
-#include"StageObject.h"
-#include"Fish.h"
-#include"SoapBubble.h"
-#include"Thunder.h"
-#include"UI.h"
+#include "StageObject.h"
+#include "Fish.h"
+#include "SoapBubble.h"
+#include "Thunder.h"
+#include "UI.h"
 
 #define ENEMY_NAMBER 6
 #define SECOND_TO_FRAME(sec) ((sec)*FRAMERATE)
@@ -23,6 +23,7 @@ class GameMain :
     public AbstractScene
 {
 private:
+
     Player* player;
     Enemy* enemy[ENEMY_NAMBER];
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
@@ -34,10 +35,6 @@ private:
 
     int stage;      //現在のステージ数
     int seaImage;
-
-    int GameStart_BGM;   //ゲームスタートBGM
-    int Eatable_SE;
-    int StageClear_SE;
 
     bool Pouse;
     int max_enemy;      //敵の数
@@ -52,21 +49,17 @@ private:
     int GameOver_BGM;   //ゲームオーバーBGM
     int WaitTimer;
 
-   
     //BGM
-      
     int Continue_BGM;			//コンテニューBGM
     int StageClear_BGM;			//ステージクリアBGM
- 		
+    int GameStart_BGM;   //ゲームスタートBGM
 
     //SE
     int EnemuyMove_SE;          //トリ鳴き声SE
     int BaloonBurst_SE;			//バルーン破裂SE
-    				
-  
-  
-    
-
+    int Eatable_SE;
+    int StageClear_SE;
+ 
 public:
 
     //コンストラクタ
