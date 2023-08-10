@@ -974,6 +974,7 @@ void Player::PlayerRespawn(float x, float y)
 		jump_int = 0;
 		jump_combo = 0;
 		balloon = 2;
+		splash_anim = 0;
 		death_flg = false;
 		thunder_death_flg = false;
 		death_acs = -120;
