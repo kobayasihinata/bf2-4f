@@ -367,7 +367,18 @@ void Enemy::Update()
 					}
 					else
 					{
-						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED/1.5f));
+						if (enemy_level == 1)
+						{
+							location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 1.5f));
+						}
+						if (enemy_level == 2)
+						{
+							location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 2));
+						}
+						if (enemy_level == 3)
+						{
+							location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 2.5f));
+						}
 					}
 					
 				}
@@ -710,6 +721,8 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		if (my_y[0] < sub_y[1] &&
 			my_y[1] > sub_y[1])
 		{
+			//ëºÇÃìGÇÊÇËè„Ç…ÇÕçsÇØÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
+			location.y = sub_y[1];
 			return 3;
 		}
 	}
@@ -804,6 +817,7 @@ void Enemy::ReflectionPY()
 
 void Enemy::ReflectionMY()
 {
+
 	acs_up = fabsf(acs_up - acs_down) * 0.8f;
 	acs_down = 0;
 }

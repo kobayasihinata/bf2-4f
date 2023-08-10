@@ -536,11 +536,6 @@ void GameMain::Draw()const
 	ui->Draw(player->GetPlayerLife());
 	DrawGraph(159, 444, seaImage, TRUE);
 
-	//スコア表示（仮）
-	DrawNumber(170, 0, score);
-	//スコア表示（仮）
-	DrawNumber(350, 0, score);
-
 	if (main_state == Over) {
 		DrawGraph(221, 233, GameOver_Img, 0);
 	}
