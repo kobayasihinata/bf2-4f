@@ -20,6 +20,11 @@ private:
     int acs_right;          //加速度右
     int bubble_get_anim;    //シャボン玉取得時アニメーション
     bool get_once;           //何回もシャボン玉を取れるバグ解消(臨時)
+
+    //SE
+    int GetSoupBubble_SE;	//シャボン玉破裂SE
+
+    
 public:
 
     //コンストラクタ

@@ -46,6 +46,10 @@ Enemy::Enemy(int x,int y,int level)
 			break;
 		}
 	}
+	EnemyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
+	crack_SE = LoadSoundMem("sounds/SE_crack.wav");
+	DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
@@ -57,7 +61,7 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
-	death_wait = 30;      //Ž€–SŒã‚Ì‘Ò‚¿ŽžŠÔ
+	death_wait = 15;      //Ž€–SŒã‚Ì‘Ò‚¿ŽžŠÔ
 	underwater_flg = false;      //…–v’†‚©”»’f
 	damage = 0;
 	protect = -1;
@@ -264,6 +268,9 @@ void Enemy::Update()
 				//ƒWƒƒƒ“ƒv“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
 				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
+					if (CheckSoundMem(EnemyMove_SE) == FALSE) {
+						PlaySoundMem(EnemyMove_SE, DX_PLAYTYPE_BACK);
+					}
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < E_Max_Speed[enemy_level - 1])
@@ -385,6 +392,13 @@ void Enemy::Update()
 				//•—‘D‚ª0‚±‚É‚È‚Á‚½‚È‚ç
 				if (balloon <= 0)
 				{
+					
+					if (crack == 0)
+					{
+						PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
+						crack++;
+					}
+					
 					if (++damage < 10)
 					{
 						anim_boost = 15;
@@ -402,6 +416,9 @@ void Enemy::Update()
 						//ƒpƒ‰ƒVƒ…[ƒgó‘Ô‚É•Ï‰»
 						para_flg = true;
 						damage = 11;
+					}
+					if (CheckSoundMem(para_SE) == FALSE) {
+						PlaySoundMem(para_SE, DX_PLAYTYPE_BACK);
 					}
 				}
 			}
@@ -828,6 +845,7 @@ void Enemy::BalloonDec()
 void Enemy::EnemyDeath()
 {
 	death_flg = true;
+	PlaySoundMem(DefeatTheEnemy_SE, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyMoveRight()

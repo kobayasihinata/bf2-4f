@@ -40,14 +40,20 @@ Player::Player()
 
 	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
+	PlayerJump_SE= LoadSoundMem("sounds/SE_PlayerJump.wav");
+	Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
+	Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
+	Restart_SE = LoadSoundMem("sounds/SE_Restart.wav");
 	player_anim = 0;
 	splash_anim = 0;
 	turn_anim = 0;
 	anim_boost = 0;
 	jump_anim_boost = 0;
 
-	last_move_x = 1;
+	last_move_x = 0;
 	last_input = 1;
+
+	
 }
 
 Player::~Player()
@@ -123,6 +129,7 @@ void Player::Update()
 					else
 					{
 						player_state = WALK_RIGHT;
+						last_input = 1;
 						if (land_acs_right < MAX_SPEED_LAND)
 						{
 							land_acs_right+=4;
@@ -134,7 +141,7 @@ void Player::Update()
 				{
 					if (acs_right > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_right--;
 						}
@@ -164,6 +171,7 @@ void Player::Update()
 					else
 					{
 						player_state = WALK_LEFT;
+						last_input = -1;
 						if (land_acs_left < MAX_SPEED_LAND)
 						{
 							land_acs_left+=4;
@@ -175,7 +183,7 @@ void Player::Update()
 				{
 					if (acs_left > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_left--;
 						}
@@ -188,11 +196,11 @@ void Player::Update()
 				}
 
 				//急転回判断
-				if ((PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
+				if ((PAD_INPUT::GetLStick().ThumbX > -10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
 				{
 					player_state = TURN_LEFT;
 				}
-				if ((PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
+				if ((PAD_INPUT::GetLStick().ThumbX < 10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
 				{
 					player_state = TURN_RIGHT;
 				}
@@ -202,6 +210,9 @@ void Player::Update()
 				{
 					jump_flg = true;
 
+					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
+						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
+					}
 					if (acs_down >= 0)
 					{
 						acs_down -= 2;
@@ -289,6 +300,9 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
+					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
+						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
+					}
 					//上昇時に左入力がされていたら左に加速する
 					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 					{
@@ -335,6 +349,14 @@ void Player::Update()
 					jump_anim_boost = 4;
 					if (jump_int == 0)
 					{
+						if (acs_down >= 0)
+						{
+							acs_down -= 6;
+						}
+						else
+						{
+							acs_down = 0;
+						}
 						jump_int = JUMP_INTERVAL - 3;
 						jump_cd = 5;
 						//Aを押せば押すほど上加速度が上がる
@@ -345,15 +367,15 @@ void Player::Update()
 								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
-							jump_combo += 2;
+							jump_combo += 3;
 						}
-						if (acs_up < MAX_SPEED / 2)
+						if (acs_up < MAX_SPEED / 1.3)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
 						else
 						{
-							acs_up = MAX_SPEED / 2;
+							acs_up = MAX_SPEED / 1.3;
 						}
 					}
 				}
@@ -414,10 +436,8 @@ void Player::Update()
 				}
 
 				//移動距離を保存
-				if ((acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED) != 0)
-				{
-					last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
-				}
+				last_move_x = -(acs_left * MOVE_SPPED) + (acs_right * MOVE_SPPED) + (land_acs_right * LAND_SPEED) - (land_acs_left * LAND_SPEED);
+				
 
 				//移動
 				if (underwater_flg == false)
@@ -483,6 +503,9 @@ void Player::Update()
 			death_acs += 4;
 
 			location.y += death_acs * FALL_SPPED;
+			if (CheckSoundMem(Falling_SE) == FALSE) {
+				PlaySoundMem(Falling_SE, DX_PLAYTYPE_BACK);
+			}
 		}
 	}
 	//フレームを計測する(10秒ごとにリセット)
@@ -532,6 +555,11 @@ void Player::Update()
 	{
 		underwater_flg = true;
 		is_die = true;
+		StopSoundMem(Falling_SE);
+		if (CheckSoundMem(Splash_SE) == FALSE) {
+			PlaySoundMem(Splash_SE, DX_PLAYTYPE_BACK);
+		}
+
 		//プレイヤーを水没中に設定
 		player_state = SUBMERGED;
 		location.y = 470;
@@ -573,6 +601,7 @@ void Player::Draw()const
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
 	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
+
 	
 	if (show_flg == true)
 	{
@@ -932,26 +961,29 @@ void Player::ReflectionMY()
 
 void Player::PlayerRespawn(float x, float y)
 {
-	player_state = IDOL_RIGHT;
-	location.x = x;
-	location.y = y;
-	acs_left = 0;
-	acs_right = 0;
-	acs_up = 0;
-	acs_down = 0;
-	land_acs_left = 0;
-	land_acs_right = 0;
-	jump_int = 0;
-	jump_combo = 0;
-	balloon = 2;
-	death_flg = false;
-	thunder_death_flg = false;
-	death_acs = -120;
-	death_wait = 120;
-	thunder_death_wait = 60;
-	respawn = 600;
-	show_flg=true;
-	underwater_flg=false;
+	if (life >= 0) {
+		player_state = IDOL_RIGHT;
+		location.x = x;
+		location.y = y;
+		acs_left = 0;
+		acs_right = 0;
+		acs_up = 0;
+		acs_down = 0;
+		land_acs_left = 0;
+		land_acs_right = 0;
+		jump_int = 0;
+		jump_combo = 0;
+		balloon = 2;
+		death_flg = false;
+		thunder_death_flg = false;
+		death_acs = -120;
+		death_wait = 120;
+		thunder_death_wait = 60;
+		respawn = 600;
+		show_flg = true;
+		underwater_flg = false;
+		PlaySoundMem(Restart_SE, DX_PLAYTYPE_BACK);
+	}
 }
 
 void Player::BalloonDec()
