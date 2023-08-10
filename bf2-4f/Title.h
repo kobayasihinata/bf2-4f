@@ -16,6 +16,8 @@ private:
     int cursor_y;
     int cursor_num;
     int interval;
+
+    int titlebgm;
 public:
 
     //コンストラクタ

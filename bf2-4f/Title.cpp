@@ -5,10 +5,13 @@
 
 Title::Title()
 {
+	titlebgm = LoadSoundMem("sounds/BGM_Trip.wav");
 	titlelogo = LoadGraph("images/Title/Title_Logo.png");
 	titlecredit = LoadGraph("images/Title/Title_Credit.png");
 	titlemodeselect = LoadGraph("images/Title/Title_ModeSelect.png");
 	LoadDivGraph("images/Title/Title_CursorAnimation.png", 4, 4, 1, 32, 64, titlecursor);
+	PlaySoundMem(titlebgm, DX_PLAYTYPE_BACK);
+
 	cursor_num = 0;
 	cursor_y = 0;
 	interval = 0;
@@ -45,6 +48,8 @@ AbstractScene* Title::Update()
 	{
 		return new GameMain();
 	}
+
+	StopSoundMem(titlebgm);
 
 	return this;
 }
