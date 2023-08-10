@@ -61,7 +61,7 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
-	death_wait = 30;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
+	death_wait = 15;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
 	underwater_flg = false;      //…–v’†‚©”»’f
 	damage = 0;
 	protect = -1;
@@ -74,6 +74,7 @@ Enemy::Enemy(int x,int y,int level)
 	jump_flg = false;
 	ref_once_left = false;
 	ref_once_right = false;
+	no_ai_time = 0;
 
 	switch (level)
 	{
@@ -186,9 +187,16 @@ void Enemy::Update()
 					}
 
 					//—‰º‚µ‘±‚¯‚é’ö‰º‚É‰Á‘¬
-					if (acs_down < E_Max_Speed[enemy_level - 1])
+					if (para_flg==FALSE)
 					{
-						acs_down += 1;
+						if (acs_down < E_Max_Speed[enemy_level - 1])
+						{
+							acs_down += 1;
+						}
+					}
+					else
+					{
+						if (acs_down <= 70) ++acs_down;
 					}
 					onfloor_flg = false;
 				}
@@ -199,13 +207,11 @@ void Enemy::Update()
 					{
 						enemy_state = E_FLY_LEFT;
 						EnemyJump();
-						SetNot_AI(25);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
 						EnemyJump();
-						SetNot_AI(25);
 					}
 					onfloor_flg = true;
 					OnFloor();
@@ -219,9 +225,16 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
 					last_input = 1;
-					if (acs_right < E_Max_Speed[enemy_level - 1])
+					if (para_flg == FALSE)
 					{
-						acs_right += 2;
+						if (acs_right < E_Max_Speed[enemy_level - 1])
+						{
+							acs_right += 2;
+						}
+					}
+					else
+					{
+						if (acs_right <= 50) acs_right += 2;
 					}
 				}
 				//‰E“ü—Í‚³‚ê‚Ä‚¢‚È‚¢‚Ìˆ—
@@ -244,9 +257,16 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
 					last_input = -1;
-					if (acs_left < E_Max_Speed[enemy_level - 1])
+					if (para_flg == FALSE)
 					{
-						acs_left += 2;
+						if (acs_left < E_Max_Speed[enemy_level - 1])
+						{
+							acs_left += 2;
+						}
+					}
+					else
+					{
+						if (acs_left <= 50) acs_left += 2;
 					}
 				}
 				//¶“ü—Í‚³‚ê‚Ä‚¢‚È‚¢‚Ìˆ—
@@ -396,6 +416,9 @@ void Enemy::Update()
 					if (crack == 0)
 					{
 						PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
+						acs_down = 0;
+						acs_left = 0;
+						acs_right = 0;
 						crack++;
 					}
 					
@@ -629,6 +652,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			{
 				//’µ‚Ë•Ô‚é
 				ReflectionMX();
+				SetNot_AI(20);
 				ref_once_left = TRUE;
 			}
 		}
@@ -647,6 +671,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			{
 				//’µ‚Ë•Ô‚é
 				ReflectionPX();
+				SetNot_AI(20);
 				ref_once_right = TRUE;
 			}
 		}
@@ -785,15 +810,17 @@ void Enemy::OnFloor()
 void Enemy::ReflectionMX()
 {
 	last_input *= -1;
-	acs_left = fabsf(acs_right - acs_left) * 0.8f;
+	acs_left = fabsf(acs_right - acs_left) * 1.0f;
 	acs_right = 0;
+	EnemyMoveLeft();
 }
 
 void Enemy::ReflectionPX()
 {
 	last_input *= -1;
-	acs_right = fabsf(acs_right - acs_left) * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 1.0f;
 	acs_left = 0;
+	EnemyMoveRight();
 }
 
 void Enemy::ReflectionPY()

@@ -5,7 +5,7 @@ SoapBubble::SoapBubble()
 {
 	flg = false;
 	location.x = 0;
-	location.y = UNDER_WATER;
+	location.y = UNDER_WATER+30;
 	area.width = 32;
 	area.height = 32;
 	LoadDivGraph("images/Stage/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, bubble_image);
@@ -20,6 +20,7 @@ SoapBubble::SoapBubble()
 	acs_left = 0;
 	acs_right = 0;
 	get_once = false;
+	GetSoupBubble_SE = LoadSoundMem("sounds/SE_Bubble.wav");
 }
 
 //デストラクタ
@@ -139,6 +140,9 @@ int SoapBubble::HitPlayerCollision(const BoxCollider* box_collider)
 
 	if (my_x[0] < sub_x[1] && my_x[1]>sub_x[0] && my_y[0]<sub_y[1] && my_y[1]>sub_y[0] && flg == true && get_once == false)
 	{
+		if (CheckSoundMem(GetSoupBubble_SE) == FALSE) {
+			PlaySoundMem(GetSoupBubble_SE, DX_PLAYTYPE_BACK);
+		}
 		is_getscore = true;
 		getscore_x = sub_x[0];
 		getscore_y = sub_y[0];

@@ -34,9 +34,11 @@ private:
 
     int stage;      //現在のステージ数
     int seaImage;
-    int GameStart_BGM;
+
+    int GameStart_BGM;   //ゲームスタートBGM
     int Eatable_SE;
     int StageClear_SE;
+
     bool Pouse;
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
@@ -48,8 +50,23 @@ private:
     int clear_wait;     //次のステージへ遷移する前の待ち時間
     int now_floor_max;  //現在の床の数
     int GameOver_Img;
-    int GameOver_BGM;
+    int GameOver_BGM;   //ゲームオーバーBGM
     int WaitTimer;
+
+   
+    //BGM
+      
+    int Continue_BGM;			//コンテニューBGM
+    int StageClear_BGM;			//ステージクリアBGM
+ 		
+
+    //SE
+    int EnemuyMove_SE;          //トリ鳴き声SE
+    int BaloonBurst_SE;			//バルーン破裂SE
+    				
+  
+  
+    
 
 public:
 

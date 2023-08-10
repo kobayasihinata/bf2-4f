@@ -47,6 +47,9 @@ private:
     bool thunder_direction_flg;         //雷の方向は決まってる？
     bool is_in_game;                    //ゲームに追加する？
 
+    //SE
+    static int CreateThunderSE;		//カミナリ生成SE
+
 public:
     //コンストラクタ
     Thunder(float x, float y, bool flg);

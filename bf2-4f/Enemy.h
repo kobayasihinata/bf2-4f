@@ -30,7 +30,7 @@ private:
     float acs_right;  //右加速度
     int acs_up;     //上加速度
     int acs_down;   //下加速度
-    const int E_Max_Speed[3]{ 50,150,250 };
+    const int E_Max_Speed[3]{ 50,125,200 };
 
     int jump_int;   //上昇ボタン間隔
     int jump_combo;  //連打数
@@ -83,6 +83,11 @@ private:
     int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
     int test_score; //点数加算確認用
+
+    //SE
+    static int EnemyLandingSE;		//敵着地SE
+    static int CrushEnemy;			//敵撃破SE
+    static int CreateBaloonSE;		//敵風船を膨らませるSE
 
 public:
 

@@ -52,6 +52,8 @@ Player::Player()
 
 	last_move_x = 0;
 	last_input = 1;
+
+	
 }
 
 Player::~Player()
@@ -139,7 +141,7 @@ void Player::Update()
 				{
 					if (acs_right > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_right--;
 						}
@@ -181,7 +183,7 @@ void Player::Update()
 				{
 					if (acs_left > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_left--;
 						}
@@ -347,6 +349,14 @@ void Player::Update()
 					jump_anim_boost = 4;
 					if (jump_int == 0)
 					{
+						if (acs_down >= 0)
+						{
+							acs_down -= 6;
+						}
+						else
+						{
+							acs_down = 0;
+						}
 						jump_int = JUMP_INTERVAL - 3;
 						jump_cd = 5;
 						//A‚ğ‰Ÿ‚¹‚Î‰Ÿ‚·‚Ù‚Çã‰Á‘¬“x‚ªã‚ª‚é
@@ -357,15 +367,15 @@ void Player::Update()
 								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
-							jump_combo += 2;
+							jump_combo += 3;
 						}
-						if (acs_up < MAX_SPEED / 2)
+						if (acs_up < MAX_SPEED / 1.3)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
 						else
 						{
-							acs_up = MAX_SPEED / 2;
+							acs_up = MAX_SPEED / 1.3;
 						}
 					}
 				}
@@ -591,6 +601,7 @@ void Player::Draw()const
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
 	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
+
 	
 	if (show_flg == true)
 	{
@@ -923,7 +934,7 @@ void Player::ReflectionMX()
 {
 	last_input *= -1;
 	land_acs_right = 0;
-	acs_left = fabsf(acs_right - acs_left) * 0.8f;
+	acs_left = fabsf(acs_right - acs_left) * 1.0f;
 	acs_right = 0;
 }
 
@@ -931,7 +942,7 @@ void Player::ReflectionPX()
 {
 	last_input *= -1;
 	land_acs_left = 0;
-	acs_right = fabsf(acs_right - acs_left) * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 1.0f;
 	acs_left = 0;
 }
 
@@ -963,6 +974,7 @@ void Player::PlayerRespawn(float x, float y)
 		jump_int = 0;
 		jump_combo = 0;
 		balloon = 2;
+		splash_anim = 0;
 		death_flg = false;
 		thunder_death_flg = false;
 		death_acs = -120;

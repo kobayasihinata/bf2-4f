@@ -26,6 +26,7 @@ Fish::Fish()
 	target_flg = false;
 	falling_anim = Falling_Fish_1;
 	anim_frame = 0;
+	Eatable_SE = LoadSoundMem("sounds /SE_Eatable.wav");
 }
 
 Fish::~Fish()
@@ -202,14 +203,23 @@ void Fish::TargetPrey(BoxCollider* boxcollider)
 						is_preying_on_enemy = true;
 						if (GetSaveEnemyLevel() == 1)
 						{
+							if (CheckSoundMem(Eatable_SE) == FALSE) {
+								PlaySoundMem(Eatable_SE,DX_PLAYTYPE_BACK);
+							}
 							fish_state = PreyingOn_Enemy_1;
 						}
 						else if (GetSaveEnemyLevel() == 2)
 						{
+							if (CheckSoundMem(Eatable_SE) == FALSE) {
+								PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
+							}
 							fish_state = PreyingOn_Enemy_2;
 						}
 						else
 						{
+							if (CheckSoundMem(Eatable_SE) == FALSE) {
+								PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
+							}
 							fish_state = PreyingOn_Enemy_3;
 						}
 						target_flg = true;

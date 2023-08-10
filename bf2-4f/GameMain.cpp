@@ -3,6 +3,8 @@
 #include "GameMain.h"
 #include "Title.h"
 #include"PadInput.h"
+#include"Pause.h"
+
 
 
 GameMain::GameMain()
@@ -123,7 +125,7 @@ AbstractScene* GameMain::Update()
 							enemy[j]->HitStageCollision(stageobject[i]);
 							enemy_ai[j]->Update_AI_Cool();
 
-							if (enemy[j]->No_AI_Flg() == 0)
+							if (enemy[j]->No_AI_Flg() == 0 && player->GetPlayerRespawn() <= 0)
 							{
 								//敵のAI取得
 								switch (enemy_ai[j]->Update(P_x, P_y, E_x, E_y))
@@ -150,8 +152,10 @@ AbstractScene* GameMain::Update()
 								if (enemy_ai[j]->GetPattern() != 99) {
 									enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel() - 1);
 								}
+							} else {
+								enemy_ai[j]->Set_AI_Cool(0);
 							}
-							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100)
+							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100 && Avoidance[j] == FALSE)
 							{
 								Avoidance[j] = TRUE;
 							}
@@ -216,36 +220,6 @@ AbstractScene* GameMain::Update()
 									break;
 								}
 							}
-
-							//敵と敵の当たり判定
-							for (int k = j + 1; k < max_enemy; k++)
-							{
-								//敵が生きているなら
-								if (enemy[k]->GetFlg() == true && enemy[j]->GetFlg() == true && enemy[j]->GetEnemyDeathFlg() == false && enemy[k]->GetEnemyDeathFlg() == false)
-								{
-									switch (enemy[k]->HitEnemyCollision(enemy[j]))
-									{
-									case 1:
-										enemy[k]->ReflectionMX();
-										enemy[j]->ReflectionPX();
-										break;
-									case 2:
-										enemy[k]->ReflectionPX();
-										enemy[j]->ReflectionMX();
-										break;
-									case 3:
-										enemy[k]->ReflectionPY();
-										enemy[j]->ReflectionMY();
-										break;
-									case 4:
-										enemy[k]->ReflectionMY();
-										enemy[j]->ReflectionPY();
-										break;
-									default:
-										break;
-									}
-								}
-							}
 						}
 
 						//敵が水没中なら
@@ -256,7 +230,38 @@ AbstractScene* GameMain::Update()
 					}
 				}
 			}
-
+			for (int j = 0; j < max_enemy; j++)
+			{
+				//敵と敵の当たり判定
+				for (int k = j + 1; k < max_enemy; k++)
+				{
+					//敵が生きているなら
+					if (enemy[k]->GetFlg() == true && enemy[j]->GetFlg() == true && enemy[j]->GetEnemyDeathFlg() == false && enemy[k]->GetEnemyDeathFlg() == false)
+					{
+						switch (enemy[k]->HitEnemyCollision(enemy[j]))
+						{
+						case 1:
+							enemy[k]->ReflectionMX();
+							enemy[j]->ReflectionPX();
+							break;
+						case 2:
+							enemy[k]->ReflectionPX();
+							enemy[j]->ReflectionMX();
+							break;
+						case 3:
+							enemy[k]->ReflectionPY();
+							enemy[j]->ReflectionMY();
+							break;
+						case 4:
+							enemy[k]->ReflectionMY();
+							enemy[j]->ReflectionPY();
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
 		for (int i = 0; i < now_floor_max; i++)
 		{
 			//プレイヤーが各オブジェクトのいずれかに着地している場合
@@ -386,6 +391,10 @@ AbstractScene* GameMain::Update()
 
 			//クリアチェック
 			clear_flg = true;
+			if (CheckSoundMem(StageClear_BGM) == FALSE)
+			{
+				PlaySoundMem(StageClear_BGM, DX_PLAYTYPE_BACK);
+			}
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//敵一体でも生きていたらフラグを立てない
@@ -530,7 +539,7 @@ void GameMain::Draw()const
 	{
 		stageobject->Draw();
 	}
-	if (Pouse == false) {
+	if (Pouse == false && main_state != Over) {
 		player->Draw();
 
 	}
@@ -551,7 +560,7 @@ void GameMain::Draw()const
 	DrawNumber(350, 0, score);
 
 	if (main_state == Over) {
-		DrawGraph(221, 233, GameOver_Img, 0);
+		DrawGraph(221, 233, GameOver_Img, 1);
 	}
 }
 
