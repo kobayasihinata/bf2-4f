@@ -7,7 +7,6 @@
 
 static int score;      //現在のステージ数
 
-
 GameMain::GameMain()
 {
 	stage = 0;

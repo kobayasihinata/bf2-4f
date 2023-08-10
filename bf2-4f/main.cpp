@@ -6,7 +6,6 @@
 #include"GameMain.h"
 #include"Define.h"
 
-#define FRAMERATE 60.0 //フレームレート
 
 /***********************************************
  * プログラムの開始

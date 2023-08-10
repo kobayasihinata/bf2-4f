@@ -367,18 +367,7 @@ void Enemy::Update()
 					}
 					else
 					{
-						if (enemy_level == 1)
-						{
-							location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 1.5f));
-						}
-						if (enemy_level == 2)
-						{
-							location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 2));
-						}
-						if (enemy_level == 3)
-						{
-							location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 2.5f));
-						}
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 1.5f));
 					}
 					
 				}

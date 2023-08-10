@@ -10,7 +10,7 @@
 #include"UI.h"
 
 #define ENEMY_NAMBER 6
-#define SECOND_TO_FRAME(sec) ((sec)*60)
+#define SECOND_TO_FRAME(sec) ((sec)*FRAMERATE)
 #define MAX_FLOOR 7+3
 
 enum State {

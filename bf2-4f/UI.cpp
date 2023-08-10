@@ -47,7 +47,7 @@ void UI::Draw(int life)const
 	//プレイヤー残機表示
 	for (int i = 0; i < life; i++)
 	{
-		DrawGraph(70-(i*11), 25, player_life_image, TRUE);
+		DrawGraph(110-(i*17), 25, player_life_image, TRUE);
 	}
 }
 
