@@ -15,7 +15,6 @@ public:
 	int UI_image3[10];
 	int UI_image4;
 	int UI_image5;
-	int UI_image6;
 	int Score_image;  
 
 	void AddScore(int point) { gScore += point; }
