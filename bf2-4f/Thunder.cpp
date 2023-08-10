@@ -117,7 +117,7 @@ void Thunder::Update()
 	}
 	
 	//—‹‚Ì‹Ê‚ð”­ŽË‚µ‚Ä‚¢‚é‚È‚ç
-	if (thunder_ball_flg==true)
+	if (thunder_ball_flg == true)
 	{
 		thunder_ball_state = Move;
 		is_fire_ready = false;

@@ -42,7 +42,7 @@ AbstractScene* Title::Update()
 	if (cursor_num < 0)cursor_num = 2;
 	if (cursor_num > 2)cursor_num = 0;
 
-	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_A) || CheckHitKey(KEY_INPUT_SPACE))
+	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_START) || CheckHitKey(KEY_INPUT_SPACE))
 	{
 		return new GameMain();
 	}
