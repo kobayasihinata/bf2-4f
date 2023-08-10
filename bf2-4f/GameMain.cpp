@@ -204,36 +204,6 @@ AbstractScene* GameMain::Update()
 									break;
 								}
 							}
-
-							//“G‚Æ“G‚Ì“–‚½‚è”»’è
-							for (int k = j + 1; k < max_enemy; k++)
-							{
-								//“G‚ª¶‚«‚Ä‚¢‚é‚È‚ç
-								if (enemy[k]->GetFlg() == true && enemy[j]->GetFlg() == true && enemy[j]->GetEnemyDeathFlg() == false && enemy[k]->GetEnemyDeathFlg() == false)
-								{
-									switch (enemy[k]->HitEnemyCollision(enemy[j]))
-									{
-									case 1:
-										enemy[k]->ReflectionMX();
-										enemy[j]->ReflectionPX();
-										break;
-									case 2:
-										enemy[k]->ReflectionPX();
-										enemy[j]->ReflectionMX();
-										break;
-									case 3:
-										enemy[k]->ReflectionPY();
-										enemy[j]->ReflectionMY();
-										break;
-									case 4:
-										enemy[k]->ReflectionMY();
-										enemy[j]->ReflectionPY();
-										break;
-									default:
-										break;
-									}
-								}
-							}
 						}
 
 						//“G‚ª…–v’†‚È‚ç
@@ -244,7 +214,38 @@ AbstractScene* GameMain::Update()
 					}
 				}
 			}
-
+			for (int j = 0; j < max_enemy; j++)
+			{
+				//“G‚Æ“G‚Ì“–‚½‚è”»’è
+				for (int k = j + 1; k < max_enemy; k++)
+				{
+					//“G‚ª¶‚«‚Ä‚¢‚é‚È‚ç
+					if (enemy[k]->GetFlg() == true && enemy[j]->GetFlg() == true && enemy[j]->GetEnemyDeathFlg() == false && enemy[k]->GetEnemyDeathFlg() == false)
+					{
+						switch (enemy[k]->HitEnemyCollision(enemy[j]))
+						{
+						case 1:
+							enemy[k]->ReflectionMX();
+							enemy[j]->ReflectionPX();
+							break;
+						case 2:
+							enemy[k]->ReflectionPX();
+							enemy[j]->ReflectionMX();
+							break;
+						case 3:
+							enemy[k]->ReflectionPY();
+							enemy[j]->ReflectionMY();
+							break;
+						case 4:
+							enemy[k]->ReflectionMY();
+							enemy[j]->ReflectionPY();
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
 		for (int i = 0; i < now_floor_max; i++)
 		{
 			//ƒvƒŒƒCƒ„[‚ªŠeƒIƒuƒWƒFƒNƒg‚Ì‚¢‚¸‚ê‚©‚É’…’n‚µ‚Ä‚¢‚éê‡
@@ -518,7 +519,7 @@ void GameMain::Draw()const
 	{
 		stageobject->Draw();
 	}
-	if (Pouse == false) {
+	if (Pouse == false && main_state != Over) {
 		player->Draw();
 
 	}
