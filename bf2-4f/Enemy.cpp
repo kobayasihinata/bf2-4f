@@ -74,6 +74,7 @@ Enemy::Enemy(int x,int y,int level)
 	jump_flg = false;
 	ref_once_left = false;
 	ref_once_right = false;
+	no_ai_time = 0;
 
 	switch (level)
 	{
@@ -206,13 +207,11 @@ void Enemy::Update()
 					{
 						enemy_state = E_FLY_LEFT;
 						EnemyJump();
-						SetNot_AI(25);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
 						EnemyJump();
-						SetNot_AI(25);
 					}
 					onfloor_flg = true;
 					OnFloor();
@@ -653,6 +652,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			{
 				//’µ‚Ë•Ô‚é
 				ReflectionMX();
+				SetNot_AI(20);
 				ref_once_left = TRUE;
 			}
 		}
@@ -671,6 +671,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			{
 				//’µ‚Ë•Ô‚é
 				ReflectionPX();
+				SetNot_AI(20);
 				ref_once_right = TRUE;
 			}
 		}
@@ -809,15 +810,17 @@ void Enemy::OnFloor()
 void Enemy::ReflectionMX()
 {
 	last_input *= -1;
-	acs_left = fabsf(acs_right - acs_left) * 0.8f;
+	acs_left = fabsf(acs_right - acs_left) * 1.0f;
 	acs_right = 0;
+	EnemyMoveLeft();
 }
 
 void Enemy::ReflectionPX()
 {
 	last_input *= -1;
-	acs_right = fabsf(acs_right - acs_left) * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 1.0f;
 	acs_left = 0;
+	EnemyMoveRight();
 }
 
 void Enemy::ReflectionPY()

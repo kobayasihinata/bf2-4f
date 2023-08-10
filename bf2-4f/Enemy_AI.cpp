@@ -11,7 +11,7 @@ ENEMY_AI::ENEMY_AI()
 	E_x = 0;
 	E_y = 0;
 	
-	Set_AI_Cool(2);
+	//Set_AI_Cool(2);
 
 	pattern = 0;
 }
@@ -46,15 +46,8 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 
 	// 距離が画面の半分以上離れていたら方向反転
 	if (abs(E_x - P_x) > SCREEN_WIDTH / 2) {
-		Reverse();
+		Reverse_x();
 	}
-
-	// 3割の確率で移動方向反転
-	srand(time(NULL));
-	if (rand() % 100 < 3) {
-		Reverse();
-	}
-
 
 	// プレイヤーがどの方向にいるか(y座標)
 	if (E_y >= P_y - 25) {
@@ -65,15 +58,39 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 		pattern += 2;
 	}
 
+
+	// 3割の確率で移動方向反転(x)
+	srand(time(NULL));
+	if (rand() % 100 < 30) {
+		Reverse_x();
+		reverse == 1;
+	}
+
+	// 3割の確率で移動方向反転(y)
+	srand(time(NULL));
+	if (rand() % 100 < 30) {
+		Reverse_y();
+		reverse = 1;
+	}
+
 	//パターンを返す
 	return pattern;
 }
 
-void ENEMY_AI::Reverse(){
+void ENEMY_AI::Reverse_x(){
 	if (pattern % 2 == 0) {
 		pattern++;
 	}else{
 		pattern--;
+	}
+}
+
+void ENEMY_AI::Reverse_y() {
+	if (pattern / 2 == 0) {
+		pattern = pattern + 2;
+	}
+	else {
+		pattern = pattern - 2;
 	}
 }
 
@@ -82,5 +99,15 @@ void ENEMY_AI::Set_AI_Cool(int Level)
 	srand(time(NULL));
 	int percent = (rand() % 100 + 51);
 	AI_Cool = (AI_Cool_Base[Level] * percent / 100);
-	ai_cool_cnt = 0;
+	if (reverse) {
+		ai_cool_cnt = AI_Cool_Base[Level] / 2;
+		reverse = 0;
+	}else{
+		ai_cool_cnt = 0;
+	}
+}
+
+int ENEMY_AI::Move_Rand()
+{
+
 }
