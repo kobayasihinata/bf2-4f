@@ -52,6 +52,8 @@ Player::Player()
 
 	last_move_x = 0;
 	last_input = 1;
+
+	
 }
 
 Player::~Player()
@@ -139,7 +141,7 @@ void Player::Update()
 				{
 					if (acs_right > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_right--;
 						}
@@ -181,7 +183,7 @@ void Player::Update()
 				{
 					if (acs_left > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_left--;
 						}
@@ -347,6 +349,14 @@ void Player::Update()
 					jump_anim_boost = 4;
 					if (jump_int == 0)
 					{
+						if (acs_down >= 0)
+						{
+							acs_down -= 6;
+						}
+						else
+						{
+							acs_down = 0;
+						}
 						jump_int = JUMP_INTERVAL - 3;
 						jump_cd = 5;
 						//AÇâüÇπÇŒâüÇ∑ÇŸÇ«è„â¡ë¨ìxÇ™è„Ç™ÇÈ
@@ -357,15 +367,15 @@ void Player::Update()
 								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
-							jump_combo += 2;
+							jump_combo += 3;
 						}
-						if (acs_up < MAX_SPEED / 2)
+						if (acs_up < MAX_SPEED / 1.3)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
 						else
 						{
-							acs_up = MAX_SPEED / 2;
+							acs_up = MAX_SPEED / 1.3;
 						}
 					}
 				}
@@ -591,6 +601,7 @@ void Player::Draw()const
 	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
 	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
 	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
+
 	
 	if (show_flg == true)
 	{
@@ -950,27 +961,29 @@ void Player::ReflectionMY()
 
 void Player::PlayerRespawn(float x, float y)
 {
-	player_state = IDOL_RIGHT;
-	location.x = x;
-	location.y = y;
-	acs_left = 0;
-	acs_right = 0;
-	acs_up = 0;
-	acs_down = 0;
-	land_acs_left = 0;
-	land_acs_right = 0;
-	jump_int = 0;
-	jump_combo = 0;
-	balloon = 2;
-	death_flg = false;
-	thunder_death_flg = false;
-	death_acs = -120;
-	death_wait = 120;
-	thunder_death_wait = 60;
-	respawn = 600;
-	show_flg=true;
-	underwater_flg=false;
-	PlaySoundMem(Restart_SE,DX_PLAYTYPE_BACK);
+	if (life >= 0) {
+		player_state = IDOL_RIGHT;
+		location.x = x;
+		location.y = y;
+		acs_left = 0;
+		acs_right = 0;
+		acs_up = 0;
+		acs_down = 0;
+		land_acs_left = 0;
+		land_acs_right = 0;
+		jump_int = 0;
+		jump_combo = 0;
+		balloon = 2;
+		death_flg = false;
+		thunder_death_flg = false;
+		death_acs = -120;
+		death_wait = 120;
+		thunder_death_wait = 60;
+		respawn = 600;
+		show_flg = true;
+		underwater_flg = false;
+		PlaySoundMem(Restart_SE, DX_PLAYTYPE_BACK);
+	}
 }
 
 void Player::BalloonDec()

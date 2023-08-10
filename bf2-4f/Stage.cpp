@@ -1,6 +1,5 @@
 #include "Stage.h"
 #include <math.h>
-#include"StageFloor.h"
 #include "DxLib.h"
 
 Stage::Stage()

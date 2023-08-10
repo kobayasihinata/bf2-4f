@@ -43,6 +43,10 @@ private:
     bool bubble_spawn_flg;              //シャボン玉をスポーンさせる？
     bool target_flg;                    //捕食対象はいる？
 
+    //BGM
+    int Eatable_SE;			//サカナ落下BGM
+
+  
 public:
     //コンストラクタ
     Fish();

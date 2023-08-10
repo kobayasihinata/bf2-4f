@@ -33,7 +33,7 @@ public:
     void Update() {};
 
     //•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ðŽÀ‘•‚·‚é
-    void Draw()const {};
+    void Draw()const;
 
     void SetInit(int x, int y, int height, int width, int shift)
     {
@@ -43,6 +43,20 @@ public:
         this->area.width = (float)width;
         this->shift = shift;
     }
+
+    void DrawLandLeft();
+    void DrawLandLeft2();
+    void DrawLandRight2();
+    void DrawLandRight();
+    void DrawFooting1();
+    void DrawFooting2();
+    void DrawFooting3();
+    void DrawFooting5();
+    void DrawFooting6();
+
+    void DrawFooting4();
+    void DrawFooting7();
+    void DrawFooting8();
 
 };
 
