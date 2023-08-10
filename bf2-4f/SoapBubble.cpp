@@ -5,7 +5,7 @@ SoapBubble::SoapBubble()
 {
 	flg = false;
 	location.x = 0;
-	location.y = UNDER_WATER;
+	location.y = UNDER_WATER+30;
 	area.width = 32;
 	area.height = 32;
 	LoadDivGraph("images/Stage/Stage_BubbleAnimation.png", 4, 4, 1, 64, 64, bubble_image);
