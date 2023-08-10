@@ -186,9 +186,16 @@ void Enemy::Update()
 					}
 
 					//—Ž‰º‚µ‘±‚¯‚é’ö‰º‚É‰Á‘¬
-					if (acs_down < E_Max_Speed[enemy_level - 1])
+					if (para_flg==FALSE)
 					{
-						acs_down += 1;
+						if (acs_down < E_Max_Speed[enemy_level - 1])
+						{
+							acs_down += 1;
+						}
+					}
+					else
+					{
+						if (acs_down <= 70) ++acs_down;
 					}
 					onfloor_flg = false;
 				}
@@ -219,9 +226,16 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
 					last_input = 1;
-					if (acs_right < E_Max_Speed[enemy_level - 1])
+					if (para_flg == FALSE)
 					{
-						acs_right += 2;
+						if (acs_right < E_Max_Speed[enemy_level - 1])
+						{
+							acs_right += 2;
+						}
+					}
+					else
+					{
+						if (acs_right <= 50) acs_right += 2;
 					}
 				}
 				//‰E“ü—Í‚³‚ê‚Ä‚¢‚È‚¢Žž‚Ìˆ—
@@ -244,9 +258,16 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
 					last_input = -1;
-					if (acs_left < E_Max_Speed[enemy_level - 1])
+					if (para_flg == FALSE)
 					{
-						acs_left += 2;
+						if (acs_left < E_Max_Speed[enemy_level - 1])
+						{
+							acs_left += 2;
+						}
+					}
+					else
+					{
+						if (acs_left <= 50) acs_left += 2;
 					}
 				}
 				//¶“ü—Í‚³‚ê‚Ä‚¢‚È‚¢Žž‚Ìˆ—
@@ -396,6 +417,9 @@ void Enemy::Update()
 					if (crack == 0)
 					{
 						PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
+						acs_down = 0;
+						acs_left = 0;
+						acs_right = 0;
 						crack++;
 					}
 					
