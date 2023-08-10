@@ -3,6 +3,7 @@
 #include"PadInput.h"
 #include"GameMain.h"
 
+
 Title::Title()
 {
 	titlebgm = LoadSoundMem("sounds/BGM_Trip.wav");

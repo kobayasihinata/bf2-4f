@@ -44,6 +44,9 @@ private:
     bool is_fire_ready;                 //雷の準備はいい？
     bool thunder_direction_flg;         //雷の方向は決まってる？
 
+    //SE
+    static int CreateThunderSE;		//カミナリ生成SE
+
 public:
     //コンストラクタ
     Thunder();
