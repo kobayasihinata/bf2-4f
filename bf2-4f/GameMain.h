@@ -28,7 +28,7 @@ private:
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
     StageObject* stageobject[MAX_FLOOR];
     Fish* fish;
-    Thunder* thunder;
+    Thunder* thunder[2];
     SoapBubble* soapbubble[6];
     UI* ui;
 

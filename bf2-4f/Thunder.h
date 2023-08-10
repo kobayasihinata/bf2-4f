@@ -38,15 +38,18 @@ private:
     float cloud_y;                      //雲のy座標
     int thunder_direction;              //雷の方向
     int thunder_ball_state;             //雷の玉の状態
+    int probability;                    //確率
+    int frame_count;                    //フレーム計測用
 
     bool fire_flg;                      //雷を発射してる？
     bool thunder_ball_flg;              //雷の玉を発射する?
     bool is_fire_ready;                 //雷の準備はいい？
     bool thunder_direction_flg;         //雷の方向は決まってる？
+    bool is_in_game;                    //ゲームに追加する？
 
 public:
     //コンストラクタ
-    Thunder();
+    Thunder(float x, float y, bool flg);
 
     //デストラクタ
     ~Thunder();
@@ -63,5 +66,5 @@ public:
 
     bool HitPlayer(const class Player* player);
 
-    void InitThunder();
+    void ReInitThunder();
 };

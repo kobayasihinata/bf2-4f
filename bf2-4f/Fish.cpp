@@ -3,7 +3,7 @@
 #include"DxLib.h"
 #include"Define.h"
 
-#define DEBUG
+//#define DEBUG
 
 Fish::Fish()
 {

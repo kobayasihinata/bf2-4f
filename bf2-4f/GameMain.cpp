@@ -13,6 +13,10 @@ GameMain::GameMain()
 	{
 		stageobject[i] = new StageObject;
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		thunder[i] = new Thunder(0, 0, false);
+	}
 	CreateStage(stage);
 	fish = new Fish();
 	ui = new UI();
@@ -50,8 +54,11 @@ GameMain::~GameMain()
 	{
 		delete stageobject[i];
 	}
-	delete thunder;
-	DeleteGraph(seaImage);
+	for (int i = 0; i < 2; i++)
+	{
+		delete thunder[i];
+	}
+	//DeleteGraph(seaImage);
 }
 
 AbstractScene* GameMain::Update()
@@ -64,11 +71,14 @@ AbstractScene* GameMain::Update()
 			Pouse = !Pouse;
 		}
 		if (Pouse == false) {
-			thunder->Update();
-			if (thunder->HitPlayer(player) == true && player->GetPlayerState() < DEATH)
+			for (Thunder* thunder : thunder)
 			{
-				player->SetThunderDeath(true);
-				thunder->InitThunder();
+				thunder->Update();
+				if (thunder->HitPlayer(player) == true && player->GetPlayerState() < DEATH)
+				{
+					player->SetThunderDeath(true);
+					thunder->ReInitThunder();
+				}
 			}
 			if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
 			{
@@ -77,7 +87,11 @@ AbstractScene* GameMain::Update()
 			//Œ»İ‚Ìstageobject‚Ì”‚¾‚¯ƒ‹[ƒv‚·‚é
 			for (int i = 0; i < now_floor_max; i++)
 			{
-				thunder->Reflection(stageobject[i]);
+				for (Thunder* thunder : thunder)
+				{
+					thunder->Reflection(stageobject[i]);
+				}
+
 				//ƒvƒŒƒCƒ„[‚ª€–S’†‚Å‚È‚¢‚È‚ç
 				if (player->GetPlayerDeathFlg() == false && player->GetThunderDeathFlg() == false)
 				{
@@ -310,7 +324,7 @@ AbstractScene* GameMain::Update()
 					//}
 
 						//ŠC–Ê‚É“G‚Ì‚¢‚¸‚ê‚©‚ª‚¢‚éê‡
-					if (fish->CheckSeaSurface(enemy[i]) == true)
+					if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyState() < DEATH_RIGHT)
 					{
 						//“G‚ÌƒŒƒxƒ‹‚ğæ“¾‚·‚é
 						fish->SetSaveEnemyLevel(enemy[i]->GetEnemyLevel());
@@ -459,7 +473,11 @@ void GameMain::Draw()const
 	//		DrawLine(0, i, SCREEN_WIDTH, i, 0x00ff00);
 	//	}
 	//}
-	thunder->Draw(Pouse);
+	for (int i = 0; i < 2; i++)
+	{
+		thunder[i]->Draw(Pouse);
+	}
+
 	switch (stage)
 	{
 	case 0:
@@ -494,8 +512,8 @@ void GameMain::Draw()const
 		stageobject[6]->DrawFooting6();
 		break;
 	case 4:
-		stageobject[0]->DrawLandLeft();
-		stageobject[1]->DrawLandRight();
+		stageobject[0]->DrawLandLeft2();
+		stageobject[1]->DrawLandRight2();
 		stageobject[2]->DrawFooting6();
 		stageobject[3]->DrawFooting6();
 		stageobject[4]->DrawFooting6();
@@ -587,7 +605,8 @@ void GameMain::CreateStage(int stage)
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
 
-		thunder = new Thunder();
+		thunder[0] = new Thunder(300, 70, true);
+		thunder[1] = new Thunder(0, 0, false);
 
 		max_enemy = 3;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[2]).x-70, SpawnPosSet(stageobject[2]).y, 1);
@@ -604,16 +623,17 @@ void GameMain::CreateStage(int stage)
 		stageobject[0]->SetInit(0, 416, 30, 160, 5);
 		stageobject[1]->SetInit(479, 416, 30, 160, 5);
 		stageobject[2]->SetInit(180, 260, 18, 280, 0);
-		stageobject[3]->SetInit(90, 150, 18, 120, 0);
-		stageobject[4]->SetInit(460, 130, 18, 120, 0);
+		stageobject[3]->SetInit(80, 150, 18, 120, 0);
+		stageobject[4]->SetInit(450, 130, 18, 120, 0);
 
 		for (int i = 5; i < MAX_FLOOR; i++)
 		{
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
 
-		thunder = new Thunder();
-
+		thunder[0] = new Thunder(50, 210, true);
+		thunder[1] = new Thunder(460, 185, true);
+		
 		max_enemy = 5;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[3]).x, SpawnPosSet(stageobject[3]).y, 2);
 		enemy[1] = new Enemy(SpawnPosSet(stageobject[4]).x, SpawnPosSet(stageobject[4]).y, 2);
@@ -637,13 +657,14 @@ void GameMain::CreateStage(int stage)
 		stageobject[5]->SetInit(310, 200, 18, 60, 0);
 		stageobject[6]->SetInit(490, 100, 18, 60, 0);
 
-		stageobject[7]->SetInit(180, 280, 70, 20, 0);
-		stageobject[8]->SetInit(330, 200, 70, 20, 0);
-		stageobject[9]->SetInit(510, 100, 70, 20, 0);
+		stageobject[7]->SetInit(180, 298, 52, 20, 0);
+		stageobject[8]->SetInit(330, 218, 52, 20, 0);
+		stageobject[9]->SetInit(510, 118, 52, 20, 0);
 
 
 
-		thunder = new Thunder();
+		thunder[0] = new Thunder(50, 120, true);
+		thunder[1] = new Thunder(420, 250, true);		/*•ûŒü‚QƒoƒOH*/
 
 		max_enemy = 5;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[3]).x, SpawnPosSet(stageobject[3]).y, 3);
@@ -672,7 +693,8 @@ void GameMain::CreateStage(int stage)
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
 
-		thunder = new Thunder();
+		thunder[0] = new Thunder(130, 80, true);		/*•ûŒü‚RŠC‚Ö‚¢‚©‚È‚¢*/
+		thunder[1] = new Thunder(450, 150, true);
 
 		max_enemy = 5;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[6]).x, SpawnPosSet(stageobject[6]).y, 2);
@@ -704,7 +726,8 @@ void GameMain::CreateStage(int stage)
 		stageobject[6]->SetInit(260, 170, 50, 20, 0);
 		stageobject[7]->SetInit(500, 160, 70, 20, 0);
 
-		thunder = new Thunder();
+		thunder[0] = new Thunder(60, 80, true);		/*•ûŒü1ŠC‚Ö‚¢‚©‚È‚¢‚QŠC‚Ö‚¢‚©‚È‚¢‚RƒoƒOH*/
+		thunder[1] = new Thunder(340, 120, true);		/*•ûŒü‚OƒoƒOH*/
 
 		max_enemy = 6;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[4]).x, SpawnPosSet(stageobject[4]).y, 3);

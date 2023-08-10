@@ -201,4 +201,7 @@ public:
 
     //スコア獲得演出開始
     void GetScoreStart(int i);
+
+    int GetEnemyState() { return enemy_state; }
+
 };
