@@ -111,7 +111,7 @@ AbstractScene* GameMain::Update()
 							enemy[j]->HitStageCollision(stageobject[i]);
 							enemy_ai[j]->Update_AI_Cool();
 
-							if (enemy[j]->No_AI_Flg() == 0)
+							if (enemy[j]->No_AI_Flg() == 0 && player->GetPlayerRespawn() <= 0)
 							{
 								//“G‚ÌAIŽæ“¾
 								switch (enemy_ai[j]->Update(P_x, P_y, E_x, E_y))
