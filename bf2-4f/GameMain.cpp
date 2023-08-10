@@ -138,8 +138,10 @@ AbstractScene* GameMain::Update()
 								if (enemy_ai[j]->GetPattern() != 99) {
 									enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel() - 1);
 								}
+							} else {
+								enemy_ai[j]->Set_AI_Cool(0);
 							}
-							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100)
+							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100 && Avoidance[j] == FALSE)
 							{
 								Avoidance[j] = TRUE;
 							}
@@ -539,7 +541,7 @@ void GameMain::Draw()const
 	DrawNumber(350, 0, score);
 
 	if (main_state == Over) {
-		DrawGraph(221, 233, GameOver_Img, 0);
+		DrawGraph(221, 233, GameOver_Img, 1);
 	}
 }
 

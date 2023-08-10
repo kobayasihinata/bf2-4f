@@ -934,7 +934,7 @@ void Player::ReflectionMX()
 {
 	last_input *= -1;
 	land_acs_right = 0;
-	acs_left = fabsf(acs_right - acs_left) * 0.8f;
+	acs_left = fabsf(acs_right - acs_left) * 1.0f;
 	acs_right = 0;
 }
 
@@ -942,7 +942,7 @@ void Player::ReflectionPX()
 {
 	last_input *= -1;
 	land_acs_left = 0;
-	acs_right = fabsf(acs_right - acs_left) * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 1.0f;
 	acs_left = 0;
 }
 
