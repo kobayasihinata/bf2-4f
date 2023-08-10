@@ -61,7 +61,7 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
-	death_wait = 30;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
+	death_wait = 15;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
 	underwater_flg = false;      //…–v’†‚©”»’f
 	damage = 0;
 	protect = -1;

@@ -139,7 +139,7 @@ void Player::Update()
 				{
 					if (acs_right > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_right--;
 						}
@@ -181,7 +181,7 @@ void Player::Update()
 				{
 					if (acs_left > 0)
 					{
-						if (frame % 10 == 0)
+						if (frame % 3 == 0)
 						{
 							acs_left--;
 						}
@@ -347,6 +347,14 @@ void Player::Update()
 					jump_anim_boost = 4;
 					if (jump_int == 0)
 					{
+						if (acs_down >= 0)
+						{
+							acs_down -= 6;
+						}
+						else
+						{
+							acs_down = 0;
+						}
 						jump_int = JUMP_INTERVAL - 3;
 						jump_cd = 5;
 						//A‚ğ‰Ÿ‚¹‚Î‰Ÿ‚·‚Ù‚Çã‰Á‘¬“x‚ªã‚ª‚é
@@ -357,15 +365,15 @@ void Player::Update()
 								location.y -= 2;
 								jump_combo += 5 + balloon;
 							}
-							jump_combo += 2;
+							jump_combo += 3;
 						}
-						if (acs_up < MAX_SPEED / 2)
+						if (acs_up < MAX_SPEED / 1.3)
 						{
 							acs_up += jump_combo * 3 + balloon;
 						}
 						else
 						{
-							acs_up = MAX_SPEED / 2;
+							acs_up = MAX_SPEED / 1.3;
 						}
 					}
 				}
