@@ -575,7 +575,7 @@ void Player::Update()
 
 	if (is_die) {
 		player_state = SUBMERGED;
-		if (frame % 10 == 0)
+		if (frame % 5 == 0)
 		{
 			splash_anim++;
 			if (splash_anim >= 3)

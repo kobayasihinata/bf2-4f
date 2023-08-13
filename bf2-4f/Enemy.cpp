@@ -61,7 +61,7 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
-	death_wait = 15;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
+	death_wait = 1;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
 	underwater_flg = false;      //…–v’†‚©”»’f
 	damage = 0;
 	protect = -1;
@@ -516,21 +516,17 @@ void Enemy::Update()
 		is_die = true;
 		enemy_state = E_SUBMERGED;
 		location.y = 471;
-		if (frame % 10 == 0)
+		if (frame % 5 == 0)
 		{
 			splash_anim++;
 			if (splash_anim >= 3)
 			{
-				splash_anim = 8;
+				underwater_flg = false;
+				is_die = false;
+				splash_anim = 0;
+				flg = false;
+				show_flg = false;
 			}
-		}
-		if (--death_wait < 0)
-		{
-			underwater_flg = false;
-			is_die = false;
-			splash_anim = 0;
-			flg = false;
-			show_flg = false;
 		}
 	}
 	if (--no_ai_time <= 0) {
