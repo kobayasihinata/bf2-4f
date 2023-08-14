@@ -6,7 +6,7 @@
 
 GameMain::GameMain()
 {
-	stage = 3;
+	stage = 0;
 	player = new Player();
 	for (int i = 0; i < MAX_FLOOR; i++)
 	{
