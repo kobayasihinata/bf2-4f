@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AbstractScene.cpp" />
+    <ClCompile Include="BackGroundStar.cpp" />
     <ClCompile Include="Collider\BoxCollider.cpp" />
     <ClCompile Include="Collider\ColliderBase.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
+    <ClInclude Include="BackGroundStar.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="Area.h" />
     <ClInclude Include="Collider\BoxCollider.h" />
