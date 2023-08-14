@@ -52,13 +52,13 @@ int ENEMY_AI::Update(int px, int py, int ex, int ey)
 
 
 	// 3Š„‚ÌŠm—¦‚ÅˆÚ“®•ûŒü”½“](x)
-	if (GetRand(100) < 30) {
+	if (GetRand(100) < 10) {
 		Reverse_x();
 		reverse == 1;
 	}
 
 	// 3Š„‚ÌŠm—¦‚ÅˆÚ“®•ûŒü”½“](y)
-	if (GetRand(100) < 30) {
+	if (GetRand(100) < 10) {
 		Reverse_y();
 		reverse = 1;
 	}
