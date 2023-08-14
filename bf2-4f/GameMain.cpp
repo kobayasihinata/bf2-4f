@@ -69,7 +69,9 @@ GameMain::~GameMain()
 	{
 		delete thunder[i];
 	}
+	delete ui;
 	//DeleteGraph(seaImage);
+	score = 0;
 }
 
 AbstractScene* GameMain::Update()
