@@ -1,6 +1,5 @@
 #include "Dxlib.h"
 #include <math.h>
-#include <time.h>
 #include "Enemy.h"
 #include "PadInput.h"
 
@@ -407,6 +406,8 @@ void Enemy::Update()
 				{
 					location.y = 0;
 					ReflectionPY();
+					EnemyJumpStop();
+					SetNot_AI(20);
 				}
 
 				//•—‘D‚ª0‚±‚É‚È‚Á‚½‚È‚ç
@@ -634,6 +635,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			location.y = sub_y[1];
 			//’µ‚Ë•Ô‚é
 			ReflectionPY();
+			SetNot_AI(30);
 		}
 	}
 
@@ -810,7 +812,7 @@ void Enemy::OnFloor()
 void Enemy::ReflectionMX()
 {
 	last_input *= -1;
-	acs_left = fabsf(acs_right - acs_left) * 1.0f;
+	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
 	EnemyMoveLeft();
 }
@@ -818,7 +820,7 @@ void Enemy::ReflectionMX()
 void Enemy::ReflectionPX()
 {
 	last_input *= -1;
-	acs_right = fabsf(acs_right - acs_left) * 1.0f;
+	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
 	EnemyMoveRight();
 }
@@ -833,6 +835,7 @@ void Enemy::ReflectionMY()
 {
 	acs_up = fabsf(acs_up - acs_down) * 0.8f;
 	acs_down = 0;
+	EnemyJump();
 }
 
 int Enemy::ApplyDamege()
@@ -949,8 +952,7 @@ void Enemy::EnemyLevelUp()
 
 void Enemy::SetNot_AI(int No_time)
 {
-	srand(time(NULL));
-	int percent = (rand() % 100 + 51);
+	int percent = (GetRand(100) + 51);
 	no_ai_time = ( No_time * percent / 100);
 }
 

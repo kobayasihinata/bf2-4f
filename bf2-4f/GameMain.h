@@ -43,6 +43,7 @@ private:
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
+    int AI_Pattern[ENEMY_NAMBER];     //Aiパターン
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
     int main_state;

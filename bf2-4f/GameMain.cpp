@@ -1,4 +1,3 @@
-#include <time.h>
 #include "Dxlib.h"
 #include "GameMain.h"
 #include "Title.h"
@@ -109,12 +108,27 @@ AbstractScene* GameMain::Update()
 
 							//各オブジェクトとの当たり判定処理
 							enemy[j]->HitStageCollision(stageobject[i]);
-							enemy_ai[j]->Update_AI_Cool();
 
-							if (enemy[j]->No_AI_Flg() == 0 && player->GetPlayerRespawn() <= 0)
+							if (enemy[j]->No_AI_Flg() == 0)
 							{
-								//敵のAI取得
-								switch (enemy_ai[j]->Update(P_x, P_y, E_x, E_y))
+								if (enemy_ai[j]->AI_Cool_Update() <= 0)
+								{
+									//敵AI取得
+									if (player->GetPlayerRespawn() <= 0)
+									{
+										AI_Pattern[j] = enemy_ai[j]->Update(P_x, P_y, E_x, E_y);
+										//AIクールタイムセット
+										enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel());
+									}
+									else {
+										AI_Pattern[j] = enemy_ai[j]->Move_Rand();
+										//AIクールタイムセット
+										enemy_ai[j]->Set_AI_Cool(2);
+									}
+								}
+
+								// パターンによって行動を変える
+								switch (AI_Pattern[j])
 								{
 								case 0:
 									enemy[j]->EnemyMoveLeft();
@@ -135,18 +149,17 @@ AbstractScene* GameMain::Update()
 								default:
 									break;
 								}
-								if (enemy_ai[j]->GetPattern() != 99) {
-									enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel() - 1);
-								}
 							} else {
 								enemy_ai[j]->Set_AI_Cool(0);
 							}
+							
+							// プレイヤーが真上に来ると回避
 							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100 && Avoidance[j] == FALSE)
 							{
 								Avoidance[j] = TRUE;
+								enemy_ai[j]->Set_AI_Cool(enemy[j]->GetEnemyLevel());
 							}
 							if (Avoidance[j] == TRUE) {
-								enemy_ai[j]->Set_AI_Cool_Cnt(0);
 								if ((E_x < P_x - 150 && E_x > P_x + 150) || (E_y < P_y - 50 || E_y >= P_y + 100)) {
 									Avoidance[j] = FALSE;
 								}

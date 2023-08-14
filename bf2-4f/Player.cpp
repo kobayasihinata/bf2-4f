@@ -934,7 +934,7 @@ void Player::ReflectionMX()
 {
 	last_input *= -1;
 	land_acs_right = 0;
-	acs_left = fabsf(acs_right - acs_left) * 1.0f;
+	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
 }
 
@@ -948,7 +948,7 @@ void Player::ReflectionPX()
 
 void Player::ReflectionPY()
 {
-	acs_down = fabsf(acs_up - acs_down) * 0.8f;
+	acs_down = fabsf(acs_up - acs_down) * 1.0f;
 	acs_up = 0;
 	jump_combo = 0;
 }
