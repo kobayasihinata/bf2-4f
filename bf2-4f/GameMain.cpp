@@ -574,7 +574,7 @@ void GameMain::Draw()const
 void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && damage_once == false)
+	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && enemy[i]->GetWaitFlg() == false && damage_once == false)
 	{
 		player->BalloonDec();
 		damage_once = true;
