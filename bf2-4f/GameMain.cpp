@@ -26,10 +26,8 @@ GameMain::GameMain()
 	fish = new Fish();
 	ui = new UI();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
-	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
 	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
 	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
-	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
 	main_state = Normal;
 	Pouse = false;
@@ -478,9 +476,6 @@ AbstractScene* GameMain::Update()
 	default:
 		break;
 	}
-	if (CheckSoundMem(GameStart_BGM) == FALSE) {
-		
-	}
 	return this;
 }
 
@@ -573,10 +568,14 @@ void GameMain::Draw()const
 void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && damage_once == false)
+	if (enemy[i]->GetLocation().y + 25 < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && enemy[i]->GetWaitFlg() == false && damage_once == false)
 	{
 		player->BalloonDec();
 		damage_once = true;
+	}
+	else
+	{
+		damage_once = false;
 	}
 
 	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす

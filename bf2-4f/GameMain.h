@@ -56,7 +56,6 @@ private:
     //BGM
     int Continue_BGM;			//コンテニューBGM
     int StageClear_BGM;			//ステージクリアBGM
-    int GameStart_BGM;
 
     //SE
     int EnemuyMove_SE;          //トリ鳴き声SE
