@@ -8,10 +8,12 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 #include"UI.h"
+#include"BackGroundStar.h"
 
 #define ENEMY_NAMBER 6
 #define SECOND_TO_FRAME(sec) ((sec)*60)
 #define MAX_FLOOR 7+3
+#define MAX_STAR 40     //背景の星の最大数
 
 enum State {
     Normal,
@@ -31,6 +33,7 @@ private:
     Thunder* thunder[2];
     SoapBubble* soapbubble[6];
     UI* ui;
+    BackGroundStar* backgroundstar[MAX_STAR];
 
     int stage;      //現在のステージ数
     int seaImage;
@@ -65,10 +68,6 @@ private:
     int EnemuyMove_SE;          //トリ鳴き声SE
     int BaloonBurst_SE;			//バルーン破裂SE
     				
-  
-  
-    
-
 public:
 
     //コンストラクタ

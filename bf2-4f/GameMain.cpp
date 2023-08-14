@@ -4,11 +4,9 @@
 #include"PadInput.h"
 #include"Pause.h"
 
-
-
 GameMain::GameMain()
 {
-	stage = 0;
+	stage = 3;
 	player = new Player();
 	for (int i = 0; i < MAX_FLOOR; i++)
 	{
@@ -17,6 +15,10 @@ GameMain::GameMain()
 	for (int i = 0; i < 2; i++)
 	{
 		thunder[i] = new Thunder(0, 0, false);
+	}
+	for (int i = 0; i <= MAX_STAR - 1; i++)
+	{
+		backgroundstar[i] = new BackGroundStar(stage);
 	}
 	CreateStage(stage);
 	fish = new Fish();
@@ -55,6 +57,12 @@ GameMain::~GameMain()
 	{
 		delete stageobject[i];
 	}
+
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		delete backgroundstar[i];
+	}
+
 	for (int i = 0; i < 2; i++)
 	{
 		delete thunder[i];
@@ -432,6 +440,11 @@ AbstractScene* GameMain::Update()
 				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
 				WaitTimer = SECOND_TO_FRAME(4);
 			}
+			//背景の星描画用処理
+			for (int i = 0; i < MAX_STAR; i++)
+			{
+				backgroundstar[i]->Update();
+			}
 		}
 		break;
 	case Clear:
@@ -469,32 +482,13 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	DrawFormatString(240, 0, 0x00ff00, "%d", stage);
-
-	////グリッド表示
-	//for (int i = 25; i < SCREEN_WIDTH; i += 25)
-	//{
-	//	if (i % 100 == 0)
-	//	{
-	//		DrawLine(i, 0, i, SCREEN_HEIGHT, 0xff0000);
-	//	}
-	//	else
-	//	{
-	//		DrawLine(i, 0, i, SCREEN_HEIGHT, 0x00ff00);
-	//	}
-	//}
-	////グリッド表示
-	//for (int i = 25; i < SCREEN_HEIGHT; i += 25)
-	//{
-	//	if (i % 100 == 0)
-	//	{
-	//		DrawLine(0, i, SCREEN_WIDTH, i, 0xff0000);
-	//	}
-	//	else
-	//	{
-	//		DrawLine(0, i, SCREEN_WIDTH, i, 0x00ff00);
-	//	}
-	//}
+	if (Pouse == false)
+	{
+		for (int i = 0; i < MAX_STAR; i++)
+		{
+			backgroundstar[i]->Draw();
+		}
+	}
 	for (int i = 0; i < 2; i++)
 	{
 		thunder[i]->Draw(Pouse);
@@ -605,9 +599,13 @@ int GameMain::NextStage()
 	{
 		return 0;
 	}
-
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		backgroundstar[i]->GetType(stage);
+	}
 	fish = new Fish();
 	CreateStage(stage);
+	
 	main_state = Normal;
 }
 
