@@ -3,7 +3,7 @@
 #include"DxLib.h"
 #include"Define.h"
 
-//#define DEBUG
+#define DEBUG
 
 Fish::Fish()
 {
@@ -15,6 +15,7 @@ Fish::Fish()
 	probability = 0;
 	frame_count = 0;
 	player_flying_on_sea_timer = SECOND_TO_FRAME(3);
+	rising_timer = 0;
 	fish_state = Rising_Fish_1;
 	is_rising = false;
 	is_falling = false;
@@ -80,6 +81,11 @@ void Fish::Update()
 	if (is_rising == true)
 	{
 		location.y -= speed;
+		if (++rising_timer > SECOND_TO_FRAME(2))
+		{
+			is_falling = true;
+			is_rising = false;
+		}
 	}
 
 	if (is_falling == true)
@@ -124,6 +130,7 @@ void Fish::Update()
 #else
 		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
 #endif // DEBUG
+		rising_timer = 0;
 		target_flg = false;
 		anim_frame = 0;
 		falling_anim = Falling_Fish_1;

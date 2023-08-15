@@ -31,6 +31,7 @@ private:
     int probability;                    //確率
     int frame_count;                    //フレーム計測用
     int player_flying_on_sea_timer;     //プレイヤーが海面を飛んでいる時の計測用
+    int rising_timer;
 
     float speed = 1.6f;           //速さ
     
