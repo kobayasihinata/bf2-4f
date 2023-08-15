@@ -36,7 +36,6 @@ private:
     UI* ui;
     BackGroundStar* backgroundstar[MAX_STAR];
 
-    int stage;      //現在のステージ数
     int seaImage;
 
     bool Pouse;
@@ -62,7 +61,8 @@ private:
     int BaloonBurst_SE;			//バルーン破裂SE
     int Eatable_SE;
     int StageClear_SE;
- 
+    int para_SE;
+    int EnemyMove_SE;
     
 
     
@@ -70,7 +70,7 @@ private:
 public:
 
     //コンストラクタ
-    GameMain();
+    GameMain(int beforescene);
 
     //デストラクタ
     ~GameMain() final;
@@ -95,5 +95,12 @@ public:
 
     //敵のスポーン位置を指定した床の上に設定
     Location SpawnPosSet(StageObject* floor);
+
+    //データリセット
+    static void DataReset();
+
+    //スコア加算
+    static void AddScore(int point);
+
 };
 

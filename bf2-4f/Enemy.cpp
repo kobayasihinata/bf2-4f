@@ -45,8 +45,6 @@ Enemy::Enemy(int x,int y,int level)
 			break;
 		}
 	}
-	EnemyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
-	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
 	crack_SE = LoadSoundMem("sounds/SE_crack.wav");
 	DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 	frame = 0;
@@ -287,9 +285,6 @@ void Enemy::Update()
 				//ƒWƒƒƒ“ƒv“ü—Í‚³‚ê‚Ä‚¢‚éŽž‚Ìˆ—
 				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
-					if (CheckSoundMem(EnemyMove_SE) == FALSE) {
-						PlaySoundMem(EnemyMove_SE, DX_PLAYTYPE_BACK);
-					}
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < E_Max_Speed[enemy_level - 1])
@@ -441,9 +436,6 @@ void Enemy::Update()
 						para_flg = true;
 						damage = 11;
 					}
-					if (CheckSoundMem(para_SE) == FALSE) {
-						PlaySoundMem(para_SE, DX_PLAYTYPE_BACK);
-					}
 				}
 			}
 		}
@@ -514,6 +506,7 @@ void Enemy::Update()
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
 		underwater_flg = true;
+		para_flg = false;
 		is_die = true;
 		enemy_state = E_SUBMERGED;
 		location.y = 471;
@@ -869,6 +862,7 @@ int Enemy::ApplyDamege()
 void Enemy::BalloonDec()
 {
 	--balloon;
+	PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyDeath()
@@ -970,4 +964,10 @@ void Enemy::GetScoreStart(int i)
 	is_getscore[i + enemy_level - 1] = true;
 	getscore_x[i + enemy_level - 1] = location.x;
 	getscore_y[i + enemy_level - 1] = location.y;
+}
+
+void Enemy::StopAllSE() 
+{ 
+	StopSoundMem(crack_SE); 
+	StopSoundMem(DefeatTheEnemy_SE);
 }

@@ -13,7 +13,7 @@ public:
 	UI();  
 	~UI();
 	void Draw(int life)const;
-	//数字の描画(UI.hとcppに書くのもあり)
+	//数字の描画
 	void DrawNumber(int x, int y, int score)const;
 
 	//ハイスコアの読込

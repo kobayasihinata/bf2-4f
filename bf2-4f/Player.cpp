@@ -3,6 +3,9 @@
 #include "Player.h"
 #include "PadInput.h"
 
+static int balloon;        //残り風船
+static int life;            //残機
+
 Player::Player()
 {
 	player_state = IDOL_RIGHT;
@@ -21,8 +24,6 @@ Player::Player()
 	jump_cd = 0;
 	jump_flg = false;
 	frame = 0;
-	balloon = 2;
-	life = 2;
 	respawn = 600;
 	death_flg = false;
 	thunder_death_flg = false;
@@ -44,6 +45,7 @@ Player::Player()
 	Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
 	Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
 	Restart_SE = LoadSoundMem("sounds/SE_Restart.wav");
+	player_walk_se = LoadSoundMem("sounds/SE_PlayerWalk.wav");
 	player_anim = 0;
 	splash_anim = 0;
 	turn_anim = 0;
@@ -534,6 +536,9 @@ void Player::Update()
 	if (player_state == WALK_LEFT || player_state == WALK_RIGHT)
 	{
 		anim_boost = 18;
+		if (CheckSoundMem(player_walk_se) == FALSE) {
+			PlaySoundMem(player_walk_se, DX_PLAYTYPE_BACK);
+		}
 	}
 	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
 	{
@@ -1000,11 +1005,11 @@ void Player::BalloonDec()
 		death_flg = true;
 	}
 }
-void Player::ResetPlayerPos()
+void Player::ResetPlayerPos(int x,int y)
 {
 	player_state = IDOL_RIGHT;
-	location.x = PLAYER_RESPAWN_POS_X;
-	location.y = PLAYER_RESPAWN_POS_Y;
+	location.x = x;
+	location.y = y;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -1014,4 +1019,16 @@ void Player::ResetPlayerPos()
 	jump_int = 0;
 	jump_combo = 0;
 	respawn = 600;
+}
+
+//プレイヤーの残機を取得する
+int Player::GetPlayerLife() { return life; }
+
+//プレイヤーの残機を設定する
+void Player::SetPlayerLife(const int setlife) {life = life + setlife; }
+
+void Player::ResetPlayerLife()
+{
+	life = 2;
+	balloon = 2;
 }

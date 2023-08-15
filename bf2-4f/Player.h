@@ -38,8 +38,6 @@ private:
     bool jump_flg;      //ジャンプ中か判断
 
     int frame;      //フレーム計測用
-    int balloon;        //残り風船
-    int life;            //残機
     bool death_flg;      //死亡しているか判断
     bool thunder_death_flg; //雷で死亡しているか判断
     int  death_acs;      //死亡中の落ち方制御
@@ -54,10 +52,6 @@ private:
 
     int player_image[31];   //プレイヤー画像
     int splash_image[3];   //プレイヤー画像
-    int PlayerJump_SE;
-    int Splash_SE;
-    int Falling_SE;
-    int Restart_SE;
     int player_anim;        //プレイヤーアニメーション用
     int splash_anim;        //水没アニメーション用
     int turn_anim;          //水没アニメーション用
@@ -65,6 +59,12 @@ private:
     int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;      //移動方向保存用
     int last_input;         //入力方向保存用(-1=左 0=どこも押していない　1=右)
+
+    int PlayerJump_SE;
+    int Splash_SE;
+    int Falling_SE;
+    int Restart_SE;
+    int player_walk_se;     //歩行SE
     bool sound_flg;         //サウンド用
 
  
@@ -110,10 +110,10 @@ public:
     void ReflectionMY();
 
     //プレイヤーの残機を取得する
-    int GetPlayerLife() { return life; }
+    int GetPlayerLife();
 
     //プレイヤーの残機を設定する
-    void SetPlayerLife(const int life) { this->life = this->life + life; }
+    void SetPlayerLife(const int life);
 
     //プレイヤーが無敵中か取得する
     int GetPlayerRespawn() { return respawn; }
@@ -147,7 +147,6 @@ public:
         }
     }
 
-
     Location GetPlayerLocation() { return location; }
 
     int GetPlayerState() { return player_state; }
@@ -155,5 +154,8 @@ public:
     void SetPlayerState(const PLAYER_STATE state) { player_state = state; }
 
     //プレイヤーを初期地点に移動させる
-    void ResetPlayerPos();
+    void ResetPlayerPos(int x,int y);
+
+    //プレイヤーの風船とライフをリセットする
+    void ResetPlayerLife();
 };

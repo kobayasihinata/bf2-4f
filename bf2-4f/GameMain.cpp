@@ -1,15 +1,24 @@
 #include "Dxlib.h"
 #include "GameMain.h"
 #include "Title.h"
+#include "BonusStage.h"
 #include "PadInput.h"
 #include "Pause.h"
 
 static int score;      //現在のステージ数
+static int stage;      //現在のステージ数
 
-GameMain::GameMain()
+GameMain::GameMain(int beforescene)
 {
-	stage = 0;
 	player = new Player();
+	//遷移前のステージがタイトルなら
+	if (beforescene == 0)
+	{
+		//ステージとスコアの情報をリセットする
+		DataReset();
+		//プレイヤーの情報をリセットする
+		player->ResetPlayerLife();
+	}
 	for (int i = 0; i < MAX_FLOOR; i++)
 	{
 		stageobject[i] = new StageObject;
@@ -28,11 +37,11 @@ GameMain::GameMain()
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
 	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
+	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
+	EnemyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
 
 	main_state = Normal;
 	Pouse = false;
-
-	score = 0;
 
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
 	{
@@ -69,7 +78,6 @@ GameMain::~GameMain()
 	}
 	delete ui;
 	//DeleteGraph(seaImage);
-	score = 0;
 }
 
 AbstractScene* GameMain::Update()
@@ -295,6 +303,8 @@ AbstractScene* GameMain::Update()
 			}
 		}
 		//敵の数だけ繰り返す
+		int para_ret = false;
+		int move_ret = false;
 		for (int i = 0; i < max_enemy; i++)
 		{
 			for (int j = 0; j < now_floor_max; j++)
@@ -313,8 +323,39 @@ AbstractScene* GameMain::Update()
 				score += soapbubble[i]->HitPlayerCollision(player);
 			}
 
+			//敵がパラシュート状態で
+			if (enemy[i]->GetEnemyParaFlg()==true) {
+				//パラシュートのSEが再生されていなければ
+				if (CheckSoundMem(para_SE) == FALSE)
+				{
+					//パラシュートSEを再生
+					PlaySoundMem(para_SE, DX_PLAYTYPE_BACK);
+				}
+				para_ret = true;
 			}
 
+			//敵が移動中なら
+			if (enemy[i]->GetEnemyJumpFlg() == true && (enemy[i]->GetEnemyState() == E_FLY_RIGHT || enemy[i]->GetEnemyState() == E_FLY_LEFT))
+			{
+				//移動のSEが再生されていなければ
+				if (CheckSoundMem(EnemyMove_SE) == FALSE)
+				{
+					//移動SEを再生
+					PlaySoundMem(EnemyMove_SE, DX_PLAYTYPE_BACK);
+				}
+				move_ret = true;
+			}
+
+			}
+		//敵が一体もパラシュート状態で無ければパラシュートのSEを止める
+		if (CheckSoundMem(para_SE) == TRUE && para_ret == false)
+		{
+			StopSoundMem(para_SE);
+		}
+		//敵が一体でも移動中で無ければ、移動SEを止める
+		if (CheckSoundMem(EnemyMove_SE) == TRUE && move_ret == false) {
+			StopSoundMem(para_SE);
+		}
 			player->Update();
 			fish->Update();
 
@@ -366,6 +407,7 @@ AbstractScene* GameMain::Update()
 						{
 							enemy[i]->SetEnemyUnderWaterFlg(false);
 							enemy[i]->SetShowFlg(false);
+							enemy[i]->SetParaFlg(false);
 							enemy[i]->SetFlg(false);
 							enemy[i]->SetIsDie(true);
 							PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
@@ -414,10 +456,6 @@ AbstractScene* GameMain::Update()
 
 			//クリアチェック
 			clear_flg = true;
-			if (CheckSoundMem(StageClear_BGM) == FALSE)
-			{
-				PlaySoundMem(StageClear_BGM, DX_PLAYTYPE_BACK);
-			}
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//敵一体でも生きていたらフラグを立てない
@@ -448,6 +486,10 @@ AbstractScene* GameMain::Update()
 				backgroundstar[i]->Update();
 			}
 		}
+		if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
+		{
+			return new BonusStage();
+		}
 		break;
 	case Clear:
 		//敵全撃破演出
@@ -455,6 +497,11 @@ AbstractScene* GameMain::Update()
 		{
 			if (stage < MAX_STAGE - 1)
 			{
+				stage++;
+				if (stage == 3)
+				{
+					return new BonusStage();
+				}
 				NextStage();
 			}
 			else
@@ -468,13 +515,21 @@ AbstractScene* GameMain::Update()
 		}
 		break;
 	case Over:
-		PAD_INPUT::UpdateKey();
+		//PAD_INPUT::UpdateKey();
 		if (--WaitTimer <= 0 || PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			DataReset();
 			return new Title();
 		}
 		break;
 	default:
 		break;
+	}
+	if (CheckSoundMem(StageClear_SE))
+	{
+		for (int i = 0; i < max_enemy; i++)
+		{
+			enemy[i]->StopAllSE();
+		}
 	}
 	return this;
 }
@@ -554,6 +609,8 @@ void GameMain::Draw()const
 		{
 			enemy[i]->Draw();
 			soapbubble[i]->Draw();
+			//DrawFormatString(0, 0 + (i * 20), 0x00ff00, "%d", enemy[i]->GetEnemyParaFlg());
+			//DrawFormatString(20, 0 + (i * 20), 0x00ff00, "%d", enemy[i]->GetEnemyJumpFlg());
 		}
 	}
 	fish->Draw();
@@ -593,7 +650,7 @@ void GameMain::Damage(int i)
 
 int GameMain::NextStage()
 {
-	if (++stage > MAX_STAGE)
+	if (stage > MAX_STAGE)
 	{
 		return 0;
 	}
@@ -609,7 +666,7 @@ int GameMain::NextStage()
 
 void GameMain::CreateStage(int stage)
 {
-	player->ResetPlayerPos();
+	player->ResetPlayerPos(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 	switch (stage)
 	{
 	case 0:
@@ -768,6 +825,11 @@ int GameMain::GetScore()
 	return score;
 }
 
+void GameMain::AddScore(int point)
+{
+	score += point;
+}
+
 Location GameMain::SpawnPosSet(StageObject* floor)
 {
 	Location spawn;
@@ -783,3 +845,8 @@ Location GameMain::SpawnPosSet(StageObject* floor)
 //	spawn.y = wall->GetLocation().y - PLAYER_ENEMY_HEIGHT;
 //	return spawn;
 //}
+void GameMain::DataReset()
+{
+	score = 0;
+	stage = 0;
+}

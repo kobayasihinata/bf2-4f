@@ -85,9 +85,7 @@ private:
     static int CrushEnemy;			//“GŒ‚”jSE
     static int CreateBaloonSE;		//“G•—‘D‚ğ–c‚ç‚Ü‚¹‚éSE
     int crack_SE;
-    int para_SE;
     int DefeatTheEnemy_SE;
-    int EnemyMove_SE;
 
 public:
 
@@ -182,6 +180,9 @@ public:
     //“G‚Ìis•ûŒü‚ğæ“¾
     int GetEnemyMove() { return move_left_flg; }
 
+    //“G‚ªƒWƒƒƒ“ƒv’†‚©æ“¾
+    int GetEnemyJumpFlg() { return jump_flg; }
+
     //“G‚ª€–Sƒ‚[ƒVƒ‡ƒ“’†‚©æ“¾
     int GetEnemyDeathFlg() { return death_flg; }
 
@@ -193,14 +194,19 @@ public:
 
     //“G‚ª…–v’†‚©İ’è
     void SetEnemyUnderWaterFlg(int flg) { underwater_flg = flg; }
+
     //“G‚ª¶‚«‚Ä‚¢‚é‚©æ“¾
     int GetFlg() { return flg; }
 
     //“G‚Ì¶‚«‚Ä‚¢‚é‚©‚Ì”»’è‚ğİ’è
     void SetFlg(bool getflg) { flg = getflg; }
 
+    //“G‚ªƒpƒ‰ƒVƒ…[ƒgó‘Ô‚©‚Ì”»’è‚ğİ’è
+    void SetParaFlg(bool getflg) { para_flg = getflg; }
+
     //“G‚ª•—‘D‚ğ–c‚ç‚Ü‚¹‚é‘O‚©æ“¾
     int GetWaitFlg() { return wait_flg; }
+
     //“G‚ÌˆÊ’u‚ğæ“¾
     Location GetEnemyLocation() { return location; }
 
@@ -209,4 +215,5 @@ public:
 
     int GetEnemyState() { return enemy_state; }
 
+    void StopAllSE();
 };
