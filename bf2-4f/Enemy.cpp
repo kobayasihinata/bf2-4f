@@ -1,6 +1,5 @@
 #include "Dxlib.h"
 #include <math.h>
-#include <time.h>
 #include "Enemy.h"
 #include "PadInput.h"
 
@@ -61,7 +60,7 @@ Enemy::Enemy(int x,int y,int level)
 	para_flg = false;
 	death_flg = false;
 	death_acs = -120;
-	death_wait = 15;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
+	death_wait = 1;      //€–SŒã‚Ì‘Ò‚¿ŠÔ
 	underwater_flg = false;      //…–v’†‚©”»’f
 	damage = 0;
 	protect = -1;
@@ -74,6 +73,7 @@ Enemy::Enemy(int x,int y,int level)
 	jump_flg = false;
 	ref_once_left = false;
 	ref_once_right = false;
+	no_ai_time = 0;
 
 	switch (level)
 	{
@@ -186,9 +186,16 @@ void Enemy::Update()
 					}
 
 					//—‰º‚µ‘±‚¯‚é’ö‰º‚É‰Á‘¬
-					if (acs_down < E_Max_Speed[enemy_level - 1])
+					if (para_flg==FALSE)
 					{
-						acs_down += 1;
+						if (acs_down < E_Max_Speed[enemy_level - 1])
+						{
+							acs_down += 1;
+						}
+					}
+					else
+					{
+						if (acs_down <= 70) ++acs_down;
 					}
 					onfloor_flg = false;
 				}
@@ -199,13 +206,11 @@ void Enemy::Update()
 					{
 						enemy_state = E_FLY_LEFT;
 						EnemyJump();
-						SetNot_AI(25);
 					}
 					else if(last_input == 1)
 					{
 						enemy_state = E_FLY_RIGHT;
 						EnemyJump();
-						SetNot_AI(25);
 					}
 					onfloor_flg = true;
 					OnFloor();
@@ -219,9 +224,16 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_right_flg == true)
 				{
 					last_input = 1;
-					if (acs_right < E_Max_Speed[enemy_level - 1])
+					if (para_flg == FALSE)
 					{
-						acs_right += 2;
+						if (acs_right < E_Max_Speed[enemy_level - 1])
+						{
+							acs_right += 2;
+						}
+					}
+					else
+					{
+						if (acs_right <= 50) acs_right += 2;
 					}
 				}
 				//‰E“ü—Í‚³‚ê‚Ä‚¢‚È‚¢‚Ìˆ—
@@ -244,9 +256,16 @@ void Enemy::Update()
 				if (/*PAD_INPUT::GetLStick().ThumbX < -10000 || */move_left_flg == true)
 				{
 					last_input = -1;
-					if (acs_left < E_Max_Speed[enemy_level - 1])
+					if (para_flg == FALSE)
 					{
-						acs_left += 2;
+						if (acs_left < E_Max_Speed[enemy_level - 1])
+						{
+							acs_left += 2;
+						}
+					}
+					else
+					{
+						if (acs_left <= 50) acs_left += 2;
 					}
 				}
 				//¶“ü—Í‚³‚ê‚Ä‚¢‚È‚¢‚Ìˆ—
@@ -387,6 +406,8 @@ void Enemy::Update()
 				{
 					location.y = 0;
 					ReflectionPY();
+					EnemyJumpStop();
+					SetNot_AI(20);
 				}
 
 				//•—‘D‚ª0‚±‚É‚È‚Á‚½‚È‚ç
@@ -396,6 +417,9 @@ void Enemy::Update()
 					if (crack == 0)
 					{
 						PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
+						acs_down = 0;
+						acs_left = 0;
+						acs_right = 0;
 						crack++;
 					}
 					
@@ -493,21 +517,17 @@ void Enemy::Update()
 		is_die = true;
 		enemy_state = E_SUBMERGED;
 		location.y = 471;
-		if (frame % 10 == 0)
+		if (frame % 5 == 0)
 		{
 			splash_anim++;
 			if (splash_anim >= 3)
 			{
-				splash_anim = 8;
+				underwater_flg = false;
+				is_die = false;
+				splash_anim = 0;
+				flg = false;
+				show_flg = false;
 			}
-		}
-		if (--death_wait < 0)
-		{
-			underwater_flg = false;
-			is_die = false;
-			splash_anim = 0;
-			flg = false;
-			show_flg = false;
 		}
 	}
 	if (--no_ai_time <= 0) {
@@ -611,6 +631,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			location.y = sub_y[1];
 			//’µ‚Ë•Ô‚é
 			ReflectionPY();
+			SetNot_AI(30);
 		}
 	}
 
@@ -629,6 +650,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			{
 				//’µ‚Ë•Ô‚é
 				ReflectionMX();
+				SetNot_AI(20);
 				ref_once_left = TRUE;
 			}
 		}
@@ -647,6 +669,7 @@ void Enemy::HitStageCollision(const BoxCollider* box_collider)
 			{
 				//’µ‚Ë•Ô‚é
 				ReflectionPX();
+				SetNot_AI(20);
 				ref_once_right = TRUE;
 			}
 		}
@@ -787,6 +810,7 @@ void Enemy::ReflectionMX()
 	last_input *= -1;
 	acs_left = fabsf(acs_right - acs_left) * 0.8f;
 	acs_right = 0;
+	EnemyMoveLeft();
 }
 
 void Enemy::ReflectionPX()
@@ -794,6 +818,7 @@ void Enemy::ReflectionPX()
 	last_input *= -1;
 	acs_right = fabsf(acs_right - acs_left) * 0.8f;
 	acs_left = 0;
+	EnemyMoveRight();
 }
 
 void Enemy::ReflectionPY()
@@ -806,6 +831,7 @@ void Enemy::ReflectionMY()
 {
 	acs_up = fabsf(acs_up - acs_down) * 0.8f;
 	acs_down = 0;
+	EnemyJump();
 }
 
 int Enemy::ApplyDamege()
@@ -922,8 +948,7 @@ void Enemy::EnemyLevelUp()
 
 void Enemy::SetNot_AI(int No_time)
 {
-	srand(time(NULL));
-	int percent = (rand() % 100 + 51);
+	int percent = (GetRand(100) + 51);
 	no_ai_time = ( No_time * percent / 100);
 }
 

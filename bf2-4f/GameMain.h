@@ -8,10 +8,12 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 #include"UI.h"
+#include"BackGroundStar.h"
 
 #define ENEMY_NAMBER 6
 #define SECOND_TO_FRAME(sec) ((sec)*60)
 #define MAX_FLOOR 7+3
+#define MAX_STAR 40     //背景の星の最大数
 
 enum State {
     Normal,
@@ -28,9 +30,10 @@ private:
     ENEMY_AI* enemy_ai[ENEMY_NAMBER];
     StageObject* stageobject[MAX_FLOOR];
     Fish* fish;
-    Thunder* thunder;
+    Thunder* thunder[2];
     SoapBubble* soapbubble[6];
     UI* ui;
+    BackGroundStar* backgroundstar[MAX_STAR];
 
     int stage;      //現在のステージ数
     int seaImage;
@@ -43,6 +46,7 @@ private:
     int score;  //仮のスコア格納場所
     int max_enemy;      //敵の数
     int P_x, P_y;       //プレイヤー座標
+    int AI_Pattern[ENEMY_NAMBER];     //Aiパターン
     bool Avoidance[ENEMY_NAMBER]; // 回避フラグ
     bool damage_once;   //重なっている時一回だけダメージを与える
     int main_state;
@@ -64,10 +68,6 @@ private:
     int EnemuyMove_SE;          //トリ鳴き声SE
     int BaloonBurst_SE;			//バルーン破裂SE
     				
-  
-  
-    
-
 public:
 
     //コンストラクタ

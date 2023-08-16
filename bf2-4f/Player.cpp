@@ -575,7 +575,7 @@ void Player::Update()
 
 	if (is_die) {
 		player_state = SUBMERGED;
-		if (frame % 10 == 0)
+		if (frame % 5 == 0)
 		{
 			splash_anim++;
 			if (splash_anim >= 3)
@@ -675,7 +675,13 @@ void Player::Draw()const
 			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[27 + (player_anim % 2)*3], TRUE);
 			break;
 		case INVINCIBLE:
-			DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[2 + (player_anim % 2)], TRUE);
+			if (balloon == 2) {
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[2 + (player_anim % 2)], TRUE);
+			}
+			else
+			{
+				DrawTurnGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y, player_image[6 + (player_anim % 2)], TRUE);
+			}
 			break;
 		case SUBMERGED:
 			DrawGraphF(location.x - IMAGE_SHIFT_X, location.y - IMAGE_SHIFT_Y-45, splash_image[0 + splash_anim], TRUE);
@@ -942,13 +948,13 @@ void Player::ReflectionPX()
 {
 	last_input *= -1;
 	land_acs_left = 0;
-	acs_right = fabsf(acs_right - acs_left) * 0.8f;
+	acs_right = fabsf(acs_right - acs_left) * 1.0f;
 	acs_left = 0;
 }
 
 void Player::ReflectionPY()
 {
-	acs_down = fabsf(acs_up - acs_down) * 0.8f;
+	acs_down = fabsf(acs_up - acs_down) * 1.0f;
 	acs_up = 0;
 	jump_combo = 0;
 }
@@ -974,6 +980,7 @@ void Player::PlayerRespawn(float x, float y)
 		jump_int = 0;
 		jump_combo = 0;
 		balloon = 2;
+		splash_anim = 0;
 		death_flg = false;
 		thunder_death_flg = false;
 		death_acs = -120;
