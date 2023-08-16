@@ -24,7 +24,34 @@ Enemy::Enemy(int x,int y,int level)
 		getscore_y[i] = 0;
 		getscore_anim[i] = 0;
 		is_getscore[i] = false;
+		switch (i)
+		{
+		case 0:
+			getscore[i] = 500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_500.png");
+			break;
+		case 1:
+			getscore[i] = 750;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_750.png");
+			break;
+		case 2:
+			getscore[i] = 1000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1000.png");
+			break;
+		case 3:
+			getscore[i] = 1500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1500.png");
+			break;
+		case 4:
+			getscore[i] = 2000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_2000.png");
+			break;
+		}
 	}
+	EnemyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
+	crack_SE = LoadSoundMem("sounds/SE_crack.wav");
+	DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;

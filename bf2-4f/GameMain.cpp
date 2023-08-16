@@ -23,9 +23,14 @@ GameMain::GameMain()
 	CreateStage(stage);
 	fish = new Fish();
 	ui = new UI();
+	soundmanager = new SoundManager();
+	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
 
 	main_state = Normal;
 	Pouse = false;
+
+	para = false;
+
 	score = 0;
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
 	{
@@ -34,14 +39,6 @@ GameMain::GameMain()
 	damage_once = false;
 	clear_flg = false;
 	clear_wait = 0;
-
-	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
-	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
-	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
-	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
-	GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
-	GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
-	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 }
 
 GameMain::~GameMain()
@@ -72,6 +69,7 @@ GameMain::~GameMain()
 
 AbstractScene* GameMain::Update()
 {
+	soundmanager->Update();
 	//敵全撃破後の演出中で無ければ
 	switch (main_state)
 	{
@@ -117,6 +115,8 @@ AbstractScene* GameMain::Update()
 					//onshare_flgをfalseにする
 					player->SetOnShareFlg(false);
 				}
+
+			
 
 				for (int j = 0; j < max_enemy; j++)
 				{
@@ -171,10 +171,11 @@ AbstractScene* GameMain::Update()
 								default:
 									break;
 								}
-							} else {
+							}
+							else {
 								enemy_ai[j]->Set_AI_Cool(0);
 							}
-							
+
 							// プレイヤーが真上に来ると回避
 							if (E_x >= P_x - 50 && E_x <= P_x + 50 && E_y >= P_y && E_y < P_y + 100 && Avoidance[j] == FALSE)
 							{
@@ -251,6 +252,7 @@ AbstractScene* GameMain::Update()
 					}
 				}
 			}
+
 			for (int j = 0; j < max_enemy; j++)
 			{
 				//敵と敵の当たり判定
@@ -283,35 +285,60 @@ AbstractScene* GameMain::Update()
 					}
 				}
 			}
-		for (int i = 0; i < now_floor_max; i++)
-		{
-			//プレイヤーが各オブジェクトのいずれかに着地している場合
-			if (player->IsOnFloor(stageobject[i]) == true)
+			for (int i = 0; i < now_floor_max; i++)
 			{
-				//onshare_flgをtrueにする
-				player->SetOnShareFlg(true);
-			}
-		}
-		//敵の数だけ繰り返す
-		for (int i = 0; i < max_enemy; i++)
-		{
-			for (int j = 0; j < now_floor_max; j++)
-			{
-				//敵が各オブジェクトのいずれかに着地している場合
-				if (enemy[i]->IsOnFloor(stageobject[j]) == true)
+				//プレイヤーが各オブジェクトのいずれかに着地している場合
+				if (player->IsOnFloor(stageobject[i]) == true)
 				{
 					//onshare_flgをtrueにする
-					enemy[i]->SetOnShareFlg(true);
+					player->SetOnShareFlg(true);
 				}
 			}
-			enemy[i]->Update();
-			soapbubble[i]->Update();
-			if (player->GetPlayerDeathFlg() == false)
+			//敵の数だけ繰り返す
+			for (int i = 0; i < max_enemy; i++)
 			{
-				score += soapbubble[i]->HitPlayerCollision(player);
-			}
+				for (int j = 0; j < now_floor_max; j++)
+				{
+					//敵が各オブジェクトのいずれかに着地している場合
+					if (enemy[i]->IsOnFloor(stageobject[j]) == true)
+					{
+						//onshare_flgをtrueにする
+						enemy[i]->SetOnShareFlg(true);
+					}
+				}
+				if (enemy[i]->GetEnemyParaFlg() && para == false&&enemy[i]->GetEnemyDeathFlg() == false) {
+					soundmanager->PlayPara_BGM(1);
+					para = true;
+				}
+				
+				enemy[i]->Update();
+				soapbubble[i]->Update();
+				if (player->GetPlayerDeathFlg() == false)
+				{
+					score += soapbubble[i]->HitPlayerCollision(player);
+				}
 
 			}
+
+			if (para == false) {
+				soundmanager->PlayPara_BGM(0);
+			}
+			para = false;
+
+			if (player->GetFallFlg()) {
+				soundmanager->PlayFalling_SE();
+				player->ResetSEflg2();
+			}
+			if (player->GetSplashSEflg()) {
+				soundmanager->Stop_Fall();
+				soundmanager->PlaySplash_SE();
+				player->ResetSEflg3();
+			}
+			if (player->GetRestartSEflg()) {
+				soundmanager->PlayRestart_SE();
+				player->ResetSEflg1();
+			}
+			
 
 			player->Update();
 			fish->Update();
@@ -336,7 +363,7 @@ AbstractScene* GameMain::Update()
 				{
 					player->SetShowFlg(false);
 					player->SetIsDie(true);
-					PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
+					soundmanager->PlayEatable_SE();
 				}
 			}
 			else
@@ -366,7 +393,7 @@ AbstractScene* GameMain::Update()
 							enemy[i]->SetShowFlg(false);
 							enemy[i]->SetFlg(false);
 							enemy[i]->SetIsDie(true);
-							PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
+							soundmanager->PlayEatable_SE();
 						}
 						//念のため死んでいる判定にする
 						if (enemy[i]->GetShowFlg() == false)
@@ -412,10 +439,7 @@ AbstractScene* GameMain::Update()
 
 			//クリアチェック
 			clear_flg = true;
-			if (CheckSoundMem(StageClear_BGM) == FALSE)
-			{
-				PlaySoundMem(StageClear_BGM, DX_PLAYTYPE_BACK);
-			}
+
 			for (int i = 0; i < max_enemy; i++)
 			{
 				//敵一体でも生きていたらフラグを立てない
@@ -427,7 +451,7 @@ AbstractScene* GameMain::Update()
 			//全員やられてたら
 			if (clear_flg == true)
 			{
-				PlaySoundMem(StageClear_SE, DX_PLAYTYPE_BACK);
+				soundmanager->PlayStageClear_SE();
 				main_state = Clear;
 				clear_wait = 180;
 			}
@@ -436,8 +460,7 @@ AbstractScene* GameMain::Update()
 			{
 				main_state = Over;
 				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
-				GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
-				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
+				soundmanager->PlayGameOver_SE();
 				WaitTimer = SECOND_TO_FRAME(4);
 			}
 			//背景の星描画用処理
@@ -458,7 +481,8 @@ AbstractScene* GameMain::Update()
 			else
 			{
 				main_state = Over;
-				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
+				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+				soundmanager->PlayGameOver_SE();
 				WaitTimer = SECOND_TO_FRAME(4);
 			}
 		}
@@ -471,9 +495,6 @@ AbstractScene* GameMain::Update()
 		break;
 	default:
 		break;
-	}
-	if (CheckSoundMem(GameStart_BGM) == FALSE) {
-		
 	}
 	return this;
 }
@@ -576,18 +597,25 @@ void GameMain::Damage(int i)
 	{
 		player->BalloonDec();
 		damage_once = true;
+		soundmanager->PlayCrack_SE();
 	}
 
 	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす
 	if (enemy[i]->GetLocation().y > player->GetLocation().y + BALLOON_HEIGHT)
 	{
 		score += enemy[i]->ApplyDamege();
+		if (enemy[i]->GetEnemyParaFlg()) {
+			soundmanager->PlayDefeatTheEnemy_SE();
+		} else {
+			soundmanager->PlayCrack_SE();
+		}
 	}
 
 	//敵が風船を膨らませる前なら胴体に接触してもダメージが入る
 	if (enemy[i]->GetWaitFlg() == true)
 	{
 		score += enemy[i]->ApplyDamege();
+		soundmanager->PlayDefeatTheEnemy_SE();
 	}
 }
 
