@@ -1,6 +1,7 @@
 #include"DxLib.h"
 #include"SceneManager.h"
 #include"PadInput.h"
+#include"SoundPlayer.h"
 #include"Stage.h"
 #include"Title.h"
 #include"GameMain.h"
@@ -25,6 +26,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 
 	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
+
+    SoundPlayer::GetInstance();
 
 	SceneManager* sceneMng;
 
@@ -71,5 +74,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 		else { dNextTime = GetNowCount(); }		//補正
 	}
+
+	SoundPlayer::DeleteThis();	//サウンドプレイヤーの削除
+
 	return 0;
 }

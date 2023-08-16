@@ -45,10 +45,10 @@ Enemy::Enemy(int x,int y,int level)
 			break;
 		}
 	}
-	EnemyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
-	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
-	crack_SE = LoadSoundMem("sounds/SE_crack.wav");
-	DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
+	//EnemyMove_SE = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	//para_SE = LoadSoundMem("sounds/SE_parachute.wav");
+	//crack_SE = LoadSoundMem("sounds/SE_crack.wav");
+	//DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;

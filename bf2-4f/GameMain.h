@@ -8,6 +8,7 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 #include"UI.h"
+#include"SoundManager.h"
 #include"BackGroundStar.h"
 
 #define ENEMY_NAMBER 6
@@ -33,14 +34,13 @@ private:
     Thunder* thunder[2];
     SoapBubble* soapbubble[6];
     UI* ui;
+    SoundManager* soundmanager;
     BackGroundStar* backgroundstar[MAX_STAR];
 
     int stage;      //現在のステージ数
     int seaImage;
 
-    int GameStart_BGM;   //ゲームスタートBGM
-    int Eatable_SE;
-    int StageClear_SE;
+    bool para;
 
     bool Pouse;
     int score;  //仮のスコア格納場所

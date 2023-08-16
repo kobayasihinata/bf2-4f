@@ -42,6 +42,8 @@ private:
     int life;            //残機
     bool death_flg;      //死亡しているか判断
     bool thunder_death_flg; //雷で死亡しているか判断
+    bool fall_SE_flg;
+    bool Splash_SE_flg;
     int  death_acs;      //死亡中の落ち方制御
     int  death_wait;      //死亡後の待ち時間
     int  thunder_death_wait;      //死亡後の待ち時間
@@ -54,10 +56,7 @@ private:
 
     int player_image[31];   //プレイヤー画像
     int splash_image[3];   //プレイヤー画像
-    int PlayerJump_SE;
-    int Splash_SE;
-    int Falling_SE;
-    int Restart_SE;
+    bool Restart_SE_flg;        //リスタート
     int player_anim;        //プレイヤーアニメーション用
     int splash_anim;        //水没アニメーション用
     int turn_anim;          //水没アニメーション用
@@ -121,8 +120,22 @@ public:
     //プレイヤーが死んでいる途中かを取得する
     int GetPlayerDeathFlg() { return death_flg; }
 
+    int GetFallFlg() { return fall_SE_flg; }
+    int GetSplashSEflg() { return Splash_SE_flg; }
     //プレイヤーリスポーン
     void PlayerRespawn(float x, float y);
+
+    int GetRestartSEflg() { return Restart_SE_flg; }
+
+    void ResetSEflg1() { 
+        Restart_SE_flg = false;
+    }
+    void ResetSEflg2() {
+        fall_SE_flg = false;
+    }
+    void ResetSEflg3() {
+        Splash_SE_flg = false;
+    }
 
     //プレイヤーの風船を減らす
     void BalloonDec();
