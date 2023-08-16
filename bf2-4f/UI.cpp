@@ -33,16 +33,13 @@
  {
 	 return 0;
  }
- //void AbstractScene::DrawNumber(int x, int y, int score)const
- //{
-	// int a;
-	// int value = score;
-	// for (int i = 5; i >= 0; i--)
-	// {
-	//	 a = value % 10;
-	//	 value /= 10;
-	//	 //DrawFormatString(x, y + (i * 20), 0x00ff00, "%d", j);
-	//	 DrawGraph(x + (i * 20), y, numbers_image[a], TRUE);
-	// }
-	// DrawNumber(0, 0, score);
+ 
+ 
+ // •¶Žš‚Ì•\Ž¦(“_–Å)
+ //if (++g_WaitTime < 60) {
+	// SetFontSize(24);
+	// DrawString(150, 450, "--  Press [SPACE] Key  --", 0xFF0000);
+ //}
+ //else if (g_WaitTime > 60) {
+	// g_WaitTime = 0;
  //}
