@@ -31,9 +31,9 @@ private:
     int probability;                    //確率
     int frame_count;                    //フレーム計測用
     int player_flying_on_sea_timer;     //プレイヤーが海面を飛んでいる時の計測用
-    int rising_timer;
+    int rising_timer;                   //さかなが上昇している時間の計測
 
-    float speed = 1.6f;           //速さ
+    float speed = 1.6f;                  //速さ
     
     bool is_rising;                     //さかなが海から飛び上がっている？
     bool is_falling;                    //さかなが海に落ちている？
@@ -43,6 +43,7 @@ private:
     bool respawn_flg;                   //プレイヤーをリスポーンさせる？
     bool bubble_spawn_flg;              //シャボン玉をスポーンさせる？
     bool target_flg;                    //捕食対象はいる？
+    bool target_is_enemy;               //捕食対象は敵
 
     //BGM
     int Eatable_SE;			//サカナ落下BGM
@@ -67,6 +68,12 @@ public:
     //海面に何かがいるかチェックする
     bool CheckSeaSurface(BoxCollider* boxcollider);
 
+    //捕食対象が海面にいない場合の処理
+    void NotAtSeaSurface();
+
+    //捕食対象を決める
+    void SetTarget(BoxCollider* boxcollider);
+
     //is_preyed_on_playerの値を取得する
     bool GetIsPreyedOnPlayer() { return is_preying_on_player; }
 
@@ -79,10 +86,10 @@ public:
     //respawn_flgの値を引数に設定する
     void SetRespawnFlg(const bool flg) { respawn_flg = flg; }
 
-    //捕食対象が海面にいない場合の処理
-    void NotAtSeaSurface();
-
     //target_flgを設定する
     void SetTargetFlg(const bool flg) { target_flg = flg; }
+
+    //target_is_enemyを取得する
+    bool GetTargetIsEnemy() { return target_is_enemy; }
 };
 
