@@ -13,8 +13,9 @@ public:
 	UI();  
 	~UI();
 	void Draw(int life)const;
+
 	//数字の描画
-	void DrawNumber(int x, int y, int score)const;
+	void DrawNumber(int x, int y, int score,int wordcount)const;
 
 	//ハイスコアの読込
 	void ReadHighScore();

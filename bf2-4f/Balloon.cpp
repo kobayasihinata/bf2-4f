@@ -54,7 +54,7 @@ void Balloon::Update()
 
 	//ˆÚ“®
 	location.x = location.x + (acs_right * 0.01) - (acs_left * 0.01);
-	location.y -= 1.2;
+	location.y--;
 
 	if (location.y < -40)
 	{

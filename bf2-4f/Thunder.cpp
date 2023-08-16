@@ -4,7 +4,7 @@
 #include"Define.h"
 #include"Player.h"
 
-#define DEBUG
+//#define DEBUG
 #define RANDOM
 //#define CONSTANT
 

@@ -16,12 +16,18 @@ BonusStage::BonusStage()
 	get_balloon_count = 0;
 	result_flg = false;
 	pause = false;
-	once = false;
+	add_once = false;
+	play_once = false;
 	result_time = 0;
 	score = 0;
 	wait_time = 0;
 	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Title/Title_CursorAnimation.png", 4, 4, 1, 32, 64, balloon_image);
+
+	trip_bgm = LoadSoundMem("sounds/BGM_Trip.wav");
+	perfect_se = LoadSoundMem("sounds/SE_Perfect.wav");
+	bubble_se = LoadSoundMem("sounds/SE_Bubble.wav");
+	PlaySoundMem(trip_bgm, DX_PLAYTYPE_BACK);
 }
 
 BonusStage::~BonusStage()
@@ -32,6 +38,8 @@ BonusStage::~BonusStage()
 	{
 		delete balloon[i];
 	}
+	DeleteSoundMem(trip_bgm);
+	DeleteSoundMem(perfect_se);
 }
 
 AbstractScene* BonusStage::Update()
@@ -88,6 +96,7 @@ AbstractScene* BonusStage::Update()
 
 			if (EndCheck() == true)
 			{
+				StopSoundMem(trip_bgm);
 				score = get_balloon_count * 300;
 				result_flg = true;
 			}
@@ -96,22 +105,33 @@ AbstractScene* BonusStage::Update()
 	else
 	{
 		result_time++;
-		if (result_time > 120)
+		if (result_time > 60 && get_balloon_count == 20 && play_once == false)
+		{
+			PlaySoundMem(perfect_se, DX_PLAYTYPE_BACK);
+			play_once = true;
+		}
+		if (result_time > 150)
 		{
 			if (result_time % 3 == 0)
 			{
 				if (score > 0)
 				{
 					score -= 100;
+					PlaySoundMem(bubble_se, DX_PLAYTYPE_BACK);
 					GameMain::AddScore(100);
 				}
 			}
 			if (score == 0)
 			{
-				if (get_balloon_count == 20 && once == false)
+				if (get_balloon_count == 20 && add_once == false && wait_time > 10)
 				{
 					GameMain::AddScore(10000);
-					once = true;
+					PlaySoundMem(bubble_se, DX_PLAYTYPE_BACK);
+					add_once = true;
+				}
+				if (wait_time > 15)
+				{
+					StopSoundMem(bubble_se);
 				}
 				wait_time++;
 				if (wait_time > 120)

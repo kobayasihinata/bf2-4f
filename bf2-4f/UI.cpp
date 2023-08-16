@@ -32,16 +32,16 @@ void UI::Draw(int life)const
 	DrawGraph(10, 7, score_image, TRUE);
 
 	//スコア表示（仮）
-	DrawNumber(21, 0, GameMain::GetScore());
+	DrawNumber(21, 0, GameMain::GetScore(),6);
 
 	//ハイスコア表示
 	if (GameMain::GetScore() > high_score)
 	{
-		DrawNumber(200, 0, GameMain::GetScore());
+		DrawNumber(200, 0, GameMain::GetScore(),6);
 	}
 	else
 	{
-		DrawNumber(200, 0, high_score);
+		DrawNumber(200, 0, high_score,6);
 	}
   
 	//プレイヤー残機表示
@@ -51,12 +51,12 @@ void UI::Draw(int life)const
 	}
 }
 
-void UI::DrawNumber(int x, int y, int score)const
+void UI::DrawNumber(int x, int y, int score, int wordcount)const
  {
 	 int a;
 	int value = score;
 
-	for (int i = 5; i >= 0; i--)
+	for (int i = wordcount-1; i >= 0; i--)
 	 {
 		a = value % 10;
 		value /= 10;

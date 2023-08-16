@@ -48,9 +48,12 @@ private:
     bool clear_flg;     //次のステージへ遷移する条件を調べる用
     int clear_wait;     //次のステージへ遷移する前の待ち時間
     int now_floor_max;  //現在の床の数
-    int GameOver_Img;
+    int GameOver_Img;   //ゲームオーバー画像  
+    int phase_image;    //ステージ数表示画像
     int GameOver_BGM;   //ゲームオーバーBGM
     int WaitTimer;
+    int phase_disptime; //ステージ数画像表示時間測定用
+    int phase_disp;     //ステージ数画像表示点滅用
 
     //BGM
     int Continue_BGM;			//コンテニューBGM

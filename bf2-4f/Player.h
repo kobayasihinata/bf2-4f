@@ -65,6 +65,7 @@ private:
     int Falling_SE;
     int Restart_SE;
     int player_walk_se;     //歩行SE
+    int damage_se;     //被ダメージSE
     bool sound_flg;         //サウンド用
 
  

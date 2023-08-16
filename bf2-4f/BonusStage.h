@@ -29,15 +29,21 @@ private:
 
     bool pause;             //一時停止
     bool result_flg;        //結果を表示する
-    bool once;              //一回だけ行う用
+    bool add_once;              //一回だけ行う用
+    bool play_once;              //一回だけ行う用
     int result_time;    //演出用
 
     int score;  //このステージで獲得したスコア
     int wait_time;  //加算後の待機時間
     int player_image[31];   //プレイヤー画像
     int balloon_image[4];   //画像用変数
+
     //BGM
-   // int Trip_BGM;	
+    int trip_bgm;	
+
+    //SE
+    int perfect_se;
+    int bubble_se;  //ポイント加算時SE代用
 
 
 public:

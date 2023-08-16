@@ -35,6 +35,8 @@ GameMain::GameMain(int beforescene)
 	fish = new Fish();
 	ui = new UI();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
+	phase_image = LoadGraph("images/UI/UI_Phase.png");
+
 	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
 	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
 	para_SE = LoadSoundMem("sounds/SE_parachute.wav");
@@ -51,6 +53,8 @@ GameMain::GameMain(int beforescene)
 	damage_once = false;
 	clear_flg = false;
 	clear_wait = 0;
+	phase_disptime = 0;
+	phase_disp = 0;
 }
 
 GameMain::~GameMain()
@@ -101,7 +105,10 @@ AbstractScene* GameMain::Update()
 			}
 			if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
 			{
-				player->SetThunderDeath(true);
+				for (int j = 0; j < max_enemy; j++)
+				{
+					score += enemy[j]->ApplyDamege();
+				}
 			}
 			//現在のstageobjectの数だけループする
 			for (int i = 0; i < now_floor_max; i++)
@@ -485,10 +492,19 @@ AbstractScene* GameMain::Update()
 			{
 				backgroundstar[i]->Update();
 			}
-		}
-		if (PAD_INPUT::OnButton(XINPUT_BUTTON_Y))
-		{
-			return new BonusStage();
+
+			//現在のステージ数描画用
+			if (++phase_disptime > 300)
+			{
+				phase_disptime = 301;
+			}
+			else
+			{
+				if (++phase_disp > 60)
+				{
+					phase_disp = 0;
+				}
+			}
 		}
 		break;
 	case Clear:
@@ -497,6 +513,7 @@ AbstractScene* GameMain::Update()
 		{
 			if (stage < MAX_STAGE - 1)
 			{
+				phase_disptime = 0;
 				stage++;
 				if (stage == 3)
 				{
@@ -615,6 +632,14 @@ void GameMain::Draw()const
 	}
 	fish->Draw();
 	ui->Draw(player->GetPlayerLife());
+	if (phase_disptime < 300)
+	{
+		if (phase_disp < 30)
+		{
+			DrawGraph(170, 30, phase_image, true);
+			ui->DrawNumber(285, 20, stage + 1, 2);
+		}
+	}
 	DrawGraph(159, 444, seaImage, TRUE);
 
 	if (main_state == Over) {

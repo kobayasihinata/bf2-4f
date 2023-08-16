@@ -46,6 +46,8 @@ Player::Player()
 	Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
 	Restart_SE = LoadSoundMem("sounds/SE_Restart.wav");
 	player_walk_se = LoadSoundMem("sounds/SE_PlayerWalk.wav");
+	damage_se = LoadSoundMem("sounds/SE_crack.wav");
+
 	player_anim = 0;
 	splash_anim = 0;
 	turn_anim = 0;
@@ -60,10 +62,20 @@ Player::Player()
 
 Player::~Player()
 {
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 31; i++)
 	{
 		DeleteGraph(player_image[i]);
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		DeleteGraph(splash_image[i]);
+	}
+	DeleteSoundMem(PlayerJump_SE);
+	DeleteSoundMem(Splash_SE);
+	DeleteSoundMem(Falling_SE);
+	DeleteSoundMem(Restart_SE);
+	DeleteSoundMem(player_walk_se);
+	DeleteSoundMem(damage_se);
 }
 
 void Player::Update()
@@ -1000,9 +1012,14 @@ void Player::PlayerRespawn(float x, float y)
 
 void Player::BalloonDec()
 {
+
 	if (--balloon <= 0)
 	{
 		death_flg = true;
+	}
+	else
+	{
+		PlaySoundMem(damage_se, DX_PLAYTYPE_BACK);
 	}
 }
 void Player::ResetPlayerPos(int x,int y)
