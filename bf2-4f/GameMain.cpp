@@ -322,15 +322,13 @@ AbstractScene* GameMain::Update()
 				fish->NotAtSeaSurface();
 			}
 
-			fish->SetTarget(player);
-
 			//海面にプレイヤーがいる場合
 			if (fish->CheckSeaSurface(player) == true)
 			{
-				if (fish->GetTargetIsEnemy())
-				{
-					fish->SetTargetFlg(true);
-				}
+				//if (fish->GetTargetIsEnemy())
+				//{
+				//	fish->SetTargetFlg(true);
+				//}
 				if (player->GetPlayerState() < DEATH)
 				{
 					//捕食処理：ターゲットはプレイヤー

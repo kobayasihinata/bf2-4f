@@ -3,7 +3,7 @@
 #include"DxLib.h"
 #include"Define.h"
 
-#define DEBUG
+//#define DEBUG
 
 Fish::Fish()
 {
@@ -79,11 +79,16 @@ void Fish::Update()
 		speed = .6f;
 	}
 
+	if (is_rising == true && is_falling == true)
+	{
+		is_rising = false;
+	}
+
 	if (is_rising == true)
 	{
 		location.y -= speed;
 		//0.6•bŒo‰ß‚µ‚½‚ç‹­§“I‚ÉŠC–Ê‚Ö–ß‚·
-		if (++rising_timer > SECOND_TO_FRAME(0.6f))
+		if (++rising_timer > SECOND_TO_FRAME(0.8f))
 		{
   			target_flg = true;
 			is_rising = false;
@@ -294,7 +299,7 @@ void Fish::NotAtSeaSurface()
 
 void Fish::SetTarget(BoxCollider* boxcollider)
 {
-	if (is_rising = true &&
+	if (is_rising == true &&
 		boxcollider->GetIsPlayer() == false)
 	{
 		target_is_enemy = true;
