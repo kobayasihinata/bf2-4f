@@ -315,6 +315,7 @@ AbstractScene* GameMain::Update()
 
 			player->Update();
 			fish->Update();
+			ui->Update();
 
 			//ƒvƒŒƒCƒ„[‚ªŽ€‚ñ‚Å‚¢‚éê‡ŠC‚É–ß‚é
 			if (player->GetIsDie() == true)
@@ -604,6 +605,8 @@ int GameMain::NextStage()
 		backgroundstar[i]->GetType(stage);
 	}
 	fish = new Fish();
+
+	ui->SetFrame(0);
 	CreateStage(stage);
 	
 	main_state = Normal;
