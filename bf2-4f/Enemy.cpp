@@ -81,6 +81,7 @@ Enemy::Enemy(int x,int y,int level)
 	last_input = 1;
 	test_score = 0;
 
+	splash_SE_flg = false;
 	//画像読込
 	for (int i = 0; i < 5; i++)
 	{
@@ -122,12 +123,6 @@ Enemy::Enemy(int x,int y,int level)
 	}
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
 
-	//SE読込
-	enemy_move_se = LoadSoundMem("sounds/SE_EnemyMove.wav");
-	para_se = LoadSoundMem("sounds/SE_parachute.wav");
-	crack_se = LoadSoundMem("sounds/SE_crack.wav");
-	defeat_the_enemy_se = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
-
 }
 
 Enemy::~Enemy()
@@ -144,10 +139,6 @@ Enemy::~Enemy()
 	{
 		DeleteGraph(splash_image[i]);
 	}
-	DeleteSoundMem(enemy_move_se);
-	DeleteSoundMem(para_se);
-	DeleteSoundMem(crack_se);
-	DeleteSoundMem(defeat_the_enemy_se);
 }
 
 void Enemy::Update()
@@ -329,9 +320,9 @@ void Enemy::Update()
 				//ジャンプ入力されている時の処理
 				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
-					if (CheckSoundMem(enemy_move_se) == FALSE) {
+					/*if (CheckSoundMem(enemy_move_se) == FALSE) {
 						PlaySoundMem(enemy_move_se, DX_PLAYTYPE_BACK);
-					}
+					}*/
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < E_Max_Speed[enemy_level - 1])
@@ -458,7 +449,6 @@ void Enemy::Update()
 					
 					if (crack == 0)
 					{
-						PlaySoundMem(crack_se, DX_PLAYTYPE_BACK);
 						acs_down = 0;
 						acs_left = 0;
 						acs_right = 0;
@@ -482,9 +472,6 @@ void Enemy::Update()
 						//パラシュート状態に変化
 						para_flg = true;
 						damage = 11;
-					}
-					if (CheckSoundMem(para_se) == FALSE) {
-						PlaySoundMem(para_se, DX_PLAYTYPE_BACK);
 					}
 				}
 			}
@@ -557,6 +544,7 @@ void Enemy::Update()
 	{
 		underwater_flg = true;
 		is_die = true;
+		splash_SE_flg = true;
 		enemy_state = E_SUBMERGED;
 		location.y = 471;
 		if (frame % 5 == 0)
@@ -572,6 +560,7 @@ void Enemy::Update()
 			}
 		}
 	}
+	if (is_die) para_flg = false;
 	if (--no_ai_time <= 0) {
 		no_ai_time = 0;
 	}
@@ -913,7 +902,7 @@ void Enemy::BalloonDec()
 void Enemy::EnemyDeath()
 {
 	death_flg = true;
-	PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
+	//PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyMoveRight()

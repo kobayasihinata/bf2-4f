@@ -30,6 +30,7 @@ GameMain::GameMain()
 	Pouse = false;
 
 	para = false;
+	E_jump = false;
 
 	score = 0;
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
@@ -75,6 +76,7 @@ AbstractScene* GameMain::Update()
 	{
 	case Normal:
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			soundmanager->Stop_All_Sound();
 			Pouse = !Pouse;
 		}
 		if (Pouse == false) {
@@ -302,9 +304,18 @@ AbstractScene* GameMain::Update()
 						enemy[i]->SetOnShareFlg(true);
 					}
 				}
-				if (enemy[i]->GetEnemyParaFlg() && para == false&&enemy[i]->GetEnemyDeathFlg() == false) {
-					soundmanager->PlayPara_BGM(1);
+				if (enemy[i]->GetEnemyJumpflg() && E_jump == false) {
+					soundmanager->PlayE_Move_SE();
+					E_jump = true;
+				}
+				// パラシュートSE
+				if (enemy[i]->GetEnemyParaFlg() && para == false) {
+					soundmanager->PlayPara_SE();
 					para = true;
+				}
+				if (enemy[i]->GetE_Splash_SE_flg()) {
+					soundmanager->PlaySplash_SE();
+					enemy[i]->Reset_SE_flg1();
 				}
 				
 				enemy[i]->Update();
@@ -316,23 +327,35 @@ AbstractScene* GameMain::Update()
 
 			}
 
-			if (para == false) {
-				soundmanager->PlayPara_BGM(0);
+			if (E_jump == false) {
+				soundmanager->Stop_E_Move();
 			}
+			if (para == false) {
+				soundmanager->Stop_Para();
+			}
+			
+			E_jump = false;
 			para = false;
 
-			if (player->GetFallFlg()) {
-				soundmanager->PlayFalling_SE();
+			if (player->GetWalkFlg()) {
+				soundmanager->PlayP_Walk_SE();
+				player->ResetSEflg1();
+			}
+			if (player->GetJumpFlg()) {
+				soundmanager->PlayP_Jump_SE();
 				player->ResetSEflg2();
 			}
-			if (player->GetSplashSEflg()) {
-				soundmanager->Stop_Fall();
-				soundmanager->PlaySplash_SE();
+			if (player->GetFallFlg()) {
+				soundmanager->PlayFalling_SE();
 				player->ResetSEflg3();
+			}
+			if (player->GetSplashSEflg()) {
+				soundmanager->PlaySplash_SE();
+				player->ResetSEflg4();
 			}
 			if (player->GetRestartSEflg()) {
 				soundmanager->PlayRestart_SE();
-				player->ResetSEflg1();
+				player->ResetSEflg5();
 			}
 			
 
@@ -478,6 +501,8 @@ AbstractScene* GameMain::Update()
 		{
 			if (stage < MAX_STAGE - 1)
 			{
+				soundmanager->Reset_flg();
+				soundmanager->Stop_All_Sound();
 				NextStage();
 			}
 			else

@@ -31,11 +31,13 @@ private:
     int acs_down;                //下加速度
     int land_acs_left;           //左加速度(地面にいるとき)
     int land_acs_right;          //右加速度(地面にいるとき)
+    bool walk_SE_flg;
 
     int jump_int;                //上昇ボタン間隔
     int jump_combo;              //連打数
     int jump_cd;                 //ジャンプ連打中に下に落ちる速度を遅らせる
     bool jump_flg;               //ジャンプ中か判断
+    bool jump_SE_flg;
 
     int frame;                   //フレーム計測用
     int balloon;                 //残り風船
@@ -64,7 +66,7 @@ private:
     int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;      //移動方向保存用
     int last_input;         //入力方向保存用(-1=左 0=どこも押していない　1=右)
-    bool sound_flg;         //サウンド用
+    bool soundflg;         //サウンド用
 
  
 public:
@@ -119,6 +121,8 @@ public:
     //プレイヤーが死んでいる途中かを取得する
     int GetPlayerDeathFlg() { return death_flg; }
 
+    int GetWalkFlg() { return walk_SE_flg; }
+    int GetJumpFlg() { return jump_SE_flg; }
     int GetFallFlg() { return fall_SE_flg; }
     int GetSplashSEflg() { return Splash_SE_flg; }
     //プレイヤーリスポーン
@@ -126,14 +130,20 @@ public:
 
     int GetRestartSEflg() { return Restart_SE_flg; }
 
-    void ResetSEflg1() { 
-        Restart_SE_flg = false;
+    void ResetSEflg1() {
+        walk_SE_flg = false;
     }
     void ResetSEflg2() {
-        fall_SE_flg = false;
+        jump_SE_flg = false;
     }
     void ResetSEflg3() {
+        fall_SE_flg = false;
+    }
+    void ResetSEflg4() {
         Splash_SE_flg = false;
+    }
+    void ResetSEflg5() {
+        Restart_SE_flg = false;
     }
 
     //プレイヤーの風船を減らす

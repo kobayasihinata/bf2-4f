@@ -16,10 +16,12 @@ Player::Player()
 	acs_down = 0;
 	land_acs_left = 0;
 	land_acs_right = 0;
+	walk_SE_flg = false;
 	jump_int = 0;
 	jump_combo = 0;
 	jump_cd = 0;
 	jump_flg = false;
+	jump_SE_flg = false;
 	frame = 0;
 	balloon = 2;
 	life = 2;
@@ -40,6 +42,8 @@ Player::Player()
 
 	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
+	fall_SE_flg = false;
+	Splash_SE_flg = false;
 	Restart_SE_flg = false;
 	player_anim = 0;
 	splash_anim = 0;
@@ -126,6 +130,7 @@ void Player::Update()
 					else
 					{
 						player_state = WALK_RIGHT;
+						walk_SE_flg = true;
 						last_input = 1;
 						if (land_acs_right < MAX_SPEED_LAND)
 						{
@@ -168,6 +173,7 @@ void Player::Update()
 					else
 					{
 						player_state = WALK_LEFT;
+						walk_SE_flg = true;
 						last_input = -1;
 						if (land_acs_left < MAX_SPEED_LAND)
 						{
@@ -206,7 +212,8 @@ void Player::Update()
 				if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B))
 				{
 					jump_flg = true;
-
+					jump_SE_flg = true;
+					
 					if (acs_down >= 0)
 					{
 						acs_down -= 2;
@@ -294,6 +301,7 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
+					jump_SE_flg = true;
 
 					//上昇時に左入力がされていたら左に加速する
 					if (PAD_INPUT::GetLStick().ThumbX < -10000)
