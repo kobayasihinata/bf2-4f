@@ -560,7 +560,10 @@ void Enemy::Update()
 			}
 		}
 	}
-	if (is_die) para_flg = false;
+	if (is_die) {
+		jump_flg = false;
+		para_flg = false;
+	}
 	if (--no_ai_time <= 0) {
 		no_ai_time = 0;
 	}
