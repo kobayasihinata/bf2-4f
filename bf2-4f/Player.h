@@ -44,6 +44,7 @@ private:
     bool thunder_death_flg;      //—‹‚Å€–S‚µ‚Ä‚¢‚é‚©”»’f
     bool fall_SE_flg;
     bool Splash_SE_flg;
+    bool Restart_SE_flg;
     int  death_acs;              //€–S’†‚Ì—‚¿•û§Œä
     int  death_wait;             //€–SŒã‚Ì‘Ò‚¿ŠÔ
     int  thunder_death_wait;     //€–SŒã‚Ì‘Ò‚¿ŠÔ

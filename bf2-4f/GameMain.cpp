@@ -647,7 +647,7 @@ void GameMain::Damage(int i)
 		damage_once = false;
 	}
 
-	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす
+	//プレイヤーの25下の座標に敵がいるなら敵の風船を減らす
 	if (enemy[i]->GetLocation().y > player->GetLocation().y + BALLOON_HEIGHT)
 	{
 		score += enemy[i]->ApplyDamege();

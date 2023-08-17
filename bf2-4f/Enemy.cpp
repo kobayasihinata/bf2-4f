@@ -48,8 +48,8 @@ Enemy::Enemy(int x,int y,int level)
 			break;
 		}
 	}
-	crack_SE = LoadSoundMem("sounds/SE_crack.wav");
-	DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
+	//crack_SE = LoadSoundMem("sounds/SE_crack.wav");
+	//DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
@@ -914,13 +914,11 @@ int Enemy::ApplyDamege()
 void Enemy::BalloonDec()
 {
 	--balloon;
-	PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyDeath()
 {
 	death_flg = true;
-	PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyMoveRight()
@@ -1016,10 +1014,4 @@ void Enemy::GetScoreStart(int i)
 	is_getscore[i + enemy_level - 1] = true;
 	getscore_x[i + enemy_level - 1] = location.x;
 	getscore_y[i + enemy_level - 1] = location.y;
-}
-
-void Enemy::StopAllSE() 
-{ 
-	StopSoundMem(crack_SE); 
-	StopSoundMem(DefeatTheEnemy_SE);
 }
