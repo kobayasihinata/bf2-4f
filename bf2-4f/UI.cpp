@@ -2,49 +2,84 @@
 #include "UI.h"
 #include "GameMain.h"
 
- UI::UI() 
- {
-	UI_image1 = LoadGraph("images/UI/UI_HiScore.png");
-	UI_image2 = LoadGraph("images/UI/UI_Score.png");
-	UI_image4 = LoadGraph("images/UI/UI_Stock.png");
-	UI_image5 = LoadGraph("images/UI/UI_GameOver.png"); 
-	UI_image6 = LoadGraph("images/UI/UI_Phase.png");
+UI::UI() 
+{
+	highscore_image = LoadGraph("images/UI/UI_HiScore.png");
+	score_image = LoadGraph("images/UI/UI_Score.png");
+	player_life_image = LoadGraph("images/UI/UI_Stock.png");
+	high_score = 0;
+	ReadHighScore();
+
+	LoadDivGraph("images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, numbers_image);
+}
+
+UI::~UI()
+{
+	DeleteGraph(highscore_image);
+	DeleteGraph(score_image);
+	DeleteGraph(player_life_image);
 	for (int i = 0; i < 10; i++)
 	{
-		UI_image3[i] = NULL;
+		DeleteGraph(numbers_image[i]);
 	}
-	LoadDivGraph("images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, UI_image3);
-	Score_image = LoadGraph("images/Score/GetScore_500.png");
-	Score_image = LoadGraph("images/Score/GetScore_750.png");
-	Score_image = LoadGraph("images/Score/GetScore_1000.png");
-	Score_image = LoadGraph("images/Score/GetScore_1500.png");
-	Score_image = LoadGraph("images/Score/GetScore_2000.png");
 }
-  
-  void UI::Draw()const
-  {
-      DrawGraph(310, 7, UI_image1, TRUE);
-	  DrawGraph(155, 5, UI_image2, TRUE);
-	  DrawGraph(261, 25, UI_image4, TRUE);
-	  //DrawGraph(210, 205, UI_image5, TRUE);
-	  //DrawGraph(210, 25, UI_image6, TRUE);
-	  //DrawGraph(190, 20, UI_image3[0], TRUE);
-  }
+void UI::Draw(int life)const
+{
+	DrawGraph(170, 7, highscore_image, TRUE);
+	DrawGraph(10, 7, score_image, TRUE);
 
- int UI::Score()
+	//スコア表示（仮）
+	DrawNumber(21, 0, GameMain::GetScore(),6);
+
+	//ハイスコア表示
+	if (GameMain::GetScore() > high_score)
+	{
+		DrawNumber(200, 0, GameMain::GetScore(),6);
+	}
+	else
+	{
+		DrawNumber(200, 0, high_score,6);
+	}
+  
+	//プレイヤー残機表示
+	for (int i = 0; i < life; i++)
+	{
+		DrawGraph(110-(i*17), 25, player_life_image, TRUE);
+	}
+}
+
+void UI::DrawNumber(int x, int y, int score, int wordcount)const
  {
-	 return 0;
+	 int a;
+	int value = score;
+
+	for (int i = wordcount-1; i >= 0; i--)
+	 {
+		a = value % 10;
+		value /= 10;
+		//DrawFormatString(x, y + (i * 20), 0x00ff00, "%d", j);
+		DrawGraph(x + (i * 20), y, numbers_image[a], TRUE);
+	 }
  }
- //void AbstractScene::DrawNumber(int x, int y, int score)const
- //{
-	// int a;
-	// int value = score;
-	// for (int i = 5; i >= 0; i--)
-	// {
-	//	 a = value % 10;
-	//	 value /= 10;
-	//	 //DrawFormatString(x, y + (i * 20), 0x00ff00, "%d", j);
-	//	 DrawGraph(x + (i * 20), y, numbers_image[a], TRUE);
-	// }
-	// DrawNumber(0, 0, score);
- //}
+
+void UI::ReadHighScore()
+{
+	FILE* fp;
+#pragma warning(disable:4996)
+	//ファイルオープン
+	fp = fopen("dat/HighScore.txt", "r");
+	fscanf(fp, "%6d", &high_score);
+	//ファイルクローズ
+	fclose(fp);
+}
+
+void UI::SaveHighScore()
+{
+	FILE* fp;
+#pragma warning(disable:4996)
+	//ファイルオープン
+	fp = fopen("dat/HighScore.txt", "w");
+	fprintf(fp, "%6d", GameMain::GetScore());
+	//ファイルクローズ
+	fclose(fp);
+}

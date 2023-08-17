@@ -2,6 +2,8 @@
 
 //他の所でも使いそうな情報はここに格納
 
+#define FRAMERATE 60.0				//フレームレート
+
 #define SCREEN_WIDTH 640			//画面の横幅
 #define SCREEN_HEIGHT 480			//画面の高さ
 

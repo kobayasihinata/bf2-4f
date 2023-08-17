@@ -1,13 +1,24 @@
 #include "Dxlib.h"
 #include "GameMain.h"
 #include "Title.h"
-#include"PadInput.h"
-#include"Pause.h"
+#include "BonusStage.h"
+#include "PadInput.h"
+#include "Pause.h"
 
-GameMain::GameMain()
+static int score;      //現在のステージ数
+static int stage;      //現在のステージ数
+
+GameMain::GameMain(int beforescene)
 {
-	stage = 0;
 	player = new Player();
+	//遷移前のステージがタイトルなら
+	if (beforescene == 0)
+	{
+		//ステージとスコアの情報をリセットする
+		DataReset();
+		//プレイヤーの情報をリセットする
+		player->ResetPlayerLife();
+	}
 	for (int i = 0; i < MAX_FLOOR; i++)
 	{
 		stageobject[i] = new StageObject;
@@ -20,19 +31,18 @@ GameMain::GameMain()
 	{
 		backgroundstar[i] = new BackGroundStar(stage);
 	}
-	CreateStage(stage);
+	NextStage();
 	fish = new Fish();
 	ui = new UI();
 	soundmanager = new SoundManager();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
-
+	phase_image = LoadGraph("images/UI/UI_Phase.png");
 	main_state = Normal;
 	Pouse = false;
 
 	para = false;
 	E_jump = false;
 
-	score = 0;
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
 	{
 		Avoidance[i] = FALSE;
@@ -40,6 +50,8 @@ GameMain::GameMain()
 	damage_once = false;
 	clear_flg = false;
 	clear_wait = 0;
+	phase_disptime = 0;
+	phase_disp = 0;
 }
 
 GameMain::~GameMain()
@@ -65,7 +77,9 @@ GameMain::~GameMain()
 	{
 		delete thunder[i];
 	}
-	//DeleteGraph(seaImage);
+	delete ui;
+	DeleteGraph(seaImage);
+	DeleteGraph(phase_image);
 }
 
 AbstractScene* GameMain::Update()
@@ -233,7 +247,6 @@ AbstractScene* GameMain::Update()
 										player->ReflectionMY();
 									}
 									Damage(j);
-
 									break;
 								default:
 									damage_once = false;
@@ -416,6 +429,7 @@ AbstractScene* GameMain::Update()
 						{
 							enemy[i]->SetEnemyUnderWaterFlg(false);
 							enemy[i]->SetShowFlg(false);
+							enemy[i]->SetParaFlg(false);
 							enemy[i]->SetFlg(false);
 							enemy[i]->SetIsDie(true);
 							soundmanager->PlayEatable_SE();
@@ -493,6 +507,19 @@ AbstractScene* GameMain::Update()
 			{
 				backgroundstar[i]->Update();
 			}
+
+			//現在のステージ数描画用
+			if (++phase_disptime > 300)
+			{
+				phase_disptime = 301;
+			}
+			else
+			{
+				if (++phase_disp > 60)
+				{
+					phase_disp = 0;
+				}
+			}
 		}
 		break;
 	case Clear:
@@ -503,6 +530,12 @@ AbstractScene* GameMain::Update()
 			{
 				soundmanager->Reset_flg();
 				soundmanager->Stop_All_Sound();
+				phase_disptime = 0;
+				stage++;
+				if (stage == 3)
+				{
+					return new BonusStage();
+				}
 				NextStage();
 			}
 			else
@@ -515,8 +548,13 @@ AbstractScene* GameMain::Update()
 		}
 		break;
 	case Over:
-		PAD_INPUT::UpdateKey();
+		//PAD_INPUT::UpdateKey();
 		if (--WaitTimer <= 0 || PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			if (GameMain::GetScore() > ui->GetHighScore())
+			{
+				UI::SaveHighScore();
+			}
+			DataReset();
 			return new Title();
 		}
 		break;
@@ -599,16 +637,20 @@ void GameMain::Draw()const
 		{
 			enemy[i]->Draw();
 			soapbubble[i]->Draw();
+			//DrawFormatString(0, 0 + (i * 20), 0x00ff00, "%d", enemy[i]->GetEnemyParaFlg());
 		}
 	}
 	fish->Draw();
-	ui->Draw();
+	ui->Draw(player->GetPlayerLife());
+	if (phase_disptime < 300)
+	{
+		if (phase_disp < 30)
+		{
+			DrawGraph(170, 30, phase_image, true);
+			ui->DrawNumber(285, 20, stage + 1, 2);
+		}
+	}
 	DrawGraph(159, 444, seaImage, TRUE);
-
-	//スコア表示（仮）
-	DrawNumber(170, 0, score);
-	//スコア表示（仮）
-	DrawNumber(350, 0, score);
 
 	if (main_state == Over) {
 		DrawGraph(221, 233, GameOver_Img, 1);
@@ -618,14 +660,18 @@ void GameMain::Draw()const
 void GameMain::Damage(int i)
 {
 	//プレイヤーの25上の座標に敵がいるならプレイヤーの風船を減らす
-	if (enemy[i]->GetLocation().y + BALLOON_HEIGHT < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && enemy[i]->GetWaitFlg() == false && damage_once == false)
+	if (enemy[i]->GetLocation().y + 25 < player->GetLocation().y && enemy[i]->GetEnemyParaFlg() == false && enemy[i]->GetWaitFlg() == false && damage_once == false)
 	{
 		player->BalloonDec();
 		damage_once = true;
 		soundmanager->PlayCrack_SE();
 	}
+	else
+	{
+		damage_once = false;
+	}
 
-	//プレイヤーの25下の座標に敵がいるならプレイヤーの風船を減らす
+	//プレイヤーの25下の座標に敵がいるなら敵の風船を減らす
 	if (enemy[i]->GetLocation().y > player->GetLocation().y + BALLOON_HEIGHT)
 	{
 		score += enemy[i]->ApplyDamege();
@@ -658,7 +704,7 @@ void GameMain::NextStage()
 
 void GameMain::CreateStage(int stage)
 {
-	player->ResetPlayerPos();
+	player->ResetPlayerPos(PLAYER_RESPAWN_POS_X, PLAYER_RESPAWN_POS_Y);
 	switch (stage)
 	{
 	case 0:
@@ -754,7 +800,7 @@ void GameMain::CreateStage(int stage)
 		stageobject[5]->SetInit(120, 250, 18, 60, 0);
 		stageobject[6]->SetInit(310, 180, 18, 60, 0);
 
-		for (int i = 7; i < MAX_FLOOR; i++)
+		for (int i = now_floor_max; i < MAX_FLOOR; i++)
 		{
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
@@ -781,15 +827,15 @@ void GameMain::CreateStage(int stage)
 		stageobject[2]->SetInit(200, 325, 18, 60, 0);
 		stageobject[3]->SetInit(370, 325, 18, 60, 0);
 		stageobject[4]->SetInit(220, 80, 18, 60, 0);
+		stageobject[5]->SetInit(100, 200, 50, 20, 0);
+		stageobject[6]->SetInit(260, 170, 50, 20, 0);
+		stageobject[7]->SetInit(500, 160, 70, 20, 0);
 
-		for (int i = 5; i < MAX_FLOOR; i++)
+		for (int i = now_floor_max; i < MAX_FLOOR; i++)
 		{
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
 
-		stageobject[5]->SetInit(100, 200, 50, 20, 0);
-		stageobject[6]->SetInit(260, 170, 50, 20, 0);
-		stageobject[7]->SetInit(500, 160, 70, 20, 0);
 
 		thunder[0] = new Thunder(60, 80, true);		/*方向1海へいかない２海へいかない３バグ？*/
 		thunder[1] = new Thunder(340, 120, true);	/*方向０バグ？*/
@@ -810,6 +856,16 @@ void GameMain::CreateStage(int stage)
 	}
 }
 
+int GameMain::GetScore()
+{
+	return score;
+}
+
+void GameMain::AddScore(int point)
+{
+	score += point;
+}
+
 Location GameMain::SpawnPosSet(StageObject* floor)
 {
 	Location spawn;
@@ -825,3 +881,8 @@ Location GameMain::SpawnPosSet(StageObject* floor)
 //	spawn.y = wall->GetLocation().y - PLAYER_ENEMY_HEIGHT;
 //	return spawn;
 //}
+void GameMain::DataReset()
+{
+	score = 0;
+	stage = 0;
+}

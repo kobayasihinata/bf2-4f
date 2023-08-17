@@ -3,6 +3,9 @@
 #include "Player.h"
 #include "PadInput.h"
 
+static int balloon;        //残り風船
+static int life;            //残機
+
 Player::Player()
 {
 	player_state = IDOL_RIGHT;
@@ -23,8 +26,6 @@ Player::Player()
 	jump_flg = false;
 	jump_SE_flg = false;
 	frame = 0;
-	balloon = 2;
-	life = 2;
 	respawn = 600;
 	death_flg = false;
 	thunder_death_flg = false;
@@ -59,9 +60,13 @@ Player::Player()
 
 Player::~Player()
 {
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 31; i++)
 	{
 		DeleteGraph(player_image[i]);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		DeleteGraph(splash_image[i]);
 	}
 }
 
@@ -984,16 +989,17 @@ void Player::PlayerRespawn(float x, float y)
 
 void Player::BalloonDec()
 {
+
 	if (--balloon <= 0)
 	{
 		death_flg = true;
 	}
 }
-void Player::ResetPlayerPos()
+void Player::ResetPlayerPos(int x,int y)
 {
 	player_state = IDOL_RIGHT;
-	location.x = PLAYER_RESPAWN_POS_X;
-	location.y = PLAYER_RESPAWN_POS_Y;
+	location.x = x;
+	location.y = y;
 	acs_left = 0;
 	acs_right = 0;
 	acs_up = 0;
@@ -1003,4 +1009,16 @@ void Player::ResetPlayerPos()
 	jump_int = 0;
 	jump_combo = 0;
 	respawn = 600;
+}
+
+//プレイヤーの残機を取得する
+int Player::GetPlayerLife() { return life; }
+
+//プレイヤーの残機を設定する
+void Player::SetPlayerLife(const int setlife) {life = life + setlife; }
+
+void Player::ResetPlayerLife()
+{
+	life = 2;
+	balloon = 2;
 }

@@ -44,7 +44,7 @@ AbstractScene* Title::Update()
 
 	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_START))
 	{
-		return new GameMain();
+		return new GameMain(0);
 	}
 
 	return this;
