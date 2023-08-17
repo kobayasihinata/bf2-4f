@@ -31,18 +31,17 @@ GameMain::GameMain(int beforescene)
 	{
 		backgroundstar[i] = new BackGroundStar(stage);
 	}
-	CreateStage(stage);
+	NextStage();
 	fish = new Fish();
 	ui = new UI();
 	soundmanager = new SoundManager();
 	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
-
+	phase_image = LoadGraph("images/UI/UI_Phase.png");
 	main_state = Normal;
 	Pouse = false;
 
 	para = false;
 
-	score = 0;
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
 	{
 		Avoidance[i] = FALSE;
@@ -78,7 +77,8 @@ GameMain::~GameMain()
 		delete thunder[i];
 	}
 	delete ui;
-	//DeleteGraph(seaImage);
+	DeleteGraph(seaImage);
+	DeleteGraph(phase_image);
 }
 
 AbstractScene* GameMain::Update()
@@ -252,7 +252,6 @@ AbstractScene* GameMain::Update()
 										player->ReflectionMY();
 									}
 									Damage(j);
-
 									break;
 								default:
 									damage_once = false;
@@ -527,6 +526,10 @@ AbstractScene* GameMain::Update()
 	case Over:
 		//PAD_INPUT::UpdateKey();
 		if (--WaitTimer <= 0 || PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			if (GameMain::GetScore() > ui->GetHighScore())
+			{
+				UI::SaveHighScore();
+			}
 			DataReset();
 			return new Title();
 		}
@@ -613,7 +616,6 @@ void GameMain::Draw()const
 			enemy[i]->Draw();
 			soapbubble[i]->Draw();
 			//DrawFormatString(0, 0 + (i * 20), 0x00ff00, "%d", enemy[i]->GetEnemyParaFlg());
-			//DrawFormatString(20, 0 + (i * 20), 0x00ff00, "%d", enemy[i]->GetEnemyJumpFlg());
 		}
 	}
 	fish->Draw();
@@ -781,7 +783,7 @@ void GameMain::CreateStage(int stage)
 		stageobject[5]->SetInit(120, 250, 18, 60, 0);
 		stageobject[6]->SetInit(310, 180, 18, 60, 0);
 
-		for (int i = 7; i < MAX_FLOOR; i++)
+		for (int i = now_floor_max; i < MAX_FLOOR; i++)
 		{
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
@@ -808,16 +810,15 @@ void GameMain::CreateStage(int stage)
 		stageobject[2]->SetInit(200, 325, 18, 60, 0);
 		stageobject[3]->SetInit(370, 325, 18, 60, 0);
 		stageobject[4]->SetInit(220, 80, 18, 60, 0);
+		stageobject[5]->SetInit(100, 200, 50, 20, 0);
+		stageobject[6]->SetInit(260, 170, 50, 20, 0);
+		stageobject[7]->SetInit(500, 160, 70, 20, 0);
 
-		for (int i = 5; i < MAX_FLOOR; i++)
+		for (int i = now_floor_max; i < MAX_FLOOR; i++)
 		{
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
 
-
-		stageobject[5]->SetInit(100, 200, 50, 20, 0);
-		stageobject[6]->SetInit(260, 170, 50, 20, 0);
-		stageobject[7]->SetInit(500, 160, 70, 20, 0);
 
 		thunder[0] = new Thunder(60, 80, true);		/*•ûŒü1ŠC‚Ö‚¢‚©‚È‚¢‚QŠC‚Ö‚¢‚©‚È‚¢‚RƒoƒOH*/
 		thunder[1] = new Thunder(340, 120, true);		/*•ûŒü‚OƒoƒOH*/

@@ -5,7 +5,7 @@
 #include "UI.h"
 #include "BackGroundStar.h"
 #include "StageObject.h"
-#include"Balloon.h"
+#include "Balloon.h"
 
 #define ENEMY_NAMBER 6
 #define SECOND_TO_FRAME(sec) ((sec)*FRAMERATE)

@@ -7,7 +7,7 @@ UI::UI()
 	highscore_image = LoadGraph("images/UI/UI_HiScore.png");
 	score_image = LoadGraph("images/UI/UI_Score.png");
 	player_life_image = LoadGraph("images/UI/UI_Stock.png");
-
+	high_score = 0;
 	ReadHighScore();
 
 	LoadDivGraph("images/UI/UI_NumAnimation.png", 10, 10, 1, 32, 32, numbers_image);
@@ -17,13 +17,10 @@ UI::~UI()
 {
 	DeleteGraph(highscore_image);
 	DeleteGraph(score_image);
+	DeleteGraph(player_life_image);
 	for (int i = 0; i < 10; i++)
 	{
 		DeleteGraph(numbers_image[i]);
-	}
-	if (GameMain::GetScore() > high_score)
-	{
-		SaveHighScore();
 	}
 }
 void UI::Draw(int life)const

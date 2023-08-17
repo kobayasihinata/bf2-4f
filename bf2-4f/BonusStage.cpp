@@ -1,4 +1,4 @@
-#include"BonusStage.h"
+#include "BonusStage.h"
 #include "PadInput.h"
 
 BonusStage::BonusStage()
@@ -38,8 +38,18 @@ BonusStage::~BonusStage()
 	{
 		delete balloon[i];
 	}
+
+	for (int i = 0; i < 31; i++)
+	{
+		DeleteGraph(player_image[i]);
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		DeleteGraph(balloon_image[i]);
+	}
 	DeleteSoundMem(trip_bgm);
 	DeleteSoundMem(perfect_se);
+	DeleteSoundMem(bubble_se);
 }
 
 AbstractScene* BonusStage::Update()

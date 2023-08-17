@@ -21,5 +21,8 @@ public:
 	void ReadHighScore();
 
 	//ハイスコアの保存
-	void SaveHighScore();
+	static void SaveHighScore();
+
+	//ハイスコアの取得
+	int GetHighScore() { return high_score; }
 };
