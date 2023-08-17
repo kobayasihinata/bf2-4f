@@ -16,32 +16,32 @@ GameMain::GameMain()
 	{
 		thunder[i] = new Thunder(0, 0, false);
 	}
-	for (int i = 0; i <= MAX_STAR - 1; i++)
+	for (int i = 0; i < MAX_STAR; i++)
 	{
 		backgroundstar[i] = new BackGroundStar(stage);
 	}
 	CreateStage(stage);
 	fish = new Fish();
 	ui = new UI();
-	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
-	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
-	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
-	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
-	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 
 	main_state = Normal;
 	Pouse = false;
-
 	score = 0;
-
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
 	{
 		Avoidance[i] = FALSE;
 	}
-	
 	damage_once = false;
 	clear_flg = false;
 	clear_wait = 0;
+
+	seaImage = LoadGraph("images/Stage/Stage_Sea01.png");
+	GameStart_BGM = LoadSoundMem("sounds/SE_Start.wav");
+	Eatable_SE = LoadSoundMem("sounds/SE_Eatable.wav");
+	StageClear_SE = LoadSoundMem("sounds/SE_StageClear.wav");
+	GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
+	GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
+	PlaySoundMem(GameStart_BGM, DX_PLAYTYPE_BACK);
 }
 
 GameMain::~GameMain()
@@ -458,8 +458,6 @@ AbstractScene* GameMain::Update()
 			else
 			{
 				main_state = Over;
-				GameOver_Img = LoadGraph("images/UI/UI_GameOver.png");
-				GameOver_BGM = LoadSoundMem("sounds/SE_GameOver.wav");
 				PlaySoundMem(GameOver_BGM, DX_PLAYTYPE_BACK);
 				WaitTimer = SECOND_TO_FRAME(4);
 			}
