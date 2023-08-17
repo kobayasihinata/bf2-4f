@@ -47,6 +47,7 @@ Enemy::Enemy(int x,int y,int level)
 	move_right_flg = false;
 	move_left_flg = false;
 	jump_flg = false;
+	jump_SE_flg = false;
 	ref_once_left = false;
 	ref_once_right = false;
 	no_ai_time = 0;
@@ -140,7 +141,6 @@ void Enemy::Update()
 			//風船を膨らませる	
 			else if (charge < 6)
 			{
-				reset_flg();
 				anim_boost = 0;
 				if (last_input == -1)
 				{
@@ -298,9 +298,7 @@ void Enemy::Update()
 				//ジャンプ入力されている時の処理
 				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
-					/*if (CheckSoundMem(enemy_move_se) == FALSE) {
-						PlaySoundMem(enemy_move_se, DX_PLAYTYPE_BACK);
-					}*/
+					jump_SE_flg = true;
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < E_Max_Speed[enemy_level - 1])
@@ -424,7 +422,6 @@ void Enemy::Update()
 				//風船が0こになったなら
 				if (balloon <= 0)
 				{
-					
 					if (crack == 0)
 					{
 						acs_down = 0;
@@ -540,7 +537,7 @@ void Enemy::Update()
 		}
 	}
 	if (is_die) {
-		jump_flg = false;
+		//jump_flg = false;
 		para_flg = false;
 	}
 	if (--no_ai_time <= 0) {
@@ -865,14 +862,12 @@ int Enemy::ApplyDamege()
 			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
 			{
 				EnemyDeath();
-				PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 				GetScoreStart(2);
 				return getscore[2 + enemy_level-1];
 			}
 			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
 			{
 				EnemyDeath();
-				PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 				GetScoreStart(1);
 				return getscore[1 + enemy_level - 1];
 			}

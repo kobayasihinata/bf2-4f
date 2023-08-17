@@ -317,8 +317,9 @@ AbstractScene* GameMain::Update()
 						enemy[i]->SetOnShareFlg(true);
 					}
 				}
-				if (enemy[i]->GetEnemyJumpFlg() && E_jump == false) {
+				if (enemy[i]->GetE_Jump_SE_Flg() && E_jump == false) {
 					soundmanager->PlayE_Move_SE();
+					enemy[i]->Reset_SE_flg2();
 					E_jump = true;
 				}
 				// パラシュートSE
@@ -698,6 +699,7 @@ void GameMain::NextStage()
 	}
 	fish = new Fish();
 	CreateStage(stage);
+	E_jump = false;
 
 	main_state = Normal;
 }

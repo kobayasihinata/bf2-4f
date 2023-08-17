@@ -41,6 +41,7 @@ void SoundManager::Update()
 			soundflg[i].Wait = false;
 			soundflg[i].Play = false;
 		}
+		ResetFlg = false;
 	}
 	//各サウンドの再生条件と再生する際の処理
 

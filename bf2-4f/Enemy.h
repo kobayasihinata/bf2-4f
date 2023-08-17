@@ -56,6 +56,7 @@ private:
     bool move_right_flg;         //右移動中か判断
     bool move_left_flg;          //左移動中か判断
     bool jump_flg;               //ジャンプ中か判断
+    bool jump_SE_flg;
     int no_ai_time;              //AI無効化時間
     bool para_flg;               //パラシュート状態か判断
     bool splash_SE_flg;
@@ -185,6 +186,8 @@ public:
     //敵がジャンプ中か取得
     int GetEnemyJumpFlg() { return jump_flg; }
 
+    int GetE_Jump_SE_Flg() { return jump_SE_flg; }
+
     //敵が死亡モーション中か取得
     int GetEnemyDeathFlg() { return death_flg; }
 
@@ -221,6 +224,5 @@ public:
     // SEフラグ
     int GetE_Splash_SE_flg() { return splash_SE_flg; }
     void Reset_SE_flg1() { splash_SE_flg = false; }
-
-    void reset_flg() { jump_flg = false; }
+    void Reset_SE_flg2() { jump_SE_flg = false; }
 };
