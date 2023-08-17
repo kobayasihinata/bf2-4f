@@ -101,13 +101,6 @@ AbstractScene* GameMain::Update()
 					thunder->ReInitThunder();
 				}
 			}
-			if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
-			{
-				for (int j = 0; j < max_enemy; j++)
-				{
-					score += enemy[j]->ApplyDamege();
-				}
-			}
 			//現在のstageobjectの数だけループする
 			for (int i = 0; i < now_floor_max; i++)
 			{
@@ -542,13 +535,11 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	if (Pouse == false)
+	for (int i = 0; i < MAX_STAR; i++)
 	{
-		for (int i = 0; i < MAX_STAR; i++)
-		{
-			backgroundstar[i]->Draw();
-		}
+		backgroundstar[i]->Draw();
 	}
+	
 	for (int i = 0; i < 2; i++)
 	{
 		thunder[i]->Draw(Pouse);
@@ -601,11 +592,11 @@ void GameMain::Draw()const
 	default:
 		break;
 	}
-	//デバッグ用　当たり判定表示
-	for (BoxCollider* stageobject : stageobject)
-	{
-		stageobject->Draw();
-	}
+	////デバッグ用　当たり判定表示
+	//for (BoxCollider* stageobject : stageobject)
+	//{
+	//	stageobject->Draw();
+	//}
 	if (Pouse == false && main_state != Over) {
 		player->Draw();
 
@@ -668,20 +659,19 @@ void GameMain::Damage(int i)
 	}
 }
 
-int GameMain::NextStage()
+void GameMain::NextStage()
 {
-	if (stage > MAX_STAGE)
+	if (++stage <= MAX_STAGE)
 	{
-		return 0;
+		for (int i = 0; i < MAX_STAR; i++)
+		{
+			backgroundstar[i]->GetType(stage);
+		}
+		fish = new Fish();
+		CreateStage(stage);
+
+		main_state = Normal;
 	}
-	for (int i = 0; i < MAX_STAR; i++)
-	{
-		backgroundstar[i]->GetType(stage);
-	}
-	fish = new Fish();
-	CreateStage(stage);
-	
-	main_state = Normal;
 }
 
 void GameMain::CreateStage(int stage)
@@ -757,7 +747,6 @@ void GameMain::CreateStage(int stage)
 		stageobject[9]->SetInit(510, 118, 52, 20, 0);
 
 
-
 		thunder[0] = new Thunder(50, 120, true);
 		thunder[1] = new Thunder(420, 250, true);		/*方向２バグ？*/
 
@@ -821,7 +810,7 @@ void GameMain::CreateStage(int stage)
 
 
 		thunder[0] = new Thunder(60, 80, true);		/*方向1海へいかない２海へいかない３バグ？*/
-		thunder[1] = new Thunder(340, 120, true);		/*方向０バグ？*/
+		thunder[1] = new Thunder(340, 120, true);	/*方向０バグ？*/
 
 		max_enemy = 6;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[4]).x, SpawnPosSet(stageobject[4]).y, 3);

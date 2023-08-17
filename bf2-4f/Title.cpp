@@ -30,11 +30,11 @@ AbstractScene* Title::Update()
 		interval++;
 	}
 
-	if ((PAD_INPUT::GetLStick().ThumbY > MARGIN || CheckHitKey(KEY_INPUT_W)) && interval >= 30) {
+	if (PAD_INPUT::GetLStick().ThumbY > MARGIN && interval >= 30) {
 		cursor_num--;
 		interval = 0;
 	}
-	else if ((PAD_INPUT::GetLStick().ThumbY < -MARGIN || CheckHitKey(KEY_INPUT_S)) && interval >= 30) {
+	else if (PAD_INPUT::GetLStick().ThumbY < -MARGIN && interval >= 30) {
 		cursor_num++;
 		interval = 0;
 	}
@@ -42,7 +42,7 @@ AbstractScene* Title::Update()
 	if (cursor_num < 0)cursor_num = 2;
 	if (cursor_num > 2)cursor_num = 0;
 
-	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_START) || CheckHitKey(KEY_INPUT_SPACE))
+	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_START))
 	{
 		return new GameMain(0);
 	}

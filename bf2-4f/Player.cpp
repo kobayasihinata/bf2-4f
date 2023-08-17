@@ -41,14 +41,6 @@ Player::Player()
 
 	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
-
-	PlayerJump_SE = LoadSoundMem("sounds/SE_PlayerJump.wav");
-	PlayerWalk_SE = LoadSoundMem("sounds/SE_PlayerWalk.wav");
-	Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
-	Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
-	Crack_SE = LoadSoundMem("sounds/SE_crack.wav");
-	Restart_SE = LoadSoundMem("sounds/SE_Restart.wav");
-
 	Restart_SE_flg = false;
 	player_anim = 0;
 	splash_anim = 0;
@@ -127,7 +119,7 @@ void Player::Update()
 				}
 
 				//右入力を検知
-				if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+				if (PAD_INPUT::GetLStick().ThumbX > 10000)
 				{
 					//浮いているなら加速処理＆浮いていないなら慣性なし移動
 					//(ここで地面との当たり判定を取得してきてstateを変える)
@@ -170,7 +162,7 @@ void Player::Update()
 				}
 
 				//左入力を検知
-				if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+				if (PAD_INPUT::GetLStick().ThumbX < -10000)
 				{
 					//浮いているなら加速処理＆浮いていないなら慣性なし移動
 					//(ここで地面との当たり判定を取得してきてstateを変える)
@@ -212,23 +204,20 @@ void Player::Update()
 				}
 
 				//急転回判断
-				if ((PAD_INPUT::GetLStick().ThumbX > -10000 || CheckHitKey(KEY_INPUT_D)) && last_move_x < 0 && onfloor_flg == TRUE)
+				if (PAD_INPUT::GetLStick().ThumbX > -10000 && last_move_x < 0 && onfloor_flg == TRUE)
 				{
 					player_state = TURN_LEFT;
 				}
-				if ((PAD_INPUT::GetLStick().ThumbX < 10000 || CheckHitKey(KEY_INPUT_A)) && last_move_x > 0 && onfloor_flg == TRUE)
+				if (PAD_INPUT::GetLStick().ThumbX < 10000 && last_move_x > 0 && onfloor_flg == TRUE)
 				{
 					player_state = TURN_RIGHT;
 				}
 
 				//ジャンプ（長押し）
-				if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_SPACE))
+				if (PAD_INPUT::OnPressed(XINPUT_BUTTON_B))
 				{
 					jump_flg = true;
 
-					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
-						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
-					}
 					if (acs_down >= 0)
 					{
 						acs_down -= 2;
@@ -270,7 +259,7 @@ void Player::Update()
 							acs_up = MAX_SPEED / 2;
 						}
 						//上昇時に左入力がされていたら左に加速する
-						if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+						if (PAD_INPUT::GetLStick().ThumbX < -10000)
 						{
 							if (acs_left < MAX_SPEED)
 							{
@@ -291,7 +280,7 @@ void Player::Update()
 							}
 						}
 						//上昇時に右入力がされていたら右に加速する
-						if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+						if (PAD_INPUT::GetLStick().ThumbX > 10000)
 						{
 							if (acs_right < MAX_SPEED)
 							{
@@ -316,11 +305,9 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
-					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
-						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
-					}
+
 					//上昇時に左入力がされていたら左に加速する
-					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
+					if (PAD_INPUT::GetLStick().ThumbX < -10000)
 					{
 						if (acs_left < MAX_SPEED)
 						{
@@ -341,7 +328,7 @@ void Player::Update()
 						}
 					}
 					//上昇時に右入力がされていたら右に加速する
-					if (PAD_INPUT::GetLStick().ThumbX > 10000 || CheckHitKey(KEY_INPUT_D))
+					if (PAD_INPUT::GetLStick().ThumbX > 10000)
 					{
 						if (acs_right < MAX_SPEED)
 						{
@@ -482,7 +469,7 @@ void Player::Update()
 			//リスポーン後の無敵状態なら
 			else
 			{
-				if (PAD_INPUT::GetLStick().ThumbX > 10000 || PAD_INPUT::GetLStick().ThumbX < -10000 || PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnButton(XINPUT_BUTTON_B) || CheckHitKey(KEY_INPUT_A))
+				if (PAD_INPUT::GetLStick().ThumbX > 10000 || PAD_INPUT::GetLStick().ThumbX < -10000 || PAD_INPUT::OnButton(XINPUT_BUTTON_A) || PAD_INPUT::OnButton(XINPUT_BUTTON_B))
 			{
 				respawn = 0;
 			}
@@ -610,12 +597,6 @@ void Player::Update()
 
 void Player::Draw()const
 {
-	////プレイヤーの当たり判定の描画
-	//DrawBoxAA(location.x, location.y, location.x + area.width, location.y + area.height, 0xff0000, FALSE);
-	//DrawFormatString(0, 20, 0x00ff00, "%d", acs_down);
-	//DrawFormatString(0, 40, 0x00ff00, "%d", anim_boost);
-	//DrawFormatString(0, 60, 0x00ff00, "%d", life);
-
 	
 	if (show_flg == true)
 	{
