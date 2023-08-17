@@ -3,10 +3,8 @@
 
 SoundManager::SoundManager()
 {
-	music_state = Start;
-
 	// BGM読込
-	Para_BGM = SoundPlayer::GetBGM("Parachute");
+	
 
 	// SE読込
 	Start_SE = SoundPlayer::GetSE("Start");
@@ -17,11 +15,18 @@ SoundManager::SoundManager()
 	Crack_SE = SoundPlayer::GetSE("Crack");
 	Falling_SE = SoundPlayer::GetSE("Falling");
 	Splash_SE = SoundPlayer::GetSE("Splash");
+	Para_SE = SoundPlayer::GetSE("Parachute");
 	Eatable_SE = SoundPlayer::GetSE("Eatable");
 	Restart_SE = SoundPlayer::GetSE("Restart");
 	DefeatTheEnemy_SE = SoundPlayer::GetSE("DefeatTheEnemy");
 	StageClear_SE = SoundPlayer::GetSE("StageClear");
 	GameOver_SE = SoundPlayer::GetSE("GameOver");
+
+	for (int i = 0; i < SOUND_MAX; i++) {
+		soundflg[i].Wait = false;
+		soundflg[i].Play = false;
+	}
+	soundflg[0].Wait = true;
 }
 SoundManager::~SoundManager()
 {
@@ -30,153 +35,168 @@ SoundManager::~SoundManager()
 
 void SoundManager::Update()
 {
-	OldState = NowState;
-	NowState = music_state;
-	priority = 0;
+	//各サウンドの再生条件と再生する際の処理
 
-	if (NowState != OldState)
-	{
-		SoundManager::Stop_All_Music();
-		switch (music_state)
-		{
-		case Start:
-			SoundPlayer::PlaySE(Start_SE, true);
-			priority = 3;
-			break;
-		case E_Move:
+	if (soundflg[0].Wait) {
+		Stop_All_Sound();
+		SoundPlayer::PlaySE(Start_SE, true);
+		soundflg[0].Play = true;
+	}
+	if (soundflg[1].Wait) {
+		if (soundflg[0].Play == false && soundflg[4].Play == false && soundflg[9].Play == false &&
+			soundflg[10].Play == false && soundflg[11].Play == false) {
+			SoundPlayer::PlaySE(PlayerWalk_SE, true);
+			soundflg[1].Play = true;
+		}
+	}
+	if (soundflg[2].Wait) {
+		if (soundflg[0].Play == false && soundflg[4].Play == false && soundflg[9].Play == false &&
+			soundflg[10].Play == false && soundflg[11].Play == false) {
+			SoundPlayer::PlaySE(PlayerJump_SE, true);
+			soundflg[2].Play = true;
+		}
+	}
+	if (soundflg[3].Wait) {
+		if (soundflg[0].Play == false && soundflg[4].Play == false && soundflg[8].Play == false &&
+			soundflg[9].Play == false && soundflg[10].Play == false && soundflg[11].Play == false) {
 			SoundPlayer::PlaySE(EnemyMove_SE, true);
-			priority = 0;
-			break;
-		case Bubble:
-			SoundPlayer::PlaySE(Bubble_SE, true);
-			priority = 2;
-			break;
-		case Crack:
+			soundflg[3].Play = true;
+		}
+	}
+	if (soundflg[4].Wait) {
+		if (soundflg[9].Play == false && soundflg[10].Play == false ) {
+			StopSoundMem(Para_SE);
+			SoundPlayer::PlaySE(Bubble_SE, false);
+			soundflg[4].Play = true;
+		}
+	}
+	if (soundflg[5].Wait) {
+		if (soundflg[0].Play == false && soundflg[4].Play == false && soundflg[9].Play == false &&
+			soundflg[10].Play == false && soundflg[11].Play == false) {
 			SoundPlayer::PlaySE(Crack_SE, false);
-			priority = 1;
-			break;
-		case Falling:
-			SoundPlayer::PlaySE(Falling_SE, true);
-			priority = 3;
-			break;
-		case Splash:
-			SoundPlayer::PlaySE(Splash_SE, false);
-			priority = 3;
-			break;
-		case Eatable:
-			SoundPlayer::PlaySE(Eatable_SE, true);
-			priority = 3;
-			break;
-		case Restart:
-			SoundPlayer::PlaySE(Restart_SE, true);
-			priority = 3;
-			break;
-		case DefeatTheEnemy:
-			SoundPlayer::PlaySE(DefeatTheEnemy_SE, true);
-			priority = 3;
-			break;
-		case StageClear:
-			SoundPlayer::PlaySE(StageClear_SE, true);
-			priority = 3;
-			break;
-		case GameOver:
-			SoundPlayer::PlaySE(GameOver_SE, true);
-			priority = 2;
-			break;
-		default:
-			break;
-		};
+			soundflg[5].Play = true;
+		}
 	}
-	else
-	{
-		switch (music_state)
-		{
-		case Start:
-			if (CheckSoundMem(Start_SE)) priority = 3;
-			break;
-		case E_Move:
-			if (CheckSoundMem(EnemyMove_SE)) priority = 0;
-			break;
-		case Bubble:
-			if (CheckSoundMem(Bubble_SE)) priority = 2;
-			break;
-		case Crack:
-			if (CheckSoundMem(Crack_SE)) priority = 2;
-			break;
-		case Falling:
-			if (CheckSoundMem(Falling_SE)) priority = 2;
-			break;
-		case Splash:
-			if (CheckSoundMem(Splash_SE)) priority = 3;
-			break;
-		case Eatable:
-			if (CheckSoundMem(Eatable_SE)) priority = 3;
-			break;
-		case Restart:
-			if (CheckSoundMem(Restart_SE)) priority = 3;
-			break;
-		case DefeatTheEnemy:
-			if (CheckSoundMem(DefeatTheEnemy_SE)) priority = 3;
-			break;
-		case StageClear:
-			if (CheckSoundMem(StageClear_SE)) priority = 3;
-			break;
-		case GameOver:
-			if (CheckSoundMem(GameOver_SE)) priority = 2;
-			break;
-		default:
-			break;
-		};
+	if (soundflg[6].Wait) {
+		StopSoundMem(Start_SE);
+		StopSoundMem(Bubble_SE);
+		StopSoundMem(Eatable_SE);
+		StopSoundMem(Restart_SE);
+		StopSoundMem(DefeatTheEnemy_SE);
+		SoundPlayer::PlaySE(Falling_SE, true);
+		soundflg[6].Play = true;
 	}
-	if (priority == 0) {
-		music_state = None;
+	if (soundflg[7].Wait) {
+		StopSoundMem(Start_SE);
+		StopSoundMem(Bubble_SE);
+		StopSoundMem(Falling_SE);
+		StopSoundMem(Eatable_SE);
+		StopSoundMem(Restart_SE);
+		SoundPlayer::PlaySE(Splash_SE, true);
+		soundflg[7].Play = true;
+	}
+	if (soundflg[8].Wait) {
+		if (soundflg[0].Play == false && soundflg[4].Play == false && soundflg[9].Play == false &&
+			soundflg[10].Play == false && soundflg[11].Play == false) {
+			StopSoundMem(EnemyMove_SE);
+			SoundPlayer::PlaySE(Para_SE, true);
+			soundflg[8].Play = true;
+		}
+	}
+	if (soundflg[9].Wait) {
+		Stop_All_Sound();
+		SoundPlayer::PlaySE(Eatable_SE, true);
+		soundflg[9].Play = true;
+	}
+	if (soundflg[10].Wait) {
+		Stop_All_Sound();
+		SoundPlayer::PlaySE(Restart_SE, true);
+		soundflg[10].Play = true;
+	}
+	if (soundflg[11].Wait) {
+		Stop_All_Sound();
+		SoundPlayer::PlaySE(DefeatTheEnemy_SE, false);
+		soundflg[11].Play = true;
+	}
+	if (soundflg[12].Wait) {
+		Stop_All_Sound();
+		SoundPlayer::PlaySE(StageClear_SE, true);
+		soundflg[12].Play = true;
+	}
+	if (soundflg[13].Wait) {
+		Stop_All_Sound();
+		SoundPlayer::PlaySE(GameOver_SE, true);
+		soundflg[13].Play = true;
+	}
+
+	//サウンド終了時に再生中フラグを消す
+	if (CheckSoundMem(Start_SE) == false) soundflg[0].Play = false;
+	if (CheckSoundMem(PlayerWalk_SE) == false) soundflg[1].Play = false;
+	if (CheckSoundMem(PlayerJump_SE) == false) soundflg[2].Play = false;
+	if (CheckSoundMem(EnemyMove_SE) == false) soundflg[3].Play = false;
+	if (CheckSoundMem(Bubble_SE) == false) soundflg[4].Play = false;
+	if (CheckSoundMem(Crack_SE) == false) soundflg[5].Play = false;
+	if (CheckSoundMem(Falling_SE) == false) soundflg[6].Play = false;
+	if (CheckSoundMem(Splash_SE) == false) soundflg[7].Play = false;
+	if (CheckSoundMem(Para_SE) == false) soundflg[8].Play = false;
+	if (CheckSoundMem(Eatable_SE) == false) soundflg[9].Play = false;
+	if (CheckSoundMem(Restart_SE) == false) soundflg[10].Play = false;
+	if (CheckSoundMem(DefeatTheEnemy_SE) == false) soundflg[11].Play = false;
+	if (CheckSoundMem(StageClear_SE) == false) soundflg[12].Play = false;
+	if (CheckSoundMem(GameOver_SE) == false) soundflg[13].Play = false;
+
+
+	for (int i = 0; i < SOUND_MAX; i++) {
+		soundflg[i].Wait = false;
 	}
 }
 
-void SoundManager::PlayPara_BGM(int i) {
-	if (i) {
-		if (priority < 2)SoundPlayer::PlayBGM(Para_BGM);
-	} else {
-		StopSoundMem(Para_BGM);
-	}
+//再生待ちフラグの取得
+void SoundManager::PlayP_Walk_SE() {
+	soundflg[1].Wait = true;
 }
-
-
+void SoundManager::PlayP_Jump_SE() {
+	soundflg[2].Wait = true;
+}
 void SoundManager::PlayE_Move_SE() {
-	if (priority = 0) music_state = E_Move;
+	soundflg[3].Wait = true;
 }
 void SoundManager::PlayBubble_SE() {
-	if (priority < 2) music_state = Bubble;
+	soundflg[4].Wait = true;
 }
 void SoundManager::PlayCrack_SE() {
-	if (priority < 2) music_state = Crack;
+	soundflg[5].Wait = true;
 }
 void SoundManager::PlayFalling_SE() {
-	if (priority < 2) music_state = Falling;
+	soundflg[6].Wait = true;
 }
 void SoundManager::PlaySplash_SE() {
-	if (priority < 3) music_state = Splash;
+	soundflg[7].Wait = true;
+}
+void SoundManager::PlayPara_SE() {
+	soundflg[8].Wait = true;
 }
 void SoundManager::PlayEatable_SE() {
-	if (priority < 3) music_state = Eatable;
+	soundflg[9].Wait = true;
 }
 void SoundManager::PlayRestart_SE() {
-	if (priority < 2) music_state = Restart;
+	soundflg[10].Wait = true;
 }
 void SoundManager::PlayDefeatTheEnemy_SE() {
-	if (priority < 3) music_state = DefeatTheEnemy;
+	soundflg[11].Wait = true;
 }
 void SoundManager::PlayStageClear_SE() {
-	if (priority < 3) music_state = StageClear;
+	soundflg[12].Wait = true;
 }
 void SoundManager::PlayGameOver_SE() {
-	if (priority < 2) music_state = GameOver;
+	soundflg[13].Wait = true;
 }
 
-void SoundManager::Stop_All_Music()
+//全サウンドの停止
+void SoundManager::Stop_All_Sound()
 {
 	StopSoundMem(Start_SE);
-	StopSoundMem(Para_BGM);
+	StopSoundMem(Para_SE);
 	StopSoundMem(Eatable_SE);
 	StopSoundMem(Restart_SE);
 	StopSoundMem(StageClear_SE);
@@ -189,9 +209,4 @@ void SoundManager::Stop_All_Music()
 	StopSoundMem(Splash_SE);
 	StopSoundMem(Crack_SE);
 	StopSoundMem(DefeatTheEnemy_SE);
-}
-
-void SoundManager::Stop_Fall() {
-	StopSoundMem(Falling_SE);
-	music_state = Splash;
 }

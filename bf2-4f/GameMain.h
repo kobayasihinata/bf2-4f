@@ -41,6 +41,7 @@ private:
     int seaImage;
 
     bool para;
+    bool E_jump;
 
     bool Pouse;
     int score;  //‰¼‚ÌƒXƒRƒAŠi”[êŠ

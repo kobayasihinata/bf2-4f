@@ -1,7 +1,6 @@
 #pragma once
 #include"Define.h"
 #include"Collider/BoxCollider.h"
-#include"SoundManager.h"
 
 #define IMAGE_SHIFT_X 15 //画像ずらし用
 #define IMAGE_SHIFT_Y 13 //画像ずらし用
@@ -23,7 +22,6 @@ enum ENEMY_STATE
 class Enemy :public BoxCollider
 {
 private:
-    SoundManager* soundmanager;
     ENEMY_STATE enemy_state;
 
     bool flg;                    //敵が生きているか
@@ -60,6 +58,7 @@ private:
     bool jump_flg;               //ジャンプ中か判断
     int no_ai_time;              //AI無効化時間
     bool para_flg;               //パラシュート状態か判断
+    bool splash_SE_flg;
     bool ref_once_left;          //反射制御用
     bool ref_once_right;         //反射制御用
 
@@ -180,6 +179,9 @@ public:
     //enemy_levelを取得
     int GetEnemyLevel()const { return enemy_level; }
 
+    //敵ジャンプフラグを取得
+    int GetEnemyJumpflg() { return jump_flg; }
+
     //敵の進行方向を取得
     int GetEnemyMove() { return move_left_flg; }
 
@@ -212,5 +214,9 @@ public:
 
     //敵の状態を取得
     int GetEnemyState() { return enemy_state; }
+
+    // SEフラグ
+    int GetE_Splash_SE_flg() { return splash_SE_flg; }
+    void Reset_SE_flg1() { splash_SE_flg = false; }
 
 };
