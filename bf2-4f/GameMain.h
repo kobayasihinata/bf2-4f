@@ -41,6 +41,7 @@ private:
     int seaImage;
 
     bool para;
+    bool E_jump;
 
     bool Pouse;
     int score;  //仮のスコア格納場所
@@ -86,7 +87,7 @@ public:
     void Damage(int i);
 
     //次のステージへ
-    int NextStage();
+    void NextStage();
 
     //敵と地面を生成する
     void CreateStage(int stage);

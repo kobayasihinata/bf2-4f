@@ -30,6 +30,7 @@ GameMain::GameMain()
 	Pouse = false;
 
 	para = false;
+	E_jump = false;
 
 	score = 0;
 	for (int i = 0; i <= ENEMY_NAMBER; i++)
@@ -75,6 +76,7 @@ AbstractScene* GameMain::Update()
 	{
 	case Normal:
 		if (PAD_INPUT::OnButton(XINPUT_BUTTON_START)) {
+			soundmanager->Stop_All_Sound();
 			Pouse = !Pouse;
 		}
 		if (Pouse == false) {
@@ -86,10 +88,6 @@ AbstractScene* GameMain::Update()
 					player->SetThunderDeath(true);
 					thunder->ReInitThunder();
 				}
-			}
-			if (PAD_INPUT::OnButton(XINPUT_BUTTON_X))
-			{
-				player->SetThunderDeath(true);
 			}
 			//現在のstageobjectの数だけループする
 			for (int i = 0; i < now_floor_max; i++)
@@ -306,9 +304,18 @@ AbstractScene* GameMain::Update()
 						enemy[i]->SetOnShareFlg(true);
 					}
 				}
-				if (enemy[i]->GetEnemyParaFlg() && para == false&&enemy[i]->GetEnemyDeathFlg() == false) {
-					soundmanager->PlayPara_BGM(1);
+				if (enemy[i]->GetEnemyJumpflg() && E_jump == false) {
+					soundmanager->PlayE_Move_SE();
+					E_jump = true;
+				}
+				// パラシュートSE
+				if (enemy[i]->GetEnemyParaFlg() && para == false) {
+					soundmanager->PlayPara_SE();
 					para = true;
+				}
+				if (enemy[i]->GetE_Splash_SE_flg()) {
+					soundmanager->PlaySplash_SE();
+					enemy[i]->Reset_SE_flg1();
 				}
 				
 				enemy[i]->Update();
@@ -320,28 +327,40 @@ AbstractScene* GameMain::Update()
 
 			}
 
-			if (para == false) {
-				soundmanager->PlayPara_BGM(0);
+			if (E_jump == false) {
+				soundmanager->Stop_E_Move();
 			}
+			if (para == false) {
+				soundmanager->Stop_Para();
+			}
+			
+			E_jump = false;
 			para = false;
 
-			if (player->GetFallFlg()) {
-				soundmanager->PlayFalling_SE();
+			if (player->GetWalkFlg()) {
+				soundmanager->PlayP_Walk_SE();
+				player->ResetSEflg1();
+			}
+			if (player->GetJumpFlg()) {
+				soundmanager->PlayP_Jump_SE();
 				player->ResetSEflg2();
 			}
-			if (player->GetSplashSEflg()) {
-				soundmanager->Stop_Fall();
-				soundmanager->PlaySplash_SE();
+			if (player->GetFallFlg()) {
+				soundmanager->PlayFalling_SE();
 				player->ResetSEflg3();
+			}
+			if (player->GetSplashSEflg()) {
+				soundmanager->PlaySplash_SE();
+				player->ResetSEflg4();
 			}
 			if (player->GetRestartSEflg()) {
 				soundmanager->PlayRestart_SE();
-				player->ResetSEflg1();
+				player->ResetSEflg5();
 			}
 			
 
 			player->Update();
-			fish->Update();
+ 			fish->Update();
 
 			//プレイヤーが死んでいる場合海に戻る
 			if (player->GetIsDie() == true)
@@ -352,6 +371,10 @@ AbstractScene* GameMain::Update()
 			//海面にプレイヤーがいる場合
 			if (fish->CheckSeaSurface(player) == true)
 			{
+				//if (fish->GetTargetIsEnemy())
+				//{
+				//	fish->SetTargetFlg(true);
+				//}
 				if (player->GetPlayerState() < DEATH)
 				{
 					//捕食処理：ターゲットはプレイヤー
@@ -376,7 +399,9 @@ AbstractScene* GameMain::Update()
 					//	fish->NotAtSeaSurface();
 					//}
 
-						//海面に敵のいずれかがいる場合
+					fish->SetTarget(enemy[i]);
+
+					//海面に敵のいずれかがいる場合
 					if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyState() < DEATH_RIGHT)
 					{
 						//敵のレベルを取得する
@@ -474,8 +499,10 @@ AbstractScene* GameMain::Update()
 		//敵全撃破演出
 		if (--clear_wait <= 0)
 		{
-			if (stage < MAX_STAGE - 1)
+			if (++stage < MAX_STAGE - 1)
 			{
+				soundmanager->Reset_flg();
+				soundmanager->Stop_All_Sound();
 				NextStage();
 			}
 			else
@@ -501,13 +528,11 @@ AbstractScene* GameMain::Update()
 
 void GameMain::Draw()const
 {
-	if (Pouse == false)
+	for (int i = 0; i < MAX_STAR; i++)
 	{
-		for (int i = 0; i < MAX_STAR; i++)
-		{
-			backgroundstar[i]->Draw();
-		}
+		backgroundstar[i]->Draw();
 	}
+	
 	for (int i = 0; i < 2; i++)
 	{
 		thunder[i]->Draw(Pouse);
@@ -560,11 +585,11 @@ void GameMain::Draw()const
 	default:
 		break;
 	}
-	//デバッグ用　当たり判定表示
-	for (BoxCollider* stageobject : stageobject)
-	{
-		stageobject->Draw();
-	}
+	////デバッグ用　当たり判定表示
+	//for (BoxCollider* stageobject : stageobject)
+	//{
+	//	stageobject->Draw();
+	//}
 	if (Pouse == false && main_state != Over) {
 		player->Draw();
 
@@ -619,19 +644,15 @@ void GameMain::Damage(int i)
 	}
 }
 
-int GameMain::NextStage()
+void GameMain::NextStage()
 {
-	if (++stage > MAX_STAGE)
-	{
-		return 0;
-	}
 	for (int i = 0; i < MAX_STAR; i++)
 	{
 		backgroundstar[i]->GetType(stage);
 	}
 	fish = new Fish();
 	CreateStage(stage);
-	
+
 	main_state = Normal;
 }
 
@@ -708,7 +729,6 @@ void GameMain::CreateStage(int stage)
 		stageobject[9]->SetInit(510, 118, 52, 20, 0);
 
 
-
 		thunder[0] = new Thunder(50, 120, true);
 		thunder[1] = new Thunder(420, 250, true);		/*方向２バグ？*/
 
@@ -767,13 +787,12 @@ void GameMain::CreateStage(int stage)
 			stageobject[i]->SetInit(-1, -1, 0, 0, 0);
 		}
 
-
 		stageobject[5]->SetInit(100, 200, 50, 20, 0);
 		stageobject[6]->SetInit(260, 170, 50, 20, 0);
 		stageobject[7]->SetInit(500, 160, 70, 20, 0);
 
 		thunder[0] = new Thunder(60, 80, true);		/*方向1海へいかない２海へいかない３バグ？*/
-		thunder[1] = new Thunder(340, 120, true);		/*方向０バグ？*/
+		thunder[1] = new Thunder(340, 120, true);	/*方向０バグ？*/
 
 		max_enemy = 6;
 		enemy[0] = new Enemy(SpawnPosSet(stageobject[4]).x, SpawnPosSet(stageobject[4]).y, 3);
