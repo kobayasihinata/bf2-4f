@@ -8,6 +8,7 @@
 #include"SoapBubble.h"
 #include"Thunder.h"
 #include"UI.h"
+#include"SoundManager.h"
 #include"BackGroundStar.h"
 
 #define ENEMY_NAMBER 6
@@ -34,9 +35,12 @@ private:
     Thunder* thunder[2];
     SoapBubble* soapbubble[6];
     UI* ui;
+    SoundManager* soundmanager;
     BackGroundStar* backgroundstar[MAX_STAR];
 
     int seaImage;
+
+    bool para;
 
     bool Pouse;
     int max_enemy;      //“G‚Ì”

@@ -5,6 +5,7 @@
 
 Enemy::Enemy(int x,int y,int level)
 {
+	//初期化
 	flg = true;
 	location.x = x;
 	location.y = y;
@@ -19,6 +20,8 @@ Enemy::Enemy(int x,int y,int level)
 	jump_cd = 0;
 	for (int i = 0; i < 5; i++)
 	{
+		getscore_x[i] = 0;
+		getscore_y[i] = 0;
 		getscore_anim[i] = 0;
 		is_getscore[i] = false;
 		switch (i)
@@ -72,7 +75,41 @@ Enemy::Enemy(int x,int y,int level)
 	ref_once_left = false;
 	ref_once_right = false;
 	no_ai_time = 0;
+	enemy_anim = 0;
+	para_anim = 0;
+	splash_anim = 0;
+	anim_boost = 0;
+	last_move_x = 1;
+	last_input = 1;
+	test_score = 0;
 
+	//画像読込
+	for (int i = 0; i < 5; i++)
+	{
+		switch (i)
+		{
+		case 0:
+			getscore[i] = 500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_500.png");
+			break;
+		case 1:
+			getscore[i] = 750;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_750.png");
+			break;
+		case 2:
+			getscore[i] = 1000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1000.png");
+			break;
+		case 3:
+			getscore[i] = 1500;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_1500.png");
+			break;
+		case 4:
+			getscore[i] = 2000;
+			getscore_image[i] = LoadGraph("images/Score/GetScore_2000.png");
+			break;
+		}
+	}
 	switch (level)
 	{
 	case 1:
@@ -86,15 +123,12 @@ Enemy::Enemy(int x,int y,int level)
 		break;
 	}
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
-	enemy_anim = 0;
-	para_anim = 0;
-	splash_anim = 0;
-	anim_boost = 0;
 
-	last_move_x = 1;
-	last_input = 1;
-
-	test_score = 0;
+	//SE読込
+	enemy_move_se = LoadSoundMem("sounds/SE_EnemyMove.wav");
+	para_se = LoadSoundMem("sounds/SE_parachute.wav");
+	crack_se = LoadSoundMem("sounds/SE_crack.wav");
+	defeat_the_enemy_se = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 
 }
 
@@ -104,6 +138,18 @@ Enemy::~Enemy()
 	{
 		DeleteGraph(enemy_image[i]);
 	}
+	for (int i = 0; i < 5; i++)
+	{
+		DeleteGraph(getscore_image[i]);
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		DeleteGraph(splash_image[i]);
+	}
+	DeleteSoundMem(enemy_move_se);
+	DeleteSoundMem(para_se);
+	DeleteSoundMem(crack_se);
+	DeleteSoundMem(defeat_the_enemy_se);
 }
 
 void Enemy::Update()
@@ -285,6 +331,9 @@ void Enemy::Update()
 				//ジャンプ入力されている時の処理
 				if (/*PAD_INPUT::OnPressed(XINPUT_BUTTON_B) || */jump_flg == true && para_flg == false)
 				{
+					if (CheckSoundMem(enemy_move_se) == FALSE) {
+						PlaySoundMem(enemy_move_se, DX_PLAYTYPE_BACK);
+					}
 					if (/*PAD_INPUT::GetLStick().ThumbX > 10000 || */move_left_flg == true)
 					{
 						if (acs_left < E_Max_Speed[enemy_level - 1])
@@ -411,7 +460,7 @@ void Enemy::Update()
 					
 					if (crack == 0)
 					{
-						PlaySoundMem(crack_SE, DX_PLAYTYPE_BACK);
+						PlaySoundMem(crack_se, DX_PLAYTYPE_BACK);
 						acs_down = 0;
 						acs_left = 0;
 						acs_right = 0;
@@ -435,6 +484,9 @@ void Enemy::Update()
 						//パラシュート状態に変化
 						para_flg = true;
 						damage = 11;
+					}
+					if (CheckSoundMem(para_se) == FALSE) {
+						PlaySoundMem(para_se, DX_PLAYTYPE_BACK);
 					}
 				}
 			}
@@ -868,7 +920,7 @@ void Enemy::BalloonDec()
 void Enemy::EnemyDeath()
 {
 	death_flg = true;
-	PlaySoundMem(DefeatTheEnemy_SE, DX_PLAYTYPE_BACK);
+	PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyMoveRight()

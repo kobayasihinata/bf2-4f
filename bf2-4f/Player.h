@@ -25,30 +25,34 @@ class Player :public BoxCollider
 private:
 
     PLAYER_STATE player_state;
-    float acs_left;   //左加速度
-    float acs_right;  //右加速度
-    int acs_up;     //上加速度
-    int acs_down;   //下加速度
-    int land_acs_left;  //左加速度(地面にいるとき)
-    int land_acs_right;  //右加速度(地面にいるとき)
+    float acs_left;              //左加速度
+    float acs_right;             //右加速度
+    int acs_up;                  //上加速度
+    int acs_down;                //下加速度
+    int land_acs_left;           //左加速度(地面にいるとき)
+    int land_acs_right;          //右加速度(地面にいるとき)
 
-    int jump_int;   //上昇ボタン間隔
-    int jump_combo;  //連打数
-    int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
-    bool jump_flg;      //ジャンプ中か判断
+    int jump_int;                //上昇ボタン間隔
+    int jump_combo;              //連打数
+    int jump_cd;                 //ジャンプ連打中に下に落ちる速度を遅らせる
+    bool jump_flg;               //ジャンプ中か判断
 
-    int frame;      //フレーム計測用
-    bool death_flg;      //死亡しているか判断
-    bool thunder_death_flg; //雷で死亡しているか判断
-    int  death_acs;      //死亡中の落ち方制御
-    int  death_wait;      //死亡後の待ち時間
-    int  thunder_death_wait;      //死亡後の待ち時間
-    bool  underwater_flg;      //水没中か判断
-    int respawn;   //リスポーン後の無敵中か判断
-    bool onfloor_flg;   //StageFloorの上かどうか
-    bool onshare_flg;   //StageFloorの上ということを共有するかどうか
-    bool ref_once_left;
-    bool ref_once_right;
+    int frame;                   //フレーム計測用
+    int balloon;                 //残り風船
+    int life;                    //残機
+    bool death_flg;              //死亡しているか判断
+    bool thunder_death_flg;      //雷で死亡しているか判断
+    bool fall_SE_flg;
+    bool Splash_SE_flg;
+    int  death_acs;              //死亡中の落ち方制御
+    int  death_wait;             //死亡後の待ち時間
+    int  thunder_death_wait;     //死亡後の待ち時間
+    bool  underwater_flg;        //水没中か判断
+    int respawn;                 //リスポーン後の無敵中か判断
+    bool onfloor_flg;            //StageFloorの上かどうか
+    bool onshare_flg;            //StageFloorの上ということを共有するかどうか
+    bool ref_once_left;          //左方向に一回だけ反射する
+    bool ref_once_right;         //右方向に一回だけ反射する
 
     int player_image[31];   //プレイヤー画像
     int splash_image[3];   //プレイヤー画像
@@ -59,18 +63,10 @@ private:
     int jump_anim_boost;    //ジャンプ連打時アニメーション加速用
     float last_move_x;      //移動方向保存用
     int last_input;         //入力方向保存用(-1=左 0=どこも押していない　1=右)
-
-    int PlayerJump_SE;
-    int Splash_SE;
-    int Falling_SE;
-    int Restart_SE;
-    int player_walk_se;     //歩行SE
-    int damage_se;     //被ダメージSE
     bool sound_flg;         //サウンド用
 
  
 public:
-
     //コンストラクタ
     Player();
 
@@ -122,8 +118,22 @@ public:
     //プレイヤーが死んでいる途中かを取得する
     int GetPlayerDeathFlg() { return death_flg; }
 
+    int GetFallFlg() { return fall_SE_flg; }
+    int GetSplashSEflg() { return Splash_SE_flg; }
     //プレイヤーリスポーン
     void PlayerRespawn(float x, float y);
+
+    int GetRestartSEflg() { return Restart_SE_flg; }
+
+    void ResetSEflg1() { 
+        Restart_SE_flg = false;
+    }
+    void ResetSEflg2() {
+        fall_SE_flg = false;
+    }
+    void ResetSEflg3() {
+        Splash_SE_flg = false;
+    }
 
     //プレイヤーの風船を減らす
     void BalloonDec();
@@ -148,10 +158,13 @@ public:
         }
     }
 
+    //プレイヤーの座標を取得する
     Location GetPlayerLocation() { return location; }
 
+    //プレイヤーの状態を取得する
     int GetPlayerState() { return player_state; }
 
+    //プレイヤーの状態を設定する
     void SetPlayerState(const PLAYER_STATE state) { player_state = state; }
 
     //プレイヤーを初期地点に移動させる

@@ -1,6 +1,7 @@
 #pragma once
 #include"Define.h"
 #include"Collider/BoxCollider.h"
+#include"SoundManager.h"
 
 #define IMAGE_SHIFT_X 15 //画像ずらし用
 #define IMAGE_SHIFT_Y 13 //画像ずらし用
@@ -22,70 +23,72 @@ enum ENEMY_STATE
 class Enemy :public BoxCollider
 {
 private:
-
+    SoundManager* soundmanager;
     ENEMY_STATE enemy_state;
 
-    bool flg;   //敵を表示するか（生きているか）
-    float acs_left;   //左加速度
-    float acs_right;  //右加速度
-    int acs_up;     //上加速度
-    int acs_down;   //下加速度
-    const int E_Max_Speed[3]{ 50,125,200 };
+    bool flg;                    //敵が生きているか
+    float acs_left;              //左加速度
+    float acs_right;             //右加速度
+    int acs_up;                  //上加速度
+    int acs_down;                //下加速度
+    const int E_Max_Speed[3]{ 50,125,200 };    //敵レベル別の最高速度
 
-    int jump_int;   //上昇ボタン間隔
-    int jump_combo;  //連打数
-    int jump_cd;    //ジャンプ連打中に下に落ちる速度を遅らせる
+    int jump_int;                //上昇ボタン間隔
+    int jump_combo;              //連打数
+    int jump_cd;                 //ジャンプ連打中に下に落ちる速度を遅らせる
 
-    int getscore[5];   //獲得点数配列
-    int frame;      //フレーム計測用
+    int getscore[5];             //獲得点数配列
+    int frame;                   //フレーム計測用
 
-    int charge;     //風船を膨らませる時間
-    int enemy_level;    //敵のレベル
-    bool first_flg;     //敵が始めて風船を膨らませるか判断
-    bool levelup_once;     //敵が始めて風船を膨らませるか判断
-    int balloon;        //残り風船
-    bool death_flg;      //死亡しているか判断
-    int  death_acs;      //死亡中の落ち方制御
-    int  death_wait;      //死亡後の待ち時間
-    bool  underwater_flg;      //水没中か判断
-    int damage;         //やられモーション中待機
-    int protect;        //復活後一瞬だけ無敵(バグ解消のため)
-    int wait_time;           //風船を膨らませる前の待機時間
-    int wait_flg;           //風船を膨らませる前か判断
-    bool onfloor_flg;        //StageFloorの上かどうか
-    bool onshare_flg;       //StageFloorの上ということを共有するかどうか
-    bool move_right_flg;    //右移動中か判断
-    bool move_left_flg;     //左移動中か判断
-    bool jump_flg;          //ジャンプ中か判断
-    int no_ai_time;         //AI無効化時間
-    bool para_flg;          //パラシュート状態か判断
-    bool ref_once_left;     //反射制御用
-    bool ref_once_right;    //反射制御用
+    int charge;                  //風船を膨らませる時間
+    int enemy_level;             //敵のレベル
+    bool first_flg;              //敵が始めて風船を膨らませるか判断
+    bool levelup_once;           //敵が始めて風船を膨らませるか判断
+    int balloon;                 //残り風船
+    bool death_flg;              //死亡しているか判断
+    int death_acs;               //死亡中の落ち方制御
+    int death_wait;              //死亡後の待ち時間
+    bool underwater_flg;         //水没中か判断
+    int damage;                  //やられモーション中待機
+    int protect;                 //復活後一瞬だけ無敵(バグ解消のため)
+    int wait_time;               //風船を膨らませる前の待機時間
+    int wait_flg;                //風船を膨らませる前か判断
+    bool onfloor_flg;            //StageFloorの上かどうか
+    bool onshare_flg;            //StageFloorの上ということを共有するかどうか
+    bool move_right_flg;         //右移動中か判断
+    bool move_left_flg;          //左移動中か判断
+    bool jump_flg;               //ジャンプ中か判断
+    int no_ai_time;              //AI無効化時間
+    bool para_flg;               //パラシュート状態か判断
+    bool ref_once_left;          //反射制御用
+    bool ref_once_right;         //反射制御用
 
-    int enemy_image[18];   //敵画像
-    int splash_image[3];   //敵画像
-    int getscore_image[5];   //スコア獲得演出画像
-    int enemy_anim;    //敵アニメーション用
-    int para_anim;    //敵アニメーション用
-    int splash_anim;    //敵アニメーション用
-    int crack;
-    int getscore_anim[5];    //スコア獲得演出画像表示用
-    int getscore_x[5];         //スコア獲得演出用X座標
-    int getscore_y[5];         //スコア獲得演出用Y座標
-    bool is_getscore[5];    //スコア獲得時演出用
-    int anim_boost;     //アニメーション加速用
+    int enemy_image[18];         //敵画像
+    int splash_image[3];         //敵水没画像
+    int getscore_image[5];       //スコア獲得演出画像
+    int enemy_anim;              //敵アニメーション用
+    int para_anim;               //敵パラシュートアニメーション用
+    int splash_anim;             //敵水没アニメーション用
+    int getscore_anim[5];        //スコア獲得演出画像表示用
+    int getscore_x[5];           //スコア獲得演出用X座標
+    int getscore_y[5];           //スコア獲得演出用Y座標     
+    bool is_getscore[5];         //スコア獲得時演出用
+    int anim_boost;              //アニメーション加速用
+    int crack;                   //
 
-    float last_move_x;    //移動方向保存用
-    int last_input;    //入力方向保存用(-1=左 0=どこも押していない　1=右)
+    float last_move_x;           //移動方向保存用
+    int last_input;              //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
-    int test_score; //点数加算確認用
+    int test_score;              //点数加算確認用
 
     //SE
-    static int EnemyLandingSE;		//敵着地SE
-    static int CrushEnemy;			//敵撃破SE
-    static int CreateBaloonSE;		//敵風船を膨らませるSE
-    int crack_SE;
-    int DefeatTheEnemy_SE;
+    static int enemy_landing_se; //敵着地SE
+    static int crush_enemy;		 //敵撃破SE
+    static int create_baloon_se; //敵風船を膨らませるSE
+    int enemy_move_se;           //
+    int crack_se;                //被ダメージSE
+    int para_se;                 //パラシュートSE
+    int defeat_the_enemy_se;     //
 
 public:
 
@@ -213,6 +216,7 @@ public:
     //スコア獲得演出開始
     void GetScoreStart(int i);
 
+    //敵の状態を取得
     int GetEnemyState() { return enemy_state; }
 
     void StopAllSE();
