@@ -26,6 +26,7 @@ SoundManager::SoundManager()
 		soundflg[i].Wait = false;
 		soundflg[i].Play = false;
 	}
+	ResetFlg = false;
 	soundflg[0].Wait = true;
 }
 SoundManager::~SoundManager()
@@ -35,6 +36,12 @@ SoundManager::~SoundManager()
 
 void SoundManager::Update()
 {
+	if (ResetFlg) {
+		for (int i = 0; i < SOUND_MAX; i++) {
+			soundflg[i].Wait = false;
+			soundflg[i].Play = false;
+		}
+	}
 	//各サウンドの再生条件と再生する際の処理
 
 	if (soundflg[0].Wait) {
@@ -209,4 +216,8 @@ void SoundManager::Stop_All_Sound()
 	StopSoundMem(Splash_SE);
 	StopSoundMem(Crack_SE);
 	StopSoundMem(DefeatTheEnemy_SE);
+}
+
+void SoundManager::Reset_flg() {
+	ResetFlg = true;
 }

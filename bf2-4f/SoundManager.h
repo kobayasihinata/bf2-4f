@@ -12,6 +12,8 @@ protected:
 	};
 	Soundflg soundflg[SOUND_MAX];
 
+	bool ResetFlg;
+
 	// BGM
 	
 
@@ -63,11 +65,6 @@ public:
 	void Stop_E_Move() { StopSoundMem(EnemyMove_SE); }
 	void Stop_Para() { StopSoundMem(Para_SE); }
 
-	void Reset_flg() {
-		for (int i = 0; i < SOUND_MAX; i++) {
-			soundflg[i].Wait = false;
-			soundflg[i].Play = false;
-		}
-	}
+	void Reset_flg();
 };
 

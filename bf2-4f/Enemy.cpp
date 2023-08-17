@@ -163,6 +163,7 @@ void Enemy::Update()
 			//•—‘D‚ð–c‚ç‚Ü‚¹‚é	
 			else if (charge < 6)
 			{
+				reset_flg();
 				anim_boost = 0;
 				if (last_input == -1)
 				{
