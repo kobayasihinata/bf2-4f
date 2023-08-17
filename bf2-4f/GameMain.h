@@ -86,7 +86,7 @@ public:
     void Damage(int i);
 
     //次のステージへ
-    int NextStage();
+    void NextStage();
 
     //敵と地面を生成する
     void CreateStage(int stage);
