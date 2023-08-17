@@ -317,7 +317,7 @@ AbstractScene* GameMain::Update()
 						enemy[i]->SetOnShareFlg(true);
 					}
 				}
-				if (enemy[i]->GetEnemyJumpflg() && E_jump == false) {
+				if (enemy[i]->GetEnemyJumpFlg() && E_jump == false) {
 					soundmanager->PlayE_Move_SE();
 					E_jump = true;
 				}
@@ -526,7 +526,7 @@ AbstractScene* GameMain::Update()
 		//“G‘SŒ‚”j‰‰o
 		if (--clear_wait <= 0)
 		{
-			if (++stage < MAX_STAGE - 1)
+			if (stage < MAX_STAGE - 1)
 			{
 				soundmanager->Reset_flg();
 				soundmanager->Stop_All_Sound();
