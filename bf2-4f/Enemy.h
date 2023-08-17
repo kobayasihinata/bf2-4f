@@ -179,11 +179,11 @@ public:
     //enemy_levelを取得
     int GetEnemyLevel()const { return enemy_level; }
 
-    //敵ジャンプフラグを取得
-    int GetEnemyJumpflg() { return jump_flg; }
-
     //敵の進行方向を取得
     int GetEnemyMove() { return move_left_flg; }
+
+    //敵がジャンプ中か取得
+    int GetEnemyJumpFlg() { return jump_flg; }
 
     //敵が死亡モーション中か取得
     int GetEnemyDeathFlg() { return death_flg; }
@@ -202,6 +202,9 @@ public:
 
     //敵の生きているかの判定を設定
     void SetFlg(bool getflg) { flg = getflg; }
+
+    //敵がパラシュート状態かの判定を設定
+    void SetParaFlg(bool getflg) { para_flg = getflg; }
 
     //敵が風船を膨らませる前か取得
     int GetWaitFlg() { return wait_flg; }

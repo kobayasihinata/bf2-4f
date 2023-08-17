@@ -2,25 +2,27 @@
 
 class UI
 {
-public:
-	mutable int gScore = 0;
+private:
+	int high_score;
 
-public:
-	int Score();		    
+	int highscore_image;
+	int score_image;
+	int player_life_image;
+	int numbers_image[10];	//数字の画像
+public:		    
 	UI();  
-	~UI() {};
-	void Draw()const;
-	int UI_image1;
-	int UI_image2;
-	int UI_image3[10];
-	int UI_image4;
-	int UI_image5;
-	int UI_image6;
-	int Score_image;  
+	~UI();
+	void Draw(int life)const;
 
-	void AddScore(int point) { gScore += point; }
-	int GetScore() { return gScore;}
+	//数字の描画
+	void DrawNumber(int x, int y, int score,int wordcount)const;
 
-	//数字の描画(UI.hとcppに書くのもあり)
-	//void DrawNumber(int x, int y, int score)const;
+	//ハイスコアの読込
+	void ReadHighScore();
+
+	//ハイスコアの保存
+	static void SaveHighScore();
+
+	//ハイスコアの取得
+	int GetHighScore() { return high_score; }
 };

@@ -1,6 +1,5 @@
 #pragma once
-
-#include<DxLib.h>
+#include"DxLib.h"
 #include"Define.h"
 #include"Collider/BoxCollider.h"
 

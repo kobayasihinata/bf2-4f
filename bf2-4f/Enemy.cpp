@@ -24,29 +24,6 @@ Enemy::Enemy(int x,int y,int level)
 		getscore_y[i] = 0;
 		getscore_anim[i] = 0;
 		is_getscore[i] = false;
-		switch (i)
-		{
-		case 0:
-			getscore[i] = 500;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_500.png");
-			break;
-		case 1:
-			getscore[i] = 750;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_750.png");
-			break;
-		case 2:
-			getscore[i] = 1000;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_1000.png");
-			break;
-		case 3:
-			getscore[i] = 1500;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_1500.png");
-			break;
-		case 4:
-			getscore[i] = 2000;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_2000.png");
-			break;
-		}
 	}
 	frame = 0;
 	balloon = 0;
@@ -419,7 +396,7 @@ void Enemy::Update()
 					}
 					else
 					{
-						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED/1.5f));
+						location.y = location.y - (acs_up * RISE_SPPED) + (acs_down * (FALL_SPPED / 1.5f));
 					}
 					
 				}
@@ -543,6 +520,7 @@ void Enemy::Update()
 	if (location.y > UNDER_WATER && show_flg == true)
 	{
 		underwater_flg = true;
+		para_flg = false;
 		is_die = true;
 		splash_SE_flg = true;
 		enemy_state = E_SUBMERGED;
@@ -767,6 +745,8 @@ int Enemy::HitEnemyCollision(const BoxCollider* box_collider)
 		if (my_y[0] < sub_y[1] &&
 			my_y[1] > sub_y[1])
 		{
+			//ëºÇÃìGÇÊÇËè„Ç…ÇÕçsÇØÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
+			location.y = sub_y[1];
 			return 3;
 		}
 	}
@@ -863,6 +843,7 @@ void Enemy::ReflectionPY()
 
 void Enemy::ReflectionMY()
 {
+
 	acs_up = fabsf(acs_up - acs_down) * 0.8f;
 	acs_down = 0;
 	EnemyJump();
@@ -883,12 +864,14 @@ int Enemy::ApplyDamege()
 			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
 			{
 				EnemyDeath();
+				PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 				GetScoreStart(2);
 				return getscore[2 + enemy_level-1];
 			}
 			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
 			{
 				EnemyDeath();
+				PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 				GetScoreStart(1);
 				return getscore[1 + enemy_level - 1];
 			}
@@ -905,7 +888,6 @@ void Enemy::BalloonDec()
 void Enemy::EnemyDeath()
 {
 	death_flg = true;
-	//PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 }
 
 void Enemy::EnemyMoveRight()

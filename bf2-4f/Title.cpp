@@ -13,6 +13,8 @@ Title::Title()
 	cursor_num = 0;
 	cursor_y = 0;
 	interval = 0;
+	cursor_anim = 0;
+	frame = 0;
 }
 
 Title::~Title()
@@ -25,6 +27,14 @@ Title::~Title()
 
 AbstractScene* Title::Update()
 {
+	frame++;
+	if (frame % 15 == 0)
+	{
+		if (++cursor_anim > 3)
+		{
+			cursor_anim = 0;
+		}
+	}
 	cursor_y = cursor_num * 35;
 	if (interval < 30) {
 		interval++;
@@ -44,7 +54,7 @@ AbstractScene* Title::Update()
 
 	if (cursor_num == 0 && PAD_INPUT::OnButton(XINPUT_BUTTON_START))
 	{
-		return new GameMain();
+		return new GameMain(0);
 	}
 
 	return this;
@@ -55,5 +65,5 @@ void Title::Draw()const
 	DrawGraph(45, 10, titlelogo, TRUE);
 	DrawGraph(TITLEMODESELECT_X, TITLEMODESELECT_Y, titlemodeselect, TRUE);
 	DrawGraph(189, 430, titlecredit, TRUE);
-	DrawGraph(TITLEMODESELECT_X - 50, TITLEMODESELECT_Y - 20 + cursor_y, titlecursor[1], TRUE);
+	DrawGraph(TITLEMODESELECT_X - 50, TITLEMODESELECT_Y - 20 + cursor_y, titlecursor[cursor_anim], TRUE);
 }

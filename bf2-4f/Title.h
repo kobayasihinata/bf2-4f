@@ -16,6 +16,8 @@ private:
     int cursor_y;
     int cursor_num;
     int interval;
+    int cursor_anim;
+    int frame;
 public:
 
     //コンストラクタ
