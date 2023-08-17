@@ -470,7 +470,7 @@ AbstractScene* GameMain::Update()
 		//“G‘SŒ‚”j‰‰o
 		if (--clear_wait <= 0)
 		{
-			if (stage < MAX_STAGE - 1)
+			if (++stage < MAX_STAGE - 1)
 			{
 				NextStage();
 			}
@@ -615,17 +615,14 @@ void GameMain::Damage(int i)
 
 void GameMain::NextStage()
 {
-	if (stage <= MAX_STAGE)
+	for (int i = 0; i < MAX_STAR; i++)
 	{
-		for (int i = 0; i < MAX_STAR; i++)
-		{
-			backgroundstar[i]->GetType(stage);
-		}
-		fish = new Fish();
-		CreateStage(stage);
-
-		main_state = Normal;
+		backgroundstar[i]->GetType(stage);
 	}
+	fish = new Fish();
+	CreateStage(stage);
+
+	main_state = Normal;
 }
 
 void GameMain::CreateStage(int stage)
