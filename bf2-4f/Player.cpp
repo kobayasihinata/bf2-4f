@@ -40,10 +40,10 @@ Player::Player()
 
 	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
-	PlayerJump_SE= LoadSoundMem("sounds/SE_PlayerJump.wav");
-	Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
-	Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
-	Restart_SE = LoadSoundMem("sounds/SE_Restart.wav");
+	//PlayerJump_SE = LoadSoundMem("sounds/SE_PlayerJump.wav");
+	//Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
+	//Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
+	Restart_SE_flg = false;
 	player_anim = 0;
 	splash_anim = 0;
 	turn_anim = 0;
@@ -210,9 +210,9 @@ void Player::Update()
 				{
 					jump_flg = true;
 
-					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
+					/*if (CheckSoundMem(PlayerJump_SE) == FALSE) {
 						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
-					}
+					}*/
 					if (acs_down >= 0)
 					{
 						acs_down -= 2;
@@ -300,9 +300,9 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
-					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
+					/*if (CheckSoundMem(PlayerJump_SE) == FALSE) {
 						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
-					}
+					}*/
 					//上昇時に左入力がされていたら左に加速する
 					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 					{
@@ -503,9 +503,8 @@ void Player::Update()
 			death_acs += 4;
 
 			location.y += death_acs * FALL_SPPED;
-			if (CheckSoundMem(Falling_SE) == FALSE) {
-				PlaySoundMem(Falling_SE, DX_PLAYTYPE_BACK);
-			}
+
+			fall_SE_flg = true;
 		}
 	}
 	//フレームを計測する(10秒ごとにリセット)
@@ -555,11 +554,7 @@ void Player::Update()
 	{
 		underwater_flg = true;
 		is_die = true;
-		StopSoundMem(Falling_SE);
-		if (CheckSoundMem(Splash_SE) == FALSE) {
-			PlaySoundMem(Splash_SE, DX_PLAYTYPE_BACK);
-		}
-
+		Splash_SE_flg = true;
 		//プレイヤーを水没中に設定
 		player_state = SUBMERGED;
 		location.y = 470;
@@ -989,7 +984,7 @@ void Player::PlayerRespawn(float x, float y)
 		respawn = 600;
 		show_flg = true;
 		underwater_flg = false;
-		PlaySoundMem(Restart_SE, DX_PLAYTYPE_BACK);
+		Restart_SE_flg = true;
 	}
 }
 

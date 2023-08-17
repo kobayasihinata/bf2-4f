@@ -1,6 +1,7 @@
 #pragma once
 #include"Define.h"
 #include"Collider/BoxCollider.h"
+#include"SoundManager.h"
 
 #define IMAGE_SHIFT_X 15 //‰æ‘œ‚¸‚ç‚µ—p
 #define IMAGE_SHIFT_Y 13 //‰æ‘œ‚¸‚ç‚µ—p
@@ -22,7 +23,7 @@ enum ENEMY_STATE
 class Enemy :public BoxCollider
 {
 private:
-
+    SoundManager* soundmanager;
     ENEMY_STATE enemy_state;
 
     bool flg;                    //“G‚ª¶‚«‚Ä‚¢‚é‚©
