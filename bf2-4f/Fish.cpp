@@ -15,6 +15,7 @@ Fish::Fish()
 	probability = 0;
 	frame_count = 0;
 	player_flying_on_sea_timer = SECOND_TO_FRAME(3);
+	rising_timer = 0;
 	fish_state = Rising_Fish_1;
 	is_rising = false;
 	is_falling = false;
@@ -24,6 +25,7 @@ Fish::Fish()
 	respawn_flg = false;
 	bubble_spawn_flg = true;
 	target_flg = false;
+	target_is_enemy = false;
 	falling_anim = Falling_Fish_1;
 	anim_frame = 0;
 	Eatable_SE = LoadSoundMem("sounds /SE_Eatable.wav");
@@ -77,9 +79,20 @@ void Fish::Update()
 		speed = .6f;
 	}
 
+	if (is_rising == true && is_falling == true)
+	{
+		is_rising = false;
+	}
+
 	if (is_rising == true)
 	{
 		location.y -= speed;
+		//0.6•bŒo‰ß‚µ‚½‚ç‹­§“I‚ÉŠC–Ê‚Ö–ß‚·
+		if (++rising_timer > SECOND_TO_FRAME(0.8f))
+		{
+  			target_flg = true;
+			is_rising = false;
+		}
 	}
 
 	if (is_falling == true)
@@ -124,7 +137,9 @@ void Fish::Update()
 #else
 		player_flying_on_sea_timer = SECOND_TO_FRAME(3);
 #endif // DEBUG
+		rising_timer = 0;
 		target_flg = false;
+		target_is_enemy = false;
 		anim_frame = 0;
 		falling_anim = Falling_Fish_1;
 		speed = 1.6f;
@@ -203,21 +218,24 @@ void Fish::TargetPrey(BoxCollider* boxcollider)
 						is_preying_on_enemy = true;
 						if (GetSaveEnemyLevel() == 1)
 						{
-							if (CheckSoundMem(Eatable_SE) == FALSE) {
+							if (CheckSoundMem(Eatable_SE) == FALSE) 
+							{
 								PlaySoundMem(Eatable_SE,DX_PLAYTYPE_BACK);
 							}
 							fish_state = PreyingOn_Enemy_1;
 						}
 						else if (GetSaveEnemyLevel() == 2)
 						{
-							if (CheckSoundMem(Eatable_SE) == FALSE) {
+							if (CheckSoundMem(Eatable_SE) == FALSE) 
+							{
 								PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
 							}
 							fish_state = PreyingOn_Enemy_2;
 						}
 						else
 						{
-							if (CheckSoundMem(Eatable_SE) == FALSE) {
+							if (CheckSoundMem(Eatable_SE) == FALSE) 
+							{
 								PlaySoundMem(Eatable_SE, DX_PLAYTYPE_BACK);
 							}
 							fish_state = PreyingOn_Enemy_3;
@@ -277,4 +295,13 @@ void Fish::NotAtSeaSurface()
 {
 	is_falling = true;
 	is_rising = false;
+}
+
+void Fish::SetTarget(BoxCollider* boxcollider)
+{
+	if (is_rising == true &&
+		boxcollider->GetIsPlayer() == false)
+	{
+		target_is_enemy = true;
+	}
 }

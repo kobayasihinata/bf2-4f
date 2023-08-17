@@ -4,7 +4,7 @@
 #include"Define.h"
 #include"Player.h"
 
-//#define DEBUG
+#define DEBUG
 #define RANDOM
 //#define CONSTANT
 
@@ -230,6 +230,7 @@ void Thunder::Update()
 					thunder_ball_anim = 1;
 				}
 			}
+			ReInitThunder();
 		}
 
 		//Ž~‚Ü‚Á‚Ä‚È‚¢‚È‚çˆÚ“®—Ê‰ÁŽZ
@@ -289,9 +290,9 @@ void Thunder::Draw(bool flg)const
 	if (is_in_game)
 	{
 #ifdef DEBUG
-		//DrawFormatString(0, 200, 0xff00ff, "%d", fire_timer);
-		//DrawFormatString(0, 220, 0xff00ff, "%d", preliminary_action_time);
-		//DrawFormatString(0, 240, 0xff00ff, "%d", thunder_direction);
+		DrawFormatString(0, 200, 0xff00ff, "%d", fire_timer);
+		DrawFormatString(0, 220, 0xff00ff, "%d", preliminary_action_time);
+		DrawFormatString(0, 240, 0xff00ff, "%d", thunder_direction);
 		BoxCollider::Draw();
 #endif // DEBUG
 

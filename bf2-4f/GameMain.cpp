@@ -337,7 +337,7 @@ AbstractScene* GameMain::Update()
 			
 
 			player->Update();
-			fish->Update();
+ 			fish->Update();
 
 			//ƒvƒŒƒCƒ„[‚ªŽ€‚ñ‚Å‚¢‚éê‡ŠC‚É–ß‚é
 			if (player->GetIsDie() == true)
@@ -348,6 +348,10 @@ AbstractScene* GameMain::Update()
 			//ŠC–Ê‚ÉƒvƒŒƒCƒ„[‚ª‚¢‚éê‡
 			if (fish->CheckSeaSurface(player) == true)
 			{
+				//if (fish->GetTargetIsEnemy())
+				//{
+				//	fish->SetTargetFlg(true);
+				//}
 				if (player->GetPlayerState() < DEATH)
 				{
 					//•ßHˆ—Fƒ^[ƒQƒbƒg‚ÍƒvƒŒƒCƒ„[
@@ -372,7 +376,9 @@ AbstractScene* GameMain::Update()
 					//	fish->NotAtSeaSurface();
 					//}
 
-						//ŠC–Ê‚É“G‚Ì‚¢‚¸‚ê‚©‚ª‚¢‚éê‡
+					fish->SetTarget(enemy[i]);
+
+					//ŠC–Ê‚É“G‚Ì‚¢‚¸‚ê‚©‚ª‚¢‚éê‡
 					if (fish->CheckSeaSurface(enemy[i]) == true && enemy[i]->GetEnemyState() < DEATH_RIGHT)
 					{
 						//“G‚ÌƒŒƒxƒ‹‚ðŽæ“¾‚·‚é
