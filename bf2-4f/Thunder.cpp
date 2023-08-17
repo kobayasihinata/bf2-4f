@@ -4,7 +4,7 @@
 #include"Define.h"
 #include"Player.h"
 
-#define DEBUG
+//#define DEBUG
 #define RANDOM
 //#define CONSTANT
 
@@ -230,7 +230,6 @@ void Thunder::Update()
 					thunder_ball_anim = 1;
 				}
 			}
-			ReInitThunder();
 		}
 
 		//Ž~‚Ü‚Á‚Ä‚È‚¢‚È‚çˆÚ“®—Ê‰ÁŽZ
