@@ -27,7 +27,6 @@ void BackGroundStar::Update()
 
 void BackGroundStar::Draw()const
 {
-    
     DrawBoxAA(star_pos.x, star_pos.y, star_pos.x + 2.5f, star_pos.y + 2.5f, star_color, true);
 }
 
