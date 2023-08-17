@@ -64,12 +64,6 @@ Player::~Player()
 	{
 		DeleteGraph(splash_image[i]);
 	}
-	DeleteSoundMem(PlayerJump_SE);
-	DeleteSoundMem(Splash_SE);
-	DeleteSoundMem(Falling_SE);
-	DeleteSoundMem(Crack_SE);
-	DeleteSoundMem(Restart_SE);
-	DeleteSoundMem(PlayerWalk_SE);
 }
 
 void Player::Update()
@@ -536,9 +530,6 @@ void Player::Update()
 	if (player_state == WALK_LEFT || player_state == WALK_RIGHT)
 	{
 		anim_boost = 18;
-		if (CheckSoundMem(PlayerWalk_SE) == FALSE) {
-			PlaySoundMem(PlayerWalk_SE, DX_PLAYTYPE_BACK);
-		}
 	}
 	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
 	{
@@ -994,10 +985,6 @@ void Player::BalloonDec()
 	if (--balloon <= 0)
 	{
 		death_flg = true;
-	}
-	else
-	{
-		PlaySoundMem(Crack_SE, DX_PLAYTYPE_BACK);
 	}
 }
 void Player::ResetPlayerPos(int x,int y)

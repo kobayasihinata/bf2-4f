@@ -63,14 +63,6 @@ private:
     float last_move_x;      //移動方向保存用
     int last_input;         //入力方向保存用(-1=左 0=どこも押していない　1=右)
 
-    int PlayerWalk_SE;          //プレイヤー歩行SE
-    int PlayerJump_SE;          //プレイヤー浮上SE
-    int Falling_SE;             //落下SE
-    int Splash_SE;              //水しぶきSE
-    int Crack_SE;               //風船破裂SE
-    int Restart_SE;		        //コンテニューSE
-
- 
 public:
 
     //コンストラクタ

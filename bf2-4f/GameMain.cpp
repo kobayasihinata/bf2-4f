@@ -661,7 +661,7 @@ void GameMain::Damage(int i)
 
 void GameMain::NextStage()
 {
-	if (++stage <= MAX_STAGE)
+	if (stage <= MAX_STAGE)
 	{
 		for (int i = 0; i < MAX_STAR; i++)
 		{
