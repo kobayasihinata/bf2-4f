@@ -222,4 +222,5 @@ public:
     int GetE_Splash_SE_flg() { return splash_SE_flg; }
     void Reset_SE_flg1() { splash_SE_flg = false; }
 
+    void reset_flg() { jump_flg = false; }
 };
