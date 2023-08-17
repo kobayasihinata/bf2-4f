@@ -24,32 +24,7 @@ Enemy::Enemy(int x,int y,int level)
 		getscore_y[i] = 0;
 		getscore_anim[i] = 0;
 		is_getscore[i] = false;
-		switch (i)
-		{
-		case 0:
-			getscore[i] = 500;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_500.png");
-			break;
-		case 1:
-			getscore[i] = 750;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_750.png");
-			break;
-		case 2:
-			getscore[i] = 1000;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_1000.png");
-			break;
-		case 3:
-			getscore[i] = 1500;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_1500.png");
-			break;
-		case 4:
-			getscore[i] = 2000;
-			getscore_image[i] = LoadGraph("images/Score/GetScore_2000.png");
-			break;
-		}
 	}
-	//crack_SE = LoadSoundMem("sounds/SE_crack.wav");
-	//DefeatTheEnemy_SE = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
 	frame = 0;
 	balloon = 0;
 	wait_time = 0;
@@ -129,6 +104,7 @@ Enemy::Enemy(int x,int y,int level)
 	para_se = LoadSoundMem("sounds/SE_parachute.wav");
 	crack_se = LoadSoundMem("sounds/SE_crack.wav");
 	defeat_the_enemy_se = LoadSoundMem("sounds/SE_DefeatTheEnemy.wav");
+
 
 }
 
@@ -897,12 +873,14 @@ int Enemy::ApplyDamege()
 			if (enemy_state == PARACHUTE_LEFT || enemy_state == PARACHUTE_RIGHT)
 			{
 				EnemyDeath();
+				PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 				GetScoreStart(2);
 				return getscore[2 + enemy_level-1];
 			}
 			if (enemy_state == E_IDOL_LEFT || enemy_state == E_IDOL_RIGHT || enemy_state == CHARGE_LEFT || enemy_state == CHARGE_RIGHT)
 			{
 				EnemyDeath();
+				PlaySoundMem(defeat_the_enemy_se, DX_PLAYTYPE_BACK);
 				GetScoreStart(1);
 				return getscore[1 + enemy_level - 1];
 			}
@@ -1014,4 +992,12 @@ void Enemy::GetScoreStart(int i)
 	is_getscore[i + enemy_level - 1] = true;
 	getscore_x[i + enemy_level - 1] = location.x;
 	getscore_y[i + enemy_level - 1] = location.y;
+}
+
+void Enemy::StopAllSE()
+{
+	StopSoundMem(enemy_move_se);
+	StopSoundMem(para_se);
+	StopSoundMem(crack_se);
+	StopSoundMem(defeat_the_enemy_se);
 }

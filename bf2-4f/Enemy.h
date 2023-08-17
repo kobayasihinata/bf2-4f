@@ -218,4 +218,7 @@ public:
 
     //“G‚Ìó‘Ô‚ğæ“¾
     int GetEnemyState() { return enemy_state; }
+
+    //“G‚ÌSE‚ğ’â~
+    void StopAllSE();
 };

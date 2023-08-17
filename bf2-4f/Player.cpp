@@ -41,9 +41,14 @@ Player::Player()
 
 	LoadDivGraph("images/Player/Player_Animation.png", 31, 8, 4, 64, 64, player_image);
 	LoadDivGraph("images/Stage/Stage_SplashAnimation.png", 3, 3, 1, 64, 32, splash_image);
-	//PlayerJump_SE = LoadSoundMem("sounds/SE_PlayerJump.wav");
-	//Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
-	//Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
+
+	PlayerJump_SE = LoadSoundMem("sounds/SE_PlayerJump.wav");
+	PlayerWalk_SE = LoadSoundMem("sounds/SE_PlayerWalk.wav");
+	Splash_SE = LoadSoundMem("sounds/SE_Splash.wav");
+	Falling_SE = LoadSoundMem("sounds/SE_Falling.wav");
+	Crack_SE = LoadSoundMem("sounds/SE_crack.wav");
+	Restart_SE = LoadSoundMem("sounds/SE_Restart.wav");
+
 	Restart_SE_flg = false;
 	player_anim = 0;
 	splash_anim = 0;
@@ -67,12 +72,12 @@ Player::~Player()
 	{
 		DeleteGraph(splash_image[i]);
 	}
-	//DeleteSoundMem(PlayerJump_SE);
-	//DeleteSoundMem(Splash_SE);
-	//DeleteSoundMem(Falling_SE);
-	//DeleteSoundMem(Restart_SE);
-	//DeleteSoundMem(player_walk_se);
-	//DeleteSoundMem(damage_se);
+	DeleteSoundMem(PlayerJump_SE);
+	DeleteSoundMem(Splash_SE);
+	DeleteSoundMem(Falling_SE);
+	DeleteSoundMem(Crack_SE);
+	DeleteSoundMem(Restart_SE);
+	DeleteSoundMem(PlayerWalk_SE);
 }
 
 void Player::Update()
@@ -221,9 +226,9 @@ void Player::Update()
 				{
 					jump_flg = true;
 
-					/*if (CheckSoundMem(PlayerJump_SE) == FALSE) {
+					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
 						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
-					}*/
+					}
 					if (acs_down >= 0)
 					{
 						acs_down -= 2;
@@ -311,9 +316,9 @@ void Player::Update()
 				//ジャンプ（連打）
 				else if (PAD_INPUT::OnButton(XINPUT_BUTTON_A))
 				{
-					/*if (CheckSoundMem(PlayerJump_SE) == FALSE) {
+					if (CheckSoundMem(PlayerJump_SE) == FALSE) {
 						PlaySoundMem(PlayerJump_SE, DX_PLAYTYPE_BACK);
-					}*/
+					}
 					//上昇時に左入力がされていたら左に加速する
 					if (PAD_INPUT::GetLStick().ThumbX < -10000 || CheckHitKey(KEY_INPUT_A))
 					{
@@ -544,9 +549,9 @@ void Player::Update()
 	if (player_state == WALK_LEFT || player_state == WALK_RIGHT)
 	{
 		anim_boost = 18;
-		//if (CheckSoundMem(player_walk_se) == FALSE) {
-		//	PlaySoundMem(player_walk_se, DX_PLAYTYPE_BACK);
-		//}
+		if (CheckSoundMem(PlayerWalk_SE) == FALSE) {
+			PlaySoundMem(PlayerWalk_SE, DX_PLAYTYPE_BACK);
+		}
 	}
 	if (player_state == TURN_LEFT || player_state == TURN_RIGHT)
 	{
@@ -1011,7 +1016,7 @@ void Player::BalloonDec()
 	}
 	else
 	{
-		//PlaySoundMem(damage_se, DX_PLAYTYPE_BACK);
+		PlaySoundMem(Crack_SE, DX_PLAYTYPE_BACK);
 	}
 }
 void Player::ResetPlayerPos(int x,int y)
