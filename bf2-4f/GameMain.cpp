@@ -578,13 +578,12 @@ void GameMain::Draw()const
 		}
 	}
 	fish->Draw();
-	ui->Draw();
+	ui->Draw(player->GetPlayerLife());
 	DrawGraph(159, 444, seaImage, TRUE);
 
 	//スコア表示（仮）
 	DrawNumber(170, 0, score);
-	//スコア表示（仮）
-	DrawNumber(350, 0, score);
+	/*DrawNumber(350, 0, score);*/
 
 	if (main_state == Over) {
 		DrawGraph(221, 233, GameOver_Img, 1);

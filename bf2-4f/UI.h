@@ -10,7 +10,7 @@ public:
 	UI();  
 	~UI() {};
 	void Update();
-	void Draw()const;
+	void Draw(int life)const;
 	int UI_image1;
 	int UI_image2;
 	int UI_image3[10];

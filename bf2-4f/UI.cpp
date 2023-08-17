@@ -30,14 +30,16 @@
 	 }
  }
 
- void UI::Draw()const
+ void UI::Draw(int life)const
   {
       DrawGraph(310, 7, UI_image1, TRUE);
 	  DrawGraph(155, 5, UI_image2, TRUE);
-	  DrawGraph(261, 25, UI_image4, TRUE);
-	  DrawGraph(280, 25, UI_image4, TRUE);
+	  /*DrawGraph(261, 25, UI_image4, TRUE);*/
 	  //DrawGraph(230, 40, UI_image5, TRUE);
 	  //DrawGraph(300, 20, UI_image3[0], TRUE);
+	  for (int i = 0; i < life; i++) {
+		  DrawGraph(261+(i*19), 25, UI_image4, TRUE);
+	  }
 	  if (frame % 50 == 0)
 	  {
 		  DrawGraph(230, 40, UI_image5, TRUE);
